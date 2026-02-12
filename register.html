@@ -420,6 +420,48 @@
         }
       });
 
+      // --- ALL ALLOWED REDIRECT URLs (MATCHING SUPABASE CONFIG) ---
+      const ALLOWED_REDIRECTS = [
+        'https://iblueug.github.io/dashboard.html',
+        'https://iblueug.github.io/messages.html',
+        'https://iblueug.github.io/profile.html',
+        'https://iblueug.github.io/chat.html',
+        'https://iblueug.github.io/my-ads.html',
+        'https://iblueug.github.io/post-ad.html',
+        'https://iblueug.github.io/saved-ads.html'
+      ];
+
+      // --- DEFAULT REDIRECT AFTER SUCCESSFUL REGISTRATION ---
+      const DEFAULT_REDIRECT = 'https://iblueug.github.io/dashboard.html';
+
+      // --- SAFE REDIRECT VALIDATOR ---
+      function getSafeRedirect(redirectTo) {
+        if (redirectTo && ALLOWED_REDIRECTS.includes(redirectTo)) {
+          return redirectTo;
+        }
+        
+        // Check session storage for stored redirect
+        const storedRedirect = sessionStorage.getItem('postLoginRedirect');
+        if (storedRedirect && ALLOWED_REDIRECTS.includes(storedRedirect)) {
+          sessionStorage.removeItem('postLoginRedirect');
+          return storedRedirect;
+        }
+        
+        return DEFAULT_REDIRECT;
+      }
+
+      // --- CHECK FOR REDIRECT PARAMETER IN URL ---
+      function checkForRedirectParam() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get('redirect');
+        if (redirect && ALLOWED_REDIRECTS.includes(redirect)) {
+          sessionStorage.setItem('postLoginRedirect', redirect);
+          // Clean URL without refreshing
+          const cleanUrl = window.location.pathname;
+          history.replaceState({}, document.title, cleanUrl);
+        }
+      }
+
       // --- DOM ELEMENTS ---
       const msg = document.getElementById("msg");
       const registerBtn = document.getElementById("registerBtn");
@@ -503,10 +545,12 @@
         setLoading(googleBtn, true);
         
         try {
+          const redirectTo = getSafeRedirect();
+          
           const { data, error } = await sb.auth.signInWithOAuth({
             provider: 'google',
             options: {
-              redirectTo: 'https://iblueug.github.io/dashboard.html',
+              redirectTo: redirectTo, // DYNAMIC SAFE REDIRECT
               queryParams: {
                 access_type: 'offline',
                 prompt: 'consent'
@@ -578,6 +622,8 @@
         setLoading(registerBtn, true);
         
         try {
+          const redirectTo = getSafeRedirect();
+          
           const { data, error } = await sb.auth.signUp({
             email,
             password,
@@ -586,7 +632,7 @@
                 full_name: full_name,
                 created_at: new Date().toISOString(),
               },
-              emailRedirectTo: 'https://iblueug.github.io/dashboard.html'
+              emailRedirectTo: redirectTo // DYNAMIC SAFE REDIRECT
             }
           });
           
@@ -600,7 +646,7 @@
           showMessage('✓ Account created! Redirecting...', 'success');
           
           setTimeout(() => {
-            window.location.href = 'https://iblueug.github.io/dashboard.html';
+            window.location.href = redirectTo;
           }, 1500);
           
         } catch (err) {
@@ -615,7 +661,8 @@
         try {
           const { data, error } = await sb.auth.getSession();
           if (data && data.session) {
-            window.location.replace('https://iblueug.github.io/dashboard.html');
+            const redirectTo = getSafeRedirect();
+            window.location.replace(redirectTo);
           }
         } catch (e) {
           // SILENT FAIL - STAY ON PAGE
@@ -649,7 +696,10 @@
       });
 
       // INITIAL SESSION CHECK
-      document.addEventListener('DOMContentLoaded', checkExistingSession);
+      document.addEventListener('DOMContentLoaded', () => {
+        checkForRedirectParam();
+        checkExistingSession();
+      });
 
       // EXPOSE FOR DEBUGGING (OPTIONAL, NOT REQUIRED)
       window.register = register;
