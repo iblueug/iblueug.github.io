@@ -70,15 +70,21 @@
 
     .search-container {
       flex: 1;
+      display: flex;
+      gap: 8px;
+    }
+
+    .search-wrapper {
+      flex: 1;
       position: relative;
     }
 
     .search-input {
       width: 100%;
-      padding: 14px 20px 14px 50px; /* Increased padding for larger input */
+      padding: 14px 20px 14px 50px;
       border: 2px solid var(--light-gray);
       border-radius: 25px;
-      font-size: 1rem; /* Slightly larger font */
+      font-size: 1rem;
       background: var(--light);
       transition: all 0.3s;
     }
@@ -97,6 +103,25 @@
       transform: translateY(-50%);
       color: var(--gray);
       font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .search-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 0 20px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+
+    .search-btn:hover {
+      background: var(--primary-dark);
     }
 
     /* Search Suggestions Dropdown */
@@ -398,7 +423,7 @@
       gap: 12px;
     }
 
-    /* Ad Card - UPDATED: Removed button space */
+    /* Ad Card */
     .ad-card {
       background: white;
       border-radius: var(--radius);
@@ -546,8 +571,6 @@
       background: var(--light-gray);
       border-radius: 3px;
     }
-
-    /* Ad actions removed from homepage cards */
 
     /* Loading States */
     .loading {
@@ -777,7 +800,7 @@
       cursor: not-allowed;
     }
 
-    /* Bottom Navigation - UPDATED */
+    /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -916,20 +939,23 @@
     </a>
     
     <div class="search-container">
-      <i class="fas fa-search search-icon"></i>
-      <input type="text" class="search-input" id="searchInput" placeholder="Search ads in Uganda..." autocomplete="off">
-      <!-- Search Suggestions Dropdown -->
-      <div class="search-suggestions" id="searchSuggestions">
-        <!-- Suggestions will be populated here -->
+      <div class="search-wrapper">
+        <i class="fas fa-search search-icon" onclick="performSearch()"></i>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search ads in Uganda..." autocomplete="off" onkeypress="handleSearchKeyPress(event)">
+        <!-- Search Suggestions Dropdown -->
+        <div class="search-suggestions" id="searchSuggestions">
+          <!-- Suggestions will be populated here -->
+        </div>
       </div>
+      <button class="search-btn" onclick="performSearch()">
+        <i class="fas fa-search"></i> Search
+      </button>
     </div>
     
     <div class="header-actions">
-      <!-- Removed refresh button -->
       <button class="header-btn" onclick="openFilterModal()">
         <i class="fas fa-sliders-h"></i>
       </button>
-      <!-- Removed chat button from header -->
       <a href="notifications.html" class="header-btn">
         <i class="fas fa-bell"></i>
         <span class="notification-badge" id="notificationBadge" style="display: none;"></span>
@@ -1014,7 +1040,7 @@
     <i class="fas fa-plus"></i>
   </button>
 
-  <!-- Bottom Navigation - UPDATED with Chats -->
+  <!-- Bottom Navigation -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item active">
       <i class="fas fa-home nav-icon"></i>
@@ -1191,21 +1217,18 @@
     
     // Setup event listeners
     function setupEventListeners() {
-      // Search input
+      // Search input for suggestions only
       const searchInput = document.getElementById('searchInput');
       const searchSuggestionsEl = document.getElementById('searchSuggestions');
       
       searchInput.addEventListener('input', debounce(function(e) {
         const query = e.target.value.toLowerCase().trim();
-        currentFilters.search = query;
         
         if (query.length >= 2) {
           showSearchSuggestions(query);
         } else {
           hideSearchSuggestions();
         }
-        
-        applyFilterLogic();
       }, 300));
       
       searchInput.addEventListener('focus', function(e) {
@@ -1251,6 +1274,25 @@
       
       // Infinite scroll
       window.addEventListener('scroll', handleScroll);
+    }
+    
+    // Handle search key press (Enter key)
+    function handleSearchKeyPress(event) {
+      if (event.key === 'Enter') {
+        performSearch();
+      }
+    }
+    
+    // Perform search and redirect to search results page
+    function performSearch() {
+      const searchInput = document.getElementById('searchInput');
+      const query = searchInput.value.trim();
+      
+      if (query) {
+        window.location.href = `search-results.html?query=${encodeURIComponent(query)}`;
+      } else {
+        showNotification('Please enter a search term', 'warning');
+      }
     }
     
     // Handle infinite scroll
@@ -1358,7 +1400,6 @@
       
       suggestions.forEach(suggestion => {
         const icon = suggestion.type === 'ad' ? 'tag' : 'folder';
-        const url = suggestion.type === 'ad' ? `ad-detail.html?id=${suggestion.id}` : `category.html?id=${suggestion.id}`;
         
         // Highlight matching text
         const text = suggestion.text;
@@ -1375,7 +1416,7 @@
         }
         
         html += `
-          <a href="${url}" class="suggestion-item" onclick="hideSearchSuggestions()">
+          <a href="search-results.html?query=${encodeURIComponent(suggestion.text)}" class="suggestion-item" onclick="hideSearchSuggestions()">
             <div class="suggestion-icon">
               <i class="fas fa-${icon}"></i>
             </div>
@@ -1392,7 +1433,7 @@
           <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
             ${['Phones', 'Cars', 'Apartments', 'Jobs', 'Furniture', 'Electronics'].map(term => `
               <span style="background: var(--light); padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; cursor: pointer;" 
-                    onclick="document.getElementById('searchInput').value='${term}'; applyFilterLogic(); hideSearchSuggestions()">
+                    onclick="window.location.href='search-results.html?query=${encodeURIComponent(term)}'">
                 ${term}
               </span>
             `).join('')}
