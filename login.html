@@ -23,7 +23,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent; /* Removes grey flash on tap */
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -34,7 +34,6 @@
       align-items: center;
       justify-content: center;
       padding: 12px;
-      /* For iOS safe areas */
       padding-top: env(safe-area-inset-top, 12px);
       padding-bottom: env(safe-area-inset-bottom, 12px);
     }
@@ -79,13 +78,12 @@
       font-weight: 600;
     }
 
-    /* BIG touch targets - crucial for Uganda where thumbs are used */
     input {
       width: 100%;
       padding: 16px 18px;
       border-radius: 16px;
       border: 1.5px solid #E2E8F0;
-      font-size: 16px; /* Prevents zoom on iOS */
+      font-size: 16px;
       transition: all 0.2s;
       background: #F8FAFC;
       -webkit-appearance: none;
@@ -99,7 +97,6 @@
       box-shadow: 0 0 0 4px rgba(11, 79, 108, 0.1);
     }
 
-    /* Uganda-friendly placeholder (lighter but readable) */
     input::placeholder {
       color: #94A3B8;
       font-size: 15px;
@@ -117,10 +114,9 @@
       text-decoration: none;
       font-size: 14px;
       font-weight: 600;
-      padding: 8px; /* Bigger tap area */
+      padding: 8px;
     }
 
-    /* BIG BUTTONS - Thumb-friendly (minimum 48px) */
     button {
       width: 100%;
       padding: 16px 20px;
@@ -133,11 +129,10 @@
       cursor: pointer;
       transition: transform 0.1s, background 0.2s;
       margin-top: 8px;
-      min-height: 56px; /* Guaranteed big tap target */
+      min-height: 56px;
       letter-spacing: 0.3px;
     }
 
-    /* Active state (for touch) - no hover on mobile */
     button:active {
       background: #0A3B4F;
       transform: scale(0.98);
@@ -200,11 +195,10 @@
       color: #0B4F6C;
       text-decoration: none;
       font-weight: 700;
-      padding: 8px; /* Bigger tap area */
+      padding: 8px;
       display: inline-block;
     }
 
-    /* Message styling - highly visible */
     .msg {
       margin-top: 20px;
       padding: 16px;
@@ -264,39 +258,32 @@
       gap: 10px;
     }
 
-    /* SUPA-MOBILE OPTIMIZATIONS */
     @media (max-width: 400px) {
       .card {
         padding: 24px 18px;
         border-radius: 28px;
       }
-      
       h1 {
         font-size: 30px;
       }
-      
       input, button {
         padding: 14px 16px;
         font-size: 16px;
       }
     }
 
-    /* For very small devices */
     @media (max-width: 320px) {
       .card {
         padding: 20px 16px;
       }
-      
       h1 {
         font-size: 28px;
       }
-      
       .subtitle {
         font-size: 14px;
       }
     }
 
-    /* Reduce motion if user prefers */
     @media (prefers-reduced-motion) {
       .card, button, .loading-spinner {
         animation: none;
@@ -304,7 +291,6 @@
       }
     }
 
-    /* Fix for notched phones */
     @supports (padding: max(0px)) {
       .card {
         padding-left: max(24px, env(safe-area-inset-left));
@@ -358,7 +344,7 @@
       <span>OR</span>
     </div>
 
-    <!-- ✅ FIXED GOOGLE SIGN IN - NOW WORKS EVERYWHERE -->
+    <!-- GOOGLE SIGN IN BUTTON - WITH SMART REDIRECT -->
     <button id="googleBtn" class="google-btn" onclick="signInWithGoogle()">
       <svg width="22" height="22" viewBox="0 0 24 24">
         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -382,7 +368,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     // ============================================
-    // 🚀 SUPABASE CONFIG - UGANDA OPTIMIZED
+    // 🚀 SUPABASE CONFIG - YOUR EXISTING CREDENTIALS
     // ============================================
     const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
@@ -392,8 +378,8 @@
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: true,
-        flowType: 'pkce', // ✅ CRITICAL FIX - This makes Google Sign-In work everywhere!
-        debug: false // Set to true only when testing
+        flowType: 'pkce',
+        debug: false
       }
     });
 
@@ -407,7 +393,7 @@
     const passwordInput = document.getElementById("password");
 
     // ============================================
-    // UI HELPERS - SUPA FAST
+    // UI HELPERS
     // ============================================
     function showMessage(text, type = 'error') {
       msg.textContent = text;
@@ -423,7 +409,6 @@
       
       if (isLoading) {
         button.disabled = true;
-        const content = button.querySelector('.button-content') || button;
         const originalHTML = button.innerHTML;
         button.dataset.originalHTML = originalHTML;
         
@@ -444,53 +429,59 @@
     }
 
     // ============================================
-    // ✅ CRITICAL FIX - GET CORRECT REDIRECT URL
-    // Works on: MTN/Airtel 3G, Localhost, Production, Shared hosting
+    // 🔥 NEW FUNCTION - Store the page user tried to access
     // ============================================
-    function getExactRedirectUrl() {
-      // Get the current URL without any query params or hash
-      let url = window.location.href.split('?')[0].split('#')[0];
+    function storeOriginalDestination() {
+      // Check for redirect parameter in URL (from protected pages)
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectParam = urlParams.get('redirect');
       
-      // Remove trailing slash if present
-      if (url.endsWith('/')) {
-        url = url.slice(0, -1);
+      if (redirectParam) {
+        // Use the redirect parameter if it exists
+        sessionStorage.setItem('returnUrl', redirectParam);
+        console.log('📍 Redirect param found - will return to:', redirectParam);
+        
+        // Clean URL by removing the redirect parameter
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      } else {
+        // Check if this is the first visit - set default
+        if (!sessionStorage.getItem('returnUrl')) {
+          sessionStorage.setItem('returnUrl', '/index.html');
+          console.log('📍 Default return URL set:', '/index.html');
+        }
       }
-      
-      // Ensure it's the EXACT URL whitelisted in Supabase
-      // Must match EXACTLY what's in: Authentication -> URL Configuration
-      return url;
     }
 
     // ============================================
-    // ✅ FIXED GOOGLE SIGN IN - 100% WORKING
+    // ✅ CORRECT REDIRECT URL FOR YOUR LIVE SITE
+    // ============================================
+    function getExactRedirectUrl() {
+      return "https://iblueug.github.io/login.html";
+    }
+
+    // ============================================
+    // ✅ FIXED GOOGLE SIGN IN - Preserves destination
     // ============================================
     async function signInWithGoogle() {
       try {
         setLoading(googleBtn, true);
         showMessage('Connecting to Google...', 'info');
         
-        // IMPORTANT: Get EXACT current URL
+        // 🔥 CRITICAL: Store where to return to AFTER Google login
+        storeOriginalDestination();
+        
         const redirectUrl = getExactRedirectUrl();
+        console.log('📍 Google OAuth redirect URL:', redirectUrl);
         
-        console.log('📍 Redirect URL:', redirectUrl);
-        console.log('🔑 Using PKCE flow - This is the fix!');
-        
-        // Store return URL before redirect
-        const returnUrl = sessionStorage.getItem('returnUrl') || '/dashboard.html';
-        sessionStorage.setItem('returnUrl', returnUrl);
-        
-        // ✅ THE FIX: Using PKCE flow with proper redirect
         const { data, error } = await sb.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: redirectUrl, // Must match Supabase whitelist
+            redirectTo: redirectUrl,
             queryParams: {
               access_type: 'offline',
-              prompt: 'consent',
-              include_granted_scopes: 'true'
-            },
-            scopes: 'email profile',
-            skipBrowserRedirect: false // Ensure automatic redirect
+              prompt: 'consent'
+            }
           }
         });
 
@@ -500,13 +491,7 @@
           showMessage(error.message);
           return;
         }
-
-        // If we get here and no redirect happened, something's wrong
-        setTimeout(() => {
-          setLoading(googleBtn, false);
-          showMessage('Redirect failed. Please try again.', 'error');
-        }, 5000);
-
+        
       } catch (error) {
         console.error('❌ Exception:', error);
         setLoading(googleBtn, false);
@@ -515,11 +500,9 @@
     }
 
     // ============================================
-    // ✅ FIXED: HANDLE OAUTH CALLBACK
-    // This runs when Google redirects back
+    // ✅ HANDLE OAUTH CALLBACK - Returns to original page
     // ============================================
     async function handleOAuthCallback() {
-      // Check if this is an OAuth callback (has code or hash)
       const hasCode = new URLSearchParams(window.location.search).has('code');
       const hasHash = window.location.hash && window.location.hash.includes('access_token');
       
@@ -528,28 +511,22 @@
         showMessage('Signing you in...', 'info');
         
         try {
-          // Exchange code for session
           const { data, error } = await sb.auth.getSession();
           
-          if (error) {
-            console.error('❌ Session error:', error);
-            showMessage(error.message);
-            return;
-          }
+          if (error) throw error;
           
           if (data.session) {
             console.log('✅ Google sign-in successful!');
             
-            // Clean URL - remove OAuth parameters
-            window.history.replaceState({}, document.title, window.location.pathname);
-            
+            window.history.replaceState({}, document.title, '/login.html');
             showMessage('✓ Welcome to iBlue!', 'success');
             
-            // Get return URL
-            const returnUrl = sessionStorage.getItem('returnUrl') || '/dashboard.html';
+            // 🔥 Get the page they ORIGINALLY wanted
+            const returnUrl = sessionStorage.getItem('returnUrl') || '/index.html';
             sessionStorage.removeItem('returnUrl');
             
-            // Redirect after short delay
+            console.log('➡️ Redirecting to:', returnUrl);
+            
             setTimeout(() => {
               window.location.href = returnUrl;
             }, 1500);
@@ -557,12 +534,13 @@
         } catch (error) {
           console.error('❌ Callback error:', error);
           showMessage('Sign-in successful but redirect failed', 'error');
+          setLoading(googleBtn, false);
         }
       }
     }
 
     // ============================================
-    // EMAIL LOGIN - UNCHANGED, WORKS FINE
+    // ✅ EMAIL LOGIN - Same smart redirect behavior
     // ============================================
     async function login() {
       const email = emailInput.value.trim();
@@ -591,8 +569,14 @@
 
         showMessage('✓ Success! Redirecting...', 'success');
         
+        // 🔥 Get the stored destination or use default
+        const returnUrl = sessionStorage.getItem('returnUrl') || '/index.html';
+        sessionStorage.removeItem('returnUrl');
+        
+        console.log('➡️ Redirecting to:', returnUrl);
+        
         setTimeout(() => {
-          window.location.href = sessionStorage.getItem('returnUrl') || '/dashboard.html';
+          window.location.href = returnUrl;
         }, 1000);
 
       } catch (error) {
@@ -645,9 +629,13 @@
       try {
         const { data } = await sb.auth.getSession();
         
-        if (data.session && !window.location.pathname.includes('login.html')) {
-          const returnUrl = sessionStorage.getItem('returnUrl') || '/dashboard.html';
-          window.location.href = returnUrl;
+        if (data.session) {
+          // If already logged in and on login page, redirect to stored destination
+          if (window.location.pathname.includes('login.html')) {
+            const returnUrl = sessionStorage.getItem('returnUrl') || '/index.html';
+            sessionStorage.removeItem('returnUrl');
+            window.location.href = returnUrl;
+          }
         }
       } catch (error) {
         console.log('No active session');
@@ -655,22 +643,23 @@
     }
 
     // ============================================
-    // INIT - RUN ON PAGE LOAD
+    // ✅ INIT - RUN ON PAGE LOAD
     // ============================================
     document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🇺🇬 iBlue Uganda - Mobile Optimized');
-      console.log('📱 Screen:', window.innerWidth, 'x', window.innerHeight);
-      console.log('🌍 Origin:', window.location.origin);
-      console.log('🔧 PKCE flow ACTIVE - Google Sign-In fixed!');
+      console.log('🇺🇬 iBlue Uganda - SMART REDIRECT ACTIVE');
+      console.log('🌍 Live URL:', window.location.href);
       
-      // Focus email input
-      setTimeout(() => emailInput.focus(), 100);
+      // 🔥 Store the page they were trying to access
+      storeOriginalDestination();
       
-      // Check for existing session
+      // Check if user is already logged in
       await checkSession();
       
-      // ✅ CRITICAL: Handle OAuth callback
+      // Handle OAuth callback (when Google returns)
       await handleOAuthCallback();
+      
+      // Focus email input
+      setTimeout(() => emailInput?.focus(), 100);
       
       // Check for email from registration
       const urlParams = new URLSearchParams(window.location.search);
