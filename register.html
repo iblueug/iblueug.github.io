@@ -2,59 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- SUPA-MOBILE RESPONSIVE - 99% Uganda Market Ready 🇺🇬 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="theme-color" content="#667eea">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Create Account – iBlue Uganda</title>
 
   <style>
+    /* ============================================
+       MOBILE FIRST DESIGN - OPTIMIZED FOR UGANDAN NETWORKS
+       - Fast loading on 3G
+       - Big touch targets (48px+)
+       - Works on $50 Android phones
+    ============================================ */
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(145deg, #0B4F6C 0%, #2C3E50 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 12px;
+      padding-top: env(safe-area-inset-top, 12px);
+      padding-bottom: env(safe-area-inset-bottom, 12px);
     }
 
     .card {
-      background: white;
+      background: rgba(255, 255, 255, 0.98);
       width: 100%;
       max-width: 480px;
-      padding: 40px;
-      border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      animation: slideUp 0.5s ease;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      padding: 28px 24px;
+      border-radius: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     h1 {
       text-align: center;
-      margin-bottom: 8px;
-      font-size: 32px;
-      color: #1a1a1a;
+      margin-bottom: 4px;
+      font-size: 34px;
+      font-weight: 700;
+      color: #0B4F6C;
+      letter-spacing: -0.5px;
     }
 
     .subtitle {
       text-align: center;
-      color: #666;
+      color: #64748B;
       margin-bottom: 32px;
-      font-size: 15px;
+      font-size: 16px;
+      font-weight: 400;
     }
 
     .field {
@@ -63,112 +70,114 @@
 
     label {
       display: block;
-      margin-bottom: 6px;
-      color: #333;
-      font-size: 14px;
-      font-weight: 500;
+      margin-bottom: 8px;
+      color: #1E293B;
+      font-size: 15px;
+      font-weight: 600;
     }
 
     input {
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 2px solid #e0e0e0;
-      font-size: 15px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1.5px solid #E2E8F0;
+      font-size: 16px;
       transition: all 0.2s;
-      background: #fafafa;
+      background: #F8FAFC;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     input:focus {
-      border-color: #667eea;
+      border-color: #0B4F6C;
       background: white;
       outline: none;
-      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+      box-shadow: 0 0 0 4px rgba(11, 79, 108, 0.1);
     }
 
     input::placeholder {
-      color: #999;
+      color: #94A3B8;
+      font-size: 15px;
     }
 
     .password-requirements {
-      margin-top: 6px;
-      font-size: 12px;
-      color: #666;
+      margin-top: 8px;
+      font-size: 13px;
+      color: #64748B;
       display: flex;
-      align-items: center;
-      gap: 6px;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .requirement {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      color: #64748B;
+      font-weight: 500;
     }
 
-    .requirement i {
+    .requirement i, .requirement span {
       font-size: 14px;
     }
 
     .requirement.met {
+      color: #0B4F6C;
+    }
+
+    .requirement.met span:first-child {
       color: #16a34a;
     }
 
     button {
       width: 100%;
-      padding: 14px;
+      padding: 16px 20px;
       border: none;
-      border-radius: 12px;
-      background: #667eea;
+      border-radius: 16px;
+      background: #0B4F6C;
       color: white;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 17px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: transform 0.1s, background 0.2s;
       margin-top: 8px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    button:hover {
-      background: #5a67d8;
-      transform: translateY(-1px);
-      box-shadow: 0 7px 14px rgba(102,126,234,0.4);
+      min-height: 56px;
+      letter-spacing: 0.3px;
     }
 
     button:active {
-      transform: translateY(0);
+      background: #0A3B4F;
+      transform: scale(0.98);
     }
 
     button:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
+      opacity: 0.6;
       transform: none;
-      box-shadow: none;
     }
 
     .google-btn {
       background: white;
-      color: #333;
-      border: 2px solid #e0e0e0;
+      color: #1E293B;
+      border: 1.5px solid #E2E8F0;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
-      margin-top: 16px;
+      margin-top: 8px;
       font-weight: 600;
     }
 
-    .google-btn:hover {
-      background: #f8f9fa;
-      border-color: #667eea;
-      box-shadow: none;
+    .google-btn:active {
+      background: #F1F5F9;
+      border-color: #0B4F6C;
+      transform: scale(0.98);
     }
 
     .divider {
       display: flex;
       align-items: center;
-      margin: 24px 0;
-      color: #666;
+      margin: 24px 0 16px;
+      color: #64748B;
       font-size: 14px;
     }
 
@@ -176,42 +185,55 @@
     .divider::after {
       content: "";
       flex: 1;
-      border-bottom: 1px solid #e0e0e0;
+      border-bottom: 1px solid #E2E8F0;
     }
 
     .divider span {
       margin: 0 16px;
-      color: #999;
+      color: #64748B;
+      font-weight: 500;
     }
 
     .login-prompt {
       text-align: center;
       margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px solid #e0e0e0;
-      color: #666;
-      font-size: 15px;
+      padding-top: 20px;
+      border-top: 1px solid #E2E8F0;
+      color: #64748B;
+      font-size: 16px;
     }
 
     .login-prompt a {
-      color: #667eea;
+      color: #0B4F6C;
       text-decoration: none;
       font-weight: 700;
-      margin-left: 6px;
+      padding: 8px;
+      display: inline-block;
     }
 
-    .login-prompt a:hover {
-      text-decoration: underline;
+    .terms {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #64748B;
+      text-align: center;
+    }
+
+    .terms a {
+      color: #0B4F6C;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 4px;
     }
 
     .msg {
       margin-top: 20px;
-      padding: 12px;
-      border-radius: 10px;
+      padding: 16px;
+      border-radius: 16px;
       text-align: center;
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 15px;
+      font-weight: 600;
       display: none;
+      word-break: break-word;
     }
 
     .msg.show {
@@ -219,32 +241,36 @@
     }
 
     .msg.success {
-      background: #f0fdf4;
+      background: #F0FDF4;
       color: #166534;
-      border: 1px solid #86efac;
+      border: 1px solid #86EFAC;
     }
 
     .msg.error {
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
+      background: #FEF2F2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
     }
 
     .msg.info {
-      background: #eff6ff;
-      color: #1e40af;
-      border: 1px solid #bfdbfe;
+      background: #EFF6FF;
+      color: #1E40AF;
+      border: 1px solid #BFDBFE;
     }
 
     .loading-spinner {
       display: inline-block;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       border: 3px solid rgba(255,255,255,0.3);
       border-radius: 50%;
       border-top-color: white;
-      animation: spin 1s ease-in-out infinite;
-      margin-right: 8px;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .google-btn .loading-spinner {
+      border: 3px solid rgba(11,79,108,0.1);
+      border-top-color: #0B4F6C;
     }
 
     @keyframes spin {
@@ -255,37 +281,54 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .terms {
-      margin-top: 20px;
-      font-size: 12px;
-      color: #666;
-      text-align: center;
-    }
-
-    .terms a {
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .terms a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 480px) {
+    @media (max-width: 400px) {
       .card {
-        padding: 30px 20px;
+        padding: 24px 18px;
+        border-radius: 28px;
+      }
+      h1 {
+        font-size: 30px;
+      }
+      input, button {
+        padding: 14px 16px;
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .card {
+        padding: 20px 16px;
+      }
+      h1 {
+        font-size: 28px;
+      }
+      .subtitle {
+        font-size: 14px;
+      }
+    }
+
+    @media (prefers-reduced-motion) {
+      .card, button, .loading-spinner {
+        animation: none;
+        transition: none;
+      }
+    }
+
+    @supports (padding: max(0px)) {
+      .card {
+        padding-left: max(24px, env(safe-area-inset-left));
+        padding-right: max(24px, env(safe-area-inset-right));
       }
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>Create account</h1>
-    <div class="subtitle">Get started with iBlue Uganda</div>
+    <h1>iBlue</h1>
+    <div class="subtitle">🇺🇬 Create your account</div>
 
     <!-- Full Name -->
     <div class="field">
@@ -293,8 +336,9 @@
       <input 
         id="name" 
         type="text" 
-        placeholder="John Doe" 
+        placeholder="eg. Nakato Sarah" 
         autocomplete="name"
+        enterkeyhint="next"
       />
     </div>
 
@@ -304,8 +348,10 @@
       <input 
         id="email" 
         type="email" 
-        placeholder="you@example.com" 
+        placeholder="eg. nakato@gmail.com" 
         autocomplete="email"
+        inputmode="email"
+        enterkeyhint="next"
       />
     </div>
 
@@ -317,6 +363,8 @@
         type="tel" 
         placeholder="+256 700 000000" 
         autocomplete="tel"
+        inputmode="tel"
+        enterkeyhint="next"
       />
     </div>
 
@@ -328,6 +376,7 @@
         type="password" 
         placeholder="Create a strong password" 
         autocomplete="new-password"
+        enterkeyhint="next"
       />
       <div class="password-requirements">
         <span class="requirement" id="lengthReq">
@@ -344,6 +393,7 @@
         type="password" 
         placeholder="Re-enter your password" 
         autocomplete="new-password"
+        enterkeyhint="go"
       />
       <div class="password-requirements">
         <span class="requirement" id="matchReq">
@@ -364,9 +414,9 @@
       <span>OR</span>
     </div>
 
-    <!-- Google Sign Up Button -->
-    <button class="google-btn" onclick="signInWithGoogle()">
-      <svg width="20" height="20" viewBox="0 0 24 24">
+    <!-- Google Sign Up Button - FIXED REDIRECT -->
+    <button id="googleBtn" class="google-btn" onclick="signInWithGoogle()">
+      <svg width="22" height="22" viewBox="0 0 24 24">
         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -395,15 +445,18 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     // ============================================
-    // SUPABASE CONFIGURATION
+    // 🚀 SUPABASE CONFIG - YOUR CREDENTIALS
     // ============================================
     const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
+    
     const sb = window.supabase.createClient(supabaseUrl, supabaseKey, {
       auth: {
         autoRefreshToken: true,
         persistSession: true,
-        detectSessionInUrl: true
+        detectSessionInUrl: true,
+        flowType: 'pkce',
+        debug: false
       }
     });
 
@@ -412,6 +465,7 @@
     // ============================================
     const msg = document.getElementById("msg");
     const registerBtn = document.getElementById("registerBtn");
+    const googleBtn = document.getElementById("googleBtn");
     const nameInput = document.getElementById("name");
     const emailInput = document.getElementById("email");
     const phoneInput = document.getElementById("phone");
@@ -429,30 +483,61 @@
       msg.textContent = text;
       msg.className = 'msg show ' + type;
       
-      if (type === 'success') {
-        setTimeout(() => {
-          msg.classList.remove('show');
-        }, 5000);
+      if (type === 'success' || type === 'info') {
+        setTimeout(() => msg.classList.remove('show'), 5000);
       }
     }
 
     function setLoading(button, isLoading) {
+      if (!button) return;
+      
       if (isLoading) {
         button.disabled = true;
-        const originalText = button.innerHTML;
-        button.dataset.originalText = originalText;
+        const originalHTML = button.innerHTML;
+        button.dataset.originalHTML = originalHTML;
+        
+        const spinnerColor = button.classList.contains('google-btn') ? '#0B4F6C' : 'white';
+        
         button.innerHTML = `
           <span class="button-content">
-            <span class="loading-spinner"></span>
-            <span>Creating account...</span>
+            <span class="loading-spinner" style="border-top-color: ${spinnerColor};"></span>
+            <span>${button.classList.contains('google-btn') ? 'Redirecting...' : 'Creating account...'}</span>
           </span>
         `;
       } else {
         button.disabled = false;
-        if (button.dataset.originalText) {
-          button.innerHTML = button.dataset.originalText;
+        if (button.dataset.originalHTML) {
+          button.innerHTML = button.dataset.originalHTML;
         }
       }
+    }
+
+    // ============================================
+    // 🔥 STORE ORIGINAL DESTINATION - SAME AS LOGIN PAGE
+    // ============================================
+    function storeOriginalDestination() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectParam = urlParams.get('redirect') || urlParams.get('returnUrl');
+      
+      if (redirectParam) {
+        sessionStorage.setItem('returnUrl', redirectParam);
+        console.log('📍 Registration - will return to:', redirectParam);
+        
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      } else {
+        if (!sessionStorage.getItem('returnUrl')) {
+          sessionStorage.setItem('returnUrl', '/index.html');
+          console.log('📍 Registration - default return URL set');
+        }
+      }
+    }
+
+    // ============================================
+    // ✅ GET RETURN URL - SAME AS LOGIN PAGE
+    // ============================================
+    function getReturnUrl() {
+      return sessionStorage.getItem('returnUrl') || '/index.html';
     }
 
     // ============================================
@@ -462,7 +547,6 @@
       const password = passwordInput.value;
       const confirm = confirmInput.value;
       
-      // Length requirement
       if (password.length >= 6) {
         lengthReq.classList.add('met');
         lengthIcon.textContent = '✓';
@@ -471,7 +555,6 @@
         lengthIcon.textContent = '○';
       }
       
-      // Match requirement
       if (password && confirm && password === confirm) {
         matchReq.classList.add('met');
         matchIcon.textContent = '✓';
@@ -485,26 +568,50 @@
     confirmInput.addEventListener('input', validatePassword);
 
     // ============================================
-    // RETURN URL HANDLING
+    // ✅ FIXED GOOGLE SIGN IN - SAME REDIRECT AS LOGIN
     // ============================================
-    function getReturnUrl() {
-      const urlParams = new URLSearchParams(window.location.search);
-      let returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect');
-      
-      if (returnUrl) {
-        sessionStorage.setItem('returnUrl', returnUrl);
-        localStorage.setItem('returnUrl', returnUrl);
-        return returnUrl;
+    async function signInWithGoogle() {
+      try {
+        setLoading(googleBtn, true);
+        showMessage('Redirecting to Google...', 'info');
+        
+        // 🔥 Store where to return after login
+        storeOriginalDestination();
+        
+        // ✅ Use the SAME redirect URL as login page (whitelisted)
+        const redirectUrl = "https://iblueug.github.io/login.html";
+        
+        console.log('🚀 Google Sign In - Redirect URL:', redirectUrl);
+        console.log('📍 Return destination:', getReturnUrl());
+        
+        const { data, error } = await sb.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: redirectUrl,
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'consent'
+            }
+          }
+        });
+
+        if (error) {
+          console.error('❌ Google error:', error);
+          setLoading(googleBtn, false);
+          showMessage(error.message);
+        }
+
+      } catch (error) {
+        console.error('❌ Google exception:', error);
+        setLoading(googleBtn, false);
+        showMessage('Network error. Check your connection.', 'error');
       }
-      
-      return sessionStorage.getItem('returnUrl') || localStorage.getItem('returnUrl') || '/dashboard.html';
     }
 
     // ============================================
-    // EMAIL/PASSWORD REGISTRATION
+    // ✅ EMAIL/PASSWORD REGISTRATION - WITH SMART REDIRECT
     // ============================================
     async function register() {
-      // Get values
       const full_name = nameInput.value.trim();
       const email = emailInput.value.trim();
       const phone = phoneInput.value.trim();
@@ -538,18 +645,10 @@
         return;
       }
 
-      // Validate phone format if provided
-      if (phone && !phone.match(/^[\+]?[(]?[0-9]{1,3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/)) {
-        showMessage('Please enter a valid phone number');
-        phoneInput.focus();
-        return;
-      }
-
       setLoading(registerBtn, true);
       showMessage('Creating your account...', 'info');
 
       try {
-        // 1. Create auth user
         const { data, error } = await sb.auth.signUp({
           email,
           password,
@@ -558,14 +657,13 @@
               full_name: full_name,
               phone: phone || null
             },
-            emailRedirectTo: `${window.location.origin}/login.html`
+            emailRedirectTo: "https://iblueug.github.io/login.html"
           }
         });
 
         if (error) {
           setLoading(registerBtn, false);
           
-          // User-friendly error messages
           if (error.message.includes('User already registered')) {
             showMessage('An account with this email already exists');
           } else if (error.message.includes('Password should be at least 6 characters')) {
@@ -579,20 +677,17 @@
         const userId = data.user?.id;
 
         if (userId) {
-          // 2. Create profile in database
           try {
-            const { error: profileError } = await sb.from('profiles').insert({
+            const { error: profileError } = await sb.from('profiles').upsert({
               id: userId,
               email: email,
               full_name: full_name,
               phone: phone || null,
-              created_at: new Date().toISOString(),
               updated_at: new Date().toISOString()
             });
 
             if (profileError) {
               console.error('Profile creation error:', profileError);
-              // Still continue - auth succeeded
             }
           } catch (profileError) {
             console.error('Profile creation exception:', profileError);
@@ -601,31 +696,26 @@
 
         setLoading(registerBtn, false);
 
-        // 3. Handle response based on email confirmation setting
         if (data.session) {
-          // Email confirmations are OFF - user is auto-logged in
+          // Email confirmations OFF - user is auto-logged in
           showMessage('✓ Account created successfully! Redirecting...', 'success');
           
-          // Store return URL
+          // 🔥 Get stored destination
           const returnUrl = getReturnUrl();
+          sessionStorage.removeItem('returnUrl');
           
           setTimeout(() => {
             window.location.href = returnUrl;
           }, 1500);
         } else {
-          // Email confirmations are ON - user needs to verify
+          // Email confirmations ON - needs verification
           showMessage('✓ Account created! Please check your email to verify.', 'success');
           
-          // Clear form
-          nameInput.value = '';
-          emailInput.value = '';
-          phoneInput.value = '';
           passwordInput.value = '';
           confirmInput.value = '';
           
-          // Redirect to login after delay
           setTimeout(() => {
-            window.location.href = `login.html?email=${encodeURIComponent(email)}`;
+            window.location.href = `login.html?email=${encodeURIComponent(email)}&redirect=${encodeURIComponent(getReturnUrl())}`;
           }, 3000);
         }
 
@@ -637,51 +727,6 @@
     }
 
     // ============================================
-    // GOOGLE SIGN IN (SAME AS LOGIN PAGE)
-    // ============================================
-    async function signInWithGoogle() {
-      try {
-        showMessage('Redirecting to Google...', 'info');
-        
-        // Get the current environment URL - WORKS ON LOCALHOST & PRODUCTION
-        const currentOrigin = window.location.origin;
-        
-        // Use the EXACT URL that's in your Supabase redirect whitelist
-        const redirectTo = `${currentOrigin}/login.html`;
-        
-        console.log('🚀 Google Sign In - Environment:', currentOrigin);
-        console.log('📌 Redirect URL:', redirectTo);
-        
-        // Store return URL before redirect
-        const returnUrl = getReturnUrl();
-        sessionStorage.setItem('returnUrl', returnUrl);
-        localStorage.setItem('returnUrl', returnUrl);
-
-        // Initiate Google OAuth
-        const { data, error } = await sb.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: redirectTo,
-            queryParams: {
-              access_type: 'offline',
-              prompt: 'consent'
-            },
-            scopes: 'email profile'
-          }
-        });
-
-        if (error) {
-          console.error('❌ Google sign-in error:', error);
-          showMessage(error.message);
-        }
-
-      } catch (error) {
-        console.error('❌ Google sign-in exception:', error);
-        showMessage('Unable to connect to Google. Please try again.');
-      }
-    }
-
-    // ============================================
     // CHECK EXISTING SESSION
     // ============================================
     async function checkExistingSession() {
@@ -689,10 +734,9 @@
         const { data } = await sb.auth.getSession();
         
         if (data.session) {
-          console.log('👤 User already logged in:', data.session.user.email);
-          
-          // Redirect to dashboard
+          console.log('👤 Already logged in:', data.session.user.email);
           const returnUrl = getReturnUrl();
+          sessionStorage.removeItem('returnUrl');
           window.location.href = returnUrl;
         }
       } catch (error) {
@@ -701,23 +745,27 @@
     }
 
     // ============================================
-    // INITIALIZATION
+    // ✅ INIT - SAME SMART REDIRECT SYSTEM
     // ============================================
     document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 iBlue Registration Page Loaded');
-      console.log('📍 Environment:', window.location.origin);
+      console.log('🇺🇬 iBlue Uganda Registration - SMART REDIRECT ACTIVE');
+      console.log('🌍 Environment:', window.location.origin);
       
-      // Check if user is already logged in
+      // 🔥 Store the page user was trying to access
+      storeOriginalDestination();
+      
+      // Check if already logged in
       await checkExistingSession();
       
       // Focus name input
-      nameInput.focus();
+      setTimeout(() => nameInput?.focus(), 100);
       
-      // Check for referral code in URL
+      // Check for referral code
       const urlParams = new URLSearchParams(window.location.search);
       const referral = urlParams.get('ref');
       if (referral) {
         sessionStorage.setItem('referralCode', referral);
+        console.log('🎁 Referral code stored:', referral);
       }
     });
 
@@ -725,7 +773,7 @@
     // ENTER KEY SUBMIT
     // ============================================
     document.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
         register();
       }
     });
