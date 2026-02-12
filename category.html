@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category | iBlue Uganda</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #475569;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --light-gray: #e2e8f0;
+      --border: #cbd5e1;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: var(--dark);
+    }
+
+    /* Header */
+    .mobile-header {
+      background: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--dark);
+      font-size: 1.2rem;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover {
+      background: var(--light);
+    }
+
+    .header-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .header-subtitle {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-btn {
+      background: var(--light);
+      color: var(--dark);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      position: relative;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .header-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-top: 80px;
+      padding: 16px;
+    }
+
+    /* Category Info */
+    .category-header {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .category-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .category-info h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--dark);
+    }
+
+    .category-info p {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-bottom: 8px;
+    }
+
+    .category-stats {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Filters Bar */
+    .filters-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 8px 0;
+      scrollbar-width: none;
+    }
+
+    .filters-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-btn {
+      padding: 10px 18px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 25px;
+      font-size: 0.9rem;
+      color: var(--dark);
+      white-space: nowrap;
+      transition: all 0.3s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .filter-btn i {
+      font-size: 0.9rem;
+    }
+
+    /* Ads Section */
+    .ads-section {
+      margin-bottom: 80px;
+    }
+
+    .ads-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .ads-count {
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    .sort-options {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: white;
+      font-size: 0.9rem;
+      color: var(--dark);
+      cursor: pointer;
+    }
+
+    .ads-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    /* Ad Card */
+    .ad-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .ad-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .ad-image {
+      position: relative;
+      padding-top: 75%; /* 4:3 Aspect Ratio */
+      overflow: hidden;
+    }
+
+    .ad-image img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .ad-badges {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 2;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: white;
+      text-transform: uppercase;
+    }
+
+    .badge-featured {
+      background: var(--warning);
+    }
+
+    .badge-negotiable {
+      background: var(--success);
+    }
+
+    .badge-urgent {
+      background: var(--danger);
+    }
+
+    .badge-verified {
+      background: var(--success);
+    }
+
+    .ad-info {
+      padding: 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ad-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .ad-price {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .ad-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: auto;
+    }
+
+    .ad-location,
+    .ad-time {
+      font-size: 0.8rem;
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Loading States */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      grid-column: 1 / -1;
+    }
+
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(37, 99, 235, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      background: white;
+      border-radius: var(--radius);
+      margin-top: 20px;
+      box-shadow: var(--shadow);
+      grid-column: 1 / -1;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: var(--light-gray);
+      margin-bottom: 15px;
+    }
+
+    .empty-state h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+
+    .empty-state p {
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--gray);
+      font-size: 0.8rem;
+      gap: 4px;
+      transition: all 0.3s;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-icon {
+      font-size: 1.2rem;
+    }
+
+    /* Post Ad Button */
+    .post-ad-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      z-index: 1001;
+      transition: all 0.3s;
+    }
+
+    .post-ad-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    /* Responsive */
+    @media (min-width: 640px) {
+      .ads-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      
+      .main-content {
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      .category-header {
+        padding: 24px;
+      }
+      
+      .category-info h1 {
+        font-size: 1.6rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .ads-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      .bottom-nav {
+        display: none;
+      }
+      
+      .post-ad-btn {
+        bottom: 30px;
+        right: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <button class="back-btn" onclick="window.history.back()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    
+    <div class="header-content">
+      <div class="header-title" id="pageTitle">Category</div>
+      <div class="header-subtitle" id="adsCount">Loading...</div>
+    </div>
+    
+    <div class="header-actions">
+      <button class="header-btn" onclick="refreshAds()">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+      <button class="header-btn" onclick="openFilters()">
+        <i class="fas fa-sliders-h"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Category Header -->
+    <div class="category-header" id="categoryHeader">
+      <div class="category-icon" id="categoryIcon">
+        <i class="fas fa-tag"></i>
+      </div>
+      <div class="category-info" id="categoryInfo">
+        <h1>Loading...</h1>
+        <p>Fetching category information...</p>
+        <div class="category-stats">
+          <div class="stat">
+            <span class="stat-value" id="totalAds">0</span>
+            <span class="stat-label">Total Ads</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="featuredAds">0</span>
+            <span class="stat-label">Featured</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="activeAds">0</span>
+            <span class="stat-label">Active</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="filters-bar" id="filtersBar">
+      <button class="filter-btn active" onclick="setFilter('all')">
+        <i class="fas fa-filter"></i> All
+      </button>
+      <button class="filter-btn" onclick="setFilter('featured')">
+        <i class="fas fa-star"></i> Featured
+      </button>
+      <button class="filter-btn" onclick="setFilter('new')">
+        <i class="fas fa-bolt"></i> New
+      </button>
+      <button class="filter-btn" onclick="setFilter('price_low')">
+        <i class="fas fa-arrow-down"></i> Price Low
+      </button>
+      <button class="filter-btn" onclick="setFilter('price_high')">
+        <i class="fas fa-arrow-up"></i> Price High
+      </button>
+      <button class="filter-btn" onclick="setFilter('negotiable')">
+        <i class="fas fa-handshake"></i> Negotiable
+      </button>
+    </div>
+
+    <!-- Ads Section -->
+    <section class="ads-section">
+      <div class="ads-header">
+        <div>
+          <h2 style="font-size: 1.2rem;">Ads in this Category</h2>
+          <p class="ads-count" id="filteredCount">Loading...</p>
+        </div>
+        <select class="sort-options" id="sortSelect" onchange="sortAds()">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="price_low">Price: Low to High</option>
+          <option value="price_high">Price: High to Low</option>
+          <option value="featured">Featured First</option>
+          <option value="urgent">Urgent First</option>
+        </select>
+      </div>
+
+      <!-- Ads Grid -->
+      <div class="ads-grid" id="adsGrid">
+        <!-- Ads will be loaded here -->
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h3>No Ads Found</h3>
+        <p>Try adjusting your filters or be the first to post in this category</p>
+        <button class="btn-primary" onclick="window.location.href='post-ad.html'">
+          Post New Ad
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating Post Ad Button -->
+  <button class="post-ad-btn" onclick="handlePostAd()">
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <i class="fas fa-home nav-icon"></i>
+      <span>Home</span>
+    </a>
+    <a href="categories.html" class="nav-item active">
+      <i class="fas fa-th-large nav-icon"></i>
+      <span>Categories</span>
+    </a>
+    <a href="messages.html" class="nav-item">
+      <i class="fas fa-comments nav-icon"></i>
+      <span>Chats</span>
+    </a>
+    <a href="saved.html" class="nav-item">
+      <i class="fas fa-heart nav-icon"></i>
+      <span>Saved</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <i class="fas fa-user nav-icon"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <script>
+    // Initialize Supabase client
+    const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
+    
+    const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // Icon mapping
+    const iconMap = {
+      'smartphone': 'mobile-alt',
+      'car': 'car',
+      'home': 'home',
+      'tv': 'tv',
+      'shirt': 'tshirt',
+      'briefcase': 'briefcase',
+      'sofa': 'couch',
+      'tractor': 'tractor',
+      'paw-print': 'paw',
+      'building-storefront': 'store',
+      'motorcycle': 'motorcycle',
+      'bicycle': 'bicycle',
+      'house': 'home',
+      'building': 'building',
+      'tree': 'tree',
+      'store': 'store',
+      'tablet': 'tablet',
+      'phone': 'phone',
+      'headphones': 'headphones',
+      'truck': 'truck',
+      'cog': 'cog',
+      'tag': 'tag'
+    };
+    
+    // Global variables
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryId = urlParams.get('id');
+    let category = null;
+    let allAds = [];
+    let filteredAds = [];
+    let currentFilter = 'all';
+    let savedAdsCache = new Set();
+    
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (!categoryId) {
+        showError('No category selected');
+        return;
+      }
+      
+      await loadCategory();
+      await loadAds();
+      await loadSavedAdsCache();
+    });
+    
+    // Load category details
+    async function loadCategory() {
+      try {
+        const { data, error } = await sb
+          .from('categories')
+          .select('*')
+          .eq('id', categoryId)
+          .single();
+        
+        if (error) throw error;
+        
+        category = data;
+        updateCategoryHeader();
+        
+      } catch (error) {
+        console.error('Error loading category:', error);
+        showError('Failed to load category');
+      }
+    }
+    
+    // Update category header
+    function updateCategoryHeader() {
+      if (!category) return;
+      
+      // Update title
+      document.getElementById('pageTitle').textContent = category.name;
+      document.getElementById('categoryInfo').querySelector('h1').textContent = category.name;
+      
+      // Update icon
+      const iconElement = document.getElementById('categoryIcon');
+      const iconName = iconMap[category.icon] || 'tag';
+      iconElement.innerHTML = `<i class="fas fa-${iconName}"></i>`;
+      
+      if (category.color_hex) {
+        iconElement.style.background = category.color_hex;
+      }
+    }
+    
+    // Load ads for this category (main category only)
+    async function loadAds() {
+      const loading = document.getElementById('loading');
+      const adsGrid = document.getElementById('adsGrid');
+      const emptyState = document.getElementById('emptyState');
+      
+      loading.style.display = 'flex';
+      adsGrid.innerHTML = '';
+      emptyState.style.display = 'none';
+      
+      try {
+        if (!categoryId) {
+          throw new Error('No category selected');
+        }
+        
+        // Load ads for this category (main category ads only)
+        const { data: mainCategoryAds, error: mainError } = await sb
+          .from('ads')
+          .select(`
+            *,
+            main_category:categories!ads_category_id_fkey(id, name, slug, icon),
+            profiles(id, full_name, avatar_url, is_verified)
+          `)
+          .eq('category_id', categoryId)
+          .eq('status', 'active')
+          .order('created_at', { ascending: false });
+        
+        if (mainError) throw mainError;
+        
+        // Load ads for subcategories of this category
+        // First, get all subcategory IDs
+        const { data: subcategories, error: subError } = await sb
+          .from('categories')
+          .select('id')
+          .eq('parent_id', categoryId)
+          .eq('is_active', true);
+        
+        let subcategoryAds = [];
+        if (!subError && subcategories && subcategories.length > 0) {
+          const subcategoryIds = subcategories.map(sub => sub.id);
+          
+          const { data: subAds, error: subAdsError } = await sb
+            .from('ads')
+            .select(`
+              *,
+              subcategory:categories!ads_subcategory_id_fkey(id, name, slug, icon),
+              profiles(id, full_name, avatar_url, is_verified)
+            `)
+            .in('subcategory_id', subcategoryIds)
+            .eq('status', 'active')
+            .order('created_at', { ascending: false });
+          
+          if (!subAdsError && subAds) {
+            subcategoryAds = subAds;
+          }
+        }
+        
+        // Combine and process all ads
+        const allProcessedAds = [];
+        
+        // Process main category ads
+        if (mainCategoryAds) {
+          mainCategoryAds.forEach(ad => {
+            allProcessedAds.push({
+              ...ad,
+              category_type: 'main',
+              display_category: ad.main_category
+            });
+          });
+        }
+        
+        // Process subcategory ads
+        if (subcategoryAds) {
+          subcategoryAds.forEach(ad => {
+            allProcessedAds.push({
+              ...ad,
+              category_type: 'sub',
+              display_category: ad.subcategory
+            });
+          });
+        }
+        
+        // Also get promotions for ads
+        if (allProcessedAds.length > 0) {
+          const adIds = allProcessedAds.map(ad => ad.id);
+          
+          const { data: promotions, error: promError } = await sb
+            .from('ad_promotions')
+            .select('ad_id, promotion_type, is_active, ends_at')
+            .in('ad_id', adIds)
+            .eq('is_active', true)
+            .gt('ends_at', new Date().toISOString());
+          
+          if (!promError && promotions) {
+            // Create promotion map
+            const promotionMap = {};
+            promotions.forEach(promo => {
+              if (!promotionMap[promo.ad_id]) {
+                promotionMap[promo.ad_id] = [];
+              }
+              promotionMap[promo.ad_id].push(promo);
+            });
+            
+            // Add promotions to ads
+            allProcessedAds.forEach(ad => {
+              ad.promotions = promotionMap[ad.id] || [];
+              
+              // Set featured status if any promotion says featured
+              const featuredPromo = ad.promotions.find(p => p.promotion_type === 'featured');
+              if (featuredPromo) {
+                ad.is_featured = true;
+              }
+              
+              // Set boost_until if any promotion says boost
+              const boostPromo = ad.promotions.find(p => p.promotion_type === 'boost');
+              if (boostPromo) {
+                ad.boost_until = boostPromo.ends_at;
+              }
+            });
+          }
+        }
+        
+        allAds = allProcessedAds;
+        filteredAds = [...allAds];
+        
+        // Update stats
+        updateCategoryStats();
+        updateAdsCount();
+        renderAds();
+        
+      } catch (error) {
+        console.error('Error loading ads:', error);
+        showError('Failed to load ads. Please try again.');
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+    
+    // Load user's saved ads cache
+    async function loadSavedAdsCache() {
+      try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) return;
+        
+        const { data: savedAds, error } = await sb
+          .from('saved_ads')
+          .select('ad_id')
+          .eq('user_id', user.id);
+        
+        if (error) throw error;
+        
+        savedAdsCache = new Set((savedAds || []).map(sa => sa.ad_id.toString()));
+        
+      } catch (error) {
+        console.error('Error loading saved ads cache:', error);
+      }
+    }
+    
+    // Update category stats
+    function updateCategoryStats() {
+      if (!allAds) return;
+      
+      const total = allAds.length;
+      const featured = allAds.filter(ad => ad.is_featured).length;
+      const active = allAds.filter(ad => ad.status === 'active').length;
+      
+      document.getElementById('totalAds').textContent = total;
+      document.getElementById('featuredAds').textContent = featured;
+      document.getElementById('activeAds').textContent = active;
+    }
+    
+    // Render ads
+    function renderAds() {
+      const adsGrid = document.getElementById('adsGrid');
+      const emptyState = document.getElementById('emptyState');
+      
+      if (filteredAds.length === 0) {
+        adsGrid.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      adsGrid.innerHTML = '';
+      
+      filteredAds.forEach(ad => {
+        const adCard = createAdCard(ad);
+        adsGrid.appendChild(adCard);
+      });
+    }
+    
+    // Create ad card
+    function createAdCard(ad) {
+      const card = document.createElement('a');
+      card.className = 'ad-card';
+      card.href = `ad-detail.html?id=${ad.id}`;
+      
+      // Format price
+      const formattedPrice = formatPrice(ad.price);
+      
+      // Get first image
+      let imageUrl = 'https://via.placeholder.com/300x225/3b82f6/ffffff?text=No+Image';
+      if (ad.image_urls && ad.image_urls.length > 0 && ad.image_urls[0]) {
+        imageUrl = ad.image_urls[0];
+      }
+      
+      // Time ago
+      const timeAgo = getTimeAgo(new Date(ad.created_at));
+      
+      // Check if ad is saved
+      const isSaved = savedAdsCache.has(ad.id.toString());
+      
+      // Badges
+      let badgesHTML = '';
+      if (ad.is_featured) {
+        badgesHTML += '<div class="badge badge-featured">Featured</div>';
+      }
+      if (ad.is_negotiable) {
+        badgesHTML += '<div class="badge badge-negotiable">Negotiable</div>';
+      }
+      // Check if ad is urgent (boosted)
+      const isUrgent = ad.boost_until && new Date(ad.boost_until) > new Date();
+      if (isUrgent) {
+        badgesHTML += '<div class="badge badge-urgent">Urgent</div>';
+      }
+      // Verified seller badge
+      if (ad.profiles?.is_verified) {
+        badgesHTML += '<div class="badge badge-verified">Verified</div>';
+      }
+      
+      card.innerHTML = `
+        <div class="ad-image">
+          <img src="${imageUrl}" 
+               alt="${ad.title}"
+               loading="lazy"
+               onerror="this.src='https://via.placeholder.com/300x225/64748b/ffffff?text=Image+Not+Found'">
+          ${badgesHTML ? `<div class="ad-badges">${badgesHTML}</div>` : ''}
+        </div>
+        
+        <div class="ad-info">
+          <h3 class="ad-title">${ad.title}</h3>
+          <div class="ad-price">${formattedPrice}</div>
+          
+          <div class="ad-meta">
+            <div class="ad-location">
+              <i class="fas fa-map-marker-alt"></i>
+              ${ad.district || ad.region || 'Uganda'}
+            </div>
+            <div class="ad-time">
+              <i class="far fa-clock"></i>
+              ${timeAgo}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+    
+    // Set filter
+    function setFilter(filterType) {
+      // Update filter buttons
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      currentFilter = filterType;
+      applyFilter();
+    }
+    
+    // Apply current filter
+    function applyFilter() {
+      let filtered = [...allAds];
+      
+      switch (currentFilter) {
+        case 'featured':
+          filtered = filtered.filter(ad => ad.is_featured);
+          break;
+        case 'new':
+          // Show ads from last 7 days
+          const weekAgo = new Date();
+          weekAgo.setDate(weekAgo.getDate() - 7);
+          filtered = filtered.filter(ad => new Date(ad.created_at) > weekAgo);
+          break;
+        case 'price_low':
+          filtered = filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+          break;
+        case 'price_high':
+          filtered = filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+          break;
+        case 'negotiable':
+          filtered = filtered.filter(ad => ad.is_negotiable);
+          break;
+        case 'all':
+        default:
+          // Keep all ads
+          break;
+      }
+      
+      filteredAds = filtered;
+      updateAdsCount();
+      renderAds();
+    }
+    
+    // Sort ads
+    function sortAds() {
+      const sortBy = document.getElementById('sortSelect').value;
+      
+      filteredAds.sort((a, b) => {
+        switch (sortBy) {
+          case 'newest':
+            return new Date(b.created_at) - new Date(a.created_at);
+          case 'oldest':
+            return new Date(a.created_at) - new Date(b.created_at);
+          case 'price_low':
+            return (a.price || 0) - (b.price || 0);
+          case 'price_high':
+            return (b.price || 0) - (a.price || 0);
+          case 'featured':
+            if (a.is_featured && !b.is_featured) return -1;
+            if (!a.is_featured && b.is_featured) return 1;
+            return new Date(b.created_at) - new Date(a.created_at);
+          case 'urgent':
+            const aUrgent = a.boost_until && new Date(a.boost_until) > new Date();
+            const bUrgent = b.boost_until && new Date(b.boost_until) > new Date();
+            if (aUrgent && !bUrgent) return -1;
+            if (!aUrgent && bUrgent) return 1;
+            return new Date(b.created_at) - new Date(a.created_at);
+          default:
+            return new Date(b.created_at) - new Date(a.created_at);
+        }
+      });
+      
+      renderAds();
+    }
+    
+    // Update ads count
+    function updateAdsCount() {
+      const totalCount = allAds.length;
+      const filteredCount = filteredAds.length;
+      
+      document.getElementById('adsCount').textContent = 
+        `${filteredCount} ad${filteredCount !== 1 ? 's' : ''}`;
+      
+      document.getElementById('filteredCount').textContent = 
+        `${filteredCount} ad${filteredCount !== 1 ? 's' : ''} found`;
+    }
+    
+    // Open filters (placeholder for filter modal)
+    function openFilters() {
+      showNotification('Filter options coming soon');
+    }
+    
+    // Refresh ads
+    function refreshAds() {
+      loadAds();
+      showNotification('Refreshing ads...');
+    }
+    
+    // Handle post ad button
+    async function handlePostAd() {
+      try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) {
+          window.location.href = 'login.html?redirect=' + encodeURIComponent('post-ad.html');
+          return;
+        }
+        window.location.href = 'post-ad.html';
+      } catch (error) {
+        console.error('Error checking user:', error);
+        window.location.href = 'login.html';
+      }
+    }
+    
+    // Helper functions
+    function formatPrice(price) {
+      if (!price || price === 0) return 'Price on request';
+      return new Intl.NumberFormat('en-UG', {
+        style: 'currency',
+        currency: 'UGX',
+        minimumFractionDigits: 0
+      }).format(price);
+    }
+    
+    function getTimeAgo(date) {
+      const seconds = Math.floor((new Date() - date) / 1000);
+      
+      let interval = seconds / 31536000;
+      if (interval > 1) return Math.floor(interval) + "y ago";
+      
+      interval = seconds / 2592000;
+      if (interval > 1) return Math.floor(interval) + "mo ago";
+      
+      interval = seconds / 86400;
+      if (interval > 1) return Math.floor(interval) + "d ago";
+      
+      interval = seconds / 3600;
+      if (interval > 1) return Math.floor(interval) + "h ago";
+      
+      interval = seconds / 60;
+      if (interval > 1) return Math.floor(interval) + "m ago";
+      
+      return Math.floor(seconds) + "s ago";
+    }
+    
+    function showError(message) {
+      const adsGrid = document.getElementById('adsGrid');
+      const loading = document.getElementById('loading');
+      
+      loading.style.display = 'none';
+      adsGrid.innerHTML = `
+        <div class="empty-state" style="display: block; grid-column: 1 / -1;">
+          <i class="fas fa-exclamation-circle"></i>
+          <h3>Error Loading Content</h3>
+          <p>${message}</p>
+          <button class="btn-primary" onclick="location.reload()">
+            <i class="fas fa-redo"></i> Retry
+          </button>
+        </div>
+      `;
+    }
+    
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        left: 20px;
+        background: var(--primary);
+        color: white;
+        padding: 12px 16px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        z-index: 3000;
+        animation: slideIn 0.3s ease;
+        text-align: center;
+        font-size: 0.95rem;
+        font-weight: 500;
+      `;
+      
+      notification.innerHTML = `<i class="fas fa-info-circle" style="margin-right: 8px;"></i>${message}`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+      
+      // Add CSS for animations if not already present
+      if (!document.querySelector('#notification-animations')) {
+        const style = document.createElement('style');
+        style.id = 'notification-animations';
+        style.textContent = `
+          @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+          }
+          @keyframes slideOut {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-20px); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+  </script>
+</body>
+</html>

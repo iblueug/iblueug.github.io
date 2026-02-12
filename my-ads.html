@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>My Ads | iBlue Uganda</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* RESET & BASE */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #f5f7fa;
+      min-height: 100vh;
+      line-height: 1.5;
+      font-size: 14px;
+      color: #333;
+      padding-bottom: 80px; /* Space for bottom nav */
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #003cff 0%, #0066ff 100%);
+      color: white;
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 60, 255, 0.2);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo i {
+      font-size: 20px;
+    }
+
+    .logo span {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 0 16px;
+      margin: 16px 0 20px;
+    }
+
+    .stat-item {
+      background: white;
+      border-radius: 10px;
+      padding: 12px 8px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: #003cff;
+      margin-bottom: 2px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #666;
+    }
+
+    /* FILTER TABS */
+    .filter-tabs {
+      display: flex;
+      overflow-x: auto;
+      padding: 0 16px;
+      margin-bottom: 20px;
+      gap: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .filter-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-btn {
+      flex: 0 0 auto;
+      background: white;
+      border: 1px solid #eee;
+      padding: 10px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      background: #003cff;
+      color: white;
+      border-color: #003cff;
+    }
+
+    .filter-btn i {
+      font-size: 14px;
+    }
+
+    /* CONTENT */
+    .content {
+      padding: 0 16px;
+    }
+
+    /* ADS LIST */
+    .ads-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .ad-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s;
+    }
+
+    .ad-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .ad-content {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .ad-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .ad-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ad-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .ad-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ad-status {
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 8px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-active {
+      background: rgba(52, 199, 89, 0.1);
+      color: #34c759;
+    }
+
+    .status-sold {
+      background: rgba(255, 59, 48, 0.1);
+      color: #ff3b30;
+    }
+
+    .status-expired {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+
+    .status-draft {
+      background: rgba(107, 114, 128, 0.1);
+      color: #6b7280;
+    }
+
+    .status-banned {
+      background: rgba(255, 59, 48, 0.1);
+      color: #ff3b30;
+    }
+
+    .ad-price {
+      font-size: 16px;
+      font-weight: 700;
+      color: #003cff;
+      margin-bottom: 8px;
+    }
+
+    .ad-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .ad-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ad-meta-item i {
+      font-size: 11px;
+    }
+
+    .ad-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+      flex-wrap: wrap;
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .btn-primary {
+      background: #003cff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #0028cc;
+    }
+
+    .btn-secondary {
+      background: #f0f5ff;
+      color: #003cff;
+      border: 1px solid #003cff;
+    }
+
+    .btn-secondary:hover {
+      background: #003cff;
+      color: white;
+    }
+
+    .btn-success {
+      background: #34c759;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #2aa44b;
+    }
+
+    .btn-danger {
+      background: #ff3b30;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #cc2a20;
+    }
+
+    .btn-warning {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background: #d48806;
+    }
+
+    /* ALERTS */
+    .alert {
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      display: none;
+      text-align: center;
+    }
+
+    .alert-success {
+      background: rgba(52, 199, 89, 0.1);
+      color: #34c759;
+      border-left: 4px solid #34c759;
+    }
+
+    .alert-error {
+      background: rgba(255, 59, 48, 0.1);
+      color: #ff3b30;
+      border-left: 4px solid #ff3b30;
+    }
+
+    .alert-info {
+      background: rgba(0, 60, 255, 0.1);
+      color: #003cff;
+      border-left: 4px solid #003cff;
+    }
+
+    /* LOADING */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .loading i {
+      color: #003cff;
+      font-size: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      color: #ddd;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    /* FLOATING ACTION BUTTON */
+    .fab {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background: #003cff;
+      color: white;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(0, 60, 255, 0.3);
+      cursor: pointer;
+      z-index: 90;
+      transition: all 0.2s;
+    }
+
+    .fab:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0, 60, 255, 0.4);
+    }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 16px;
+      border-top: 1px solid #eee;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #666;
+      text-decoration: none;
+      font-size: 11px;
+      gap: 4px;
+    }
+
+    .nav-item.active {
+      color: #003cff;
+    }
+
+    .nav-item i {
+      font-size: 20px;
+    }
+
+    /* MODAL */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      animation: slideUp 0.3s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 1;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-body i {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .modal-footer {
+      padding: 20px;
+      display: flex;
+      gap: 12px;
+      position: sticky;
+      bottom: 0;
+      background: white;
+      border-radius: 0 0 16px 16px;
+      border-top: 1px solid #eee;
+    }
+
+    /* Boost Badge */
+    .boost-badge {
+      background: linear-gradient(135deg, #FF9500 0%, #FF5E3A 100%);
+      color: white;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 8px;
+      white-space: nowrap;
+    }
+
+    .featured-badge {
+      background: linear-gradient(135deg, #003cff 0%, #0066ff 100%);
+      color: white;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 8px;
+      white-space: nowrap;
+    }
+
+    .urgent-badge {
+      background: linear-gradient(135deg, #ff0000 0%, #ff6b6b 100%);
+      color: white;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 8px;
+      white-space: nowrap;
+    }
+
+    .badge-container {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+
+    /* PROMOTION STATUS */
+    .promo-status {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: rgba(52, 199, 89, 0.1);
+      color: #34c759;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 380px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .ad-content {
+        flex-direction: column;
+      }
+      
+      .ad-image {
+        width: 100%;
+        height: 180px;
+      }
+      
+      .ad-actions {
+        flex-wrap: wrap;
+      }
+      
+      .btn {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+
+    /* SAFARI FIXES */
+    @supports (-webkit-touch-callout: none) {
+      .bottom-nav {
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+      }
+      
+      .fab {
+        bottom: max(80px, 80px + env(safe-area-inset-bottom));
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-content">
+      <a href="index.html" class="logo">
+        <i class="fas fa-shopping-bag"></i>
+        <span>iBlue Uganda</span>
+      </a>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="window.history.back()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-value" id="totalAds">0</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="activeAds">0</div>
+      <div class="stat-label">Active</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="soldAds">0</div>
+      <div class="stat-label">Sold</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="totalViews">0</div>
+      <div class="stat-label">Views</div>
+    </div>
+  </div>
+
+  <!-- FILTER TABS -->
+  <div class="filter-tabs">
+    <button class="filter-btn active" onclick="filterAds('all')">
+      <i class="fas fa-layer-group"></i>
+      All
+    </button>
+    <button class="filter-btn" onclick="filterAds('active')">
+      <i class="fas fa-bolt"></i>
+      Active
+    </button>
+    <button class="filter-btn" onclick="filterAds('sold')">
+      <i class="fas fa-check-circle"></i>
+      Sold
+    </button>
+    <button class="filter-btn" onclick="filterAds('expired')">
+      <i class="fas fa-clock"></i>
+      Expired
+    </button>
+    <button class="filter-btn" onclick="filterAds('draft')">
+      <i class="fas fa-edit"></i>
+      Draft
+    </button>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- ALERT -->
+    <div class="alert" id="mainAlert"></div>
+
+    <!-- ADS LIST -->
+    <div class="ads-list" id="adsContainer">
+      <!-- Ads will be loaded here -->
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <i class="fas fa-bullhorn"></i>
+      <h3>No Ads Found</h3>
+      <p>You haven't posted any ads yet</p>
+      <button class="btn btn-primary" onclick="window.location.href='post-ad.html'">
+        <i class="fas fa-plus"></i>
+        Post Your First Ad
+      </button>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading" id="loading">
+      <i class="fas fa-spinner"></i>
+    </div>
+  </div>
+
+  <!-- FLOATING ACTION BUTTON -->
+  <div class="fab" onclick="window.location.href='post-ad.html'">
+    <i class="fas fa-plus"></i>
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <i class="fas fa-home"></i>
+      Home
+    </a>
+    <a href="search.html" class="nav-item">
+      <i class="fas fa-search"></i>
+      Search
+    </a>
+    <a href="post-ad.html" class="nav-item">
+      <i class="fas fa-plus-circle"></i>
+      Post Ad
+    </a>
+    <a href="my-ads.html" class="nav-item active">
+      <i class="fas fa-list-alt"></i>
+      My Ads
+    </a>
+    <a href="profile.html" class="nav-item">
+      <i class="fas fa-user"></i>
+      Profile
+    </a>
+  </div>
+
+  <!-- DELETE MODAL -->
+  <div class="modal" id="deleteModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Delete Ad</h3>
+      </div>
+      <div class="modal-body">
+        <i class="fas fa-trash" style="color: #ff3b30;"></i>
+        <p>Are you sure you want to delete this ad?</p>
+        <p style="color: #666; font-size: 13px; margin-top: 8px;">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex: 1;">
+          Cancel
+        </button>
+        <button class="btn btn-danger" onclick="confirmDelete()" style="flex: 1;">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLD MODAL -->
+  <div class="modal" id="soldModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Mark as Sold</h3>
+      </div>
+      <div class="modal-body">
+        <i class="fas fa-check-circle" style="color: #34c759;"></i>
+        <p>Mark this ad as sold?</p>
+        <p style="color: #666; font-size: 13px; margin-top: 8px;">This will update the status to "sold" and move it to sold section.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex: 1;">
+          Cancel
+        </button>
+        <button class="btn btn-success" onclick="confirmSold()" style="flex: 1;">
+          Mark as Sold
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Supabase
+    const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
+    
+    const sb = supabase.createClient(supabaseUrl, supabaseKey);
+    
+    let currentUser = null;
+    let currentFilter = 'all';
+    let adToDelete = null;
+    let adToMarkSold = null;
+    
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', async function() {
+      const isAuthenticated = await checkAuth();
+      
+      if (!isAuthenticated) {
+        window.location.href = "login.html";
+        return;
+      }
+      
+      await loadStats();
+      await loadAds();
+    });
+
+    // Check authentication
+    async function checkAuth() {
+      try {
+        const { data: { user }, error } = await sb.auth.getUser();
+        
+        if (error || !user) {
+          return false;
+        }
+        
+        currentUser = user;
+        return true;
+        
+      } catch (error) {
+        console.error('Error checking auth:', error);
+        return false;
+      }
+    }
+
+    // Load stats
+    async function loadStats() {
+      try {
+        const { data: ads, error } = await sb
+          .from("ads")
+          .select("status, view_count")
+          .eq("seller_id", currentUser.id);
+
+        if (error) throw error;
+
+        let totalAds = 0;
+        let activeAds = 0;
+        let soldAds = 0;
+        let totalViews = 0;
+        
+        if (ads && ads.length > 0) {
+          totalAds = ads.length;
+          activeAds = ads.filter(ad => ad.status === 'active').length;
+          soldAds = ads.filter(ad => ad.status === 'sold').length;
+          totalViews = ads.reduce((sum, ad) => sum + (ad.view_count || 0), 0);
+        }
+        
+        document.getElementById('totalAds').textContent = totalAds;
+        document.getElementById('activeAds').textContent = activeAds;
+        document.getElementById('soldAds').textContent = soldAds;
+        document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    }
+
+    // Load ads
+    async function loadAds() {
+      const container = document.getElementById('adsContainer');
+      const loading = document.getElementById('loading');
+      const emptyState = document.getElementById('emptyState');
+      
+      container.innerHTML = '';
+      loading.style.display = 'block';
+      emptyState.style.display = 'none';
+
+      try {
+        let query = sb
+          .from("ads")
+          .select("*")
+          .eq("seller_id", currentUser.id)
+          .order("created_at", { ascending: false });
+
+        if (currentFilter !== 'all') {
+          query = query.eq("status", currentFilter);
+        }
+
+        const { data: ads, error } = await query;
+
+        if (error) throw error;
+
+        if (!ads || ads.length === 0) {
+          emptyState.style.display = 'block';
+          return;
+        }
+
+        // Load promotions for all ads
+        const adIds = ads.map(ad => ad.id);
+        const { data: promotions, error: promoError } = await sb
+          .from("ad_promotions")
+          .select("*")
+          .in("ad_id", adIds)
+          .eq("is_active", true);
+        
+        if (promoError) {
+          console.error('Error loading promotions:', promoError);
+        }
+
+        // Render ads
+        ads.forEach(ad => {
+          const card = createAdCard(ad, promotions);
+          container.appendChild(card);
+        });
+
+      } catch (error) {
+        console.error('Error loading ads:', error);
+        showAlert('Error loading ads', 'error');
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+
+    // Create ad card
+    function createAdCard(ad, promotions) {
+      const card = document.createElement('div');
+      card.className = 'ad-card';
+      card.dataset.id = ad.id;
+      
+      // Get first image
+      const imageUrl = ad.image_urls?.[0] || 'https://via.placeholder.com/300x200?text=No+Image';
+      
+      // Format price
+      const price = ad.price ? `UGX ${parseInt(ad.price).toLocaleString()}` : 'Price on request';
+      
+      // Format date
+      const date = new Date(ad.created_at).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+      
+      // Status badge
+      const statusMap = {
+        'active': { class: 'status-active', label: 'Active', icon: 'bolt' },
+        'sold': { class: 'status-sold', label: 'Sold', icon: 'check-circle' },
+        'expired': { class: 'status-expired', label: 'Expired', icon: 'clock' },
+        'draft': { class: 'status-draft', label: 'Draft', icon: 'edit' },
+        'banned': { class: 'status-banned', label: 'Banned', icon: 'ban' }
+      };
+      
+      const status = statusMap[ad.status] || { class: 'status-draft', label: 'Unknown', icon: 'question-circle' };
+      
+      // Get active promotions for this ad
+      const adPromotions = promotions ? promotions.filter(p => p.ad_id === ad.id && p.is_active === true) : [];
+      
+      // Create promotion badges
+      let promotionBadges = '';
+      let promotionStatus = '';
+      const now = new Date();
+      
+      adPromotions.forEach(promo => {
+        const endsAt = new Date(promo.ends_at);
+        if (endsAt > now) {
+          const remainingDays = Math.ceil((endsAt - now) / (1000 * 60 * 60 * 24));
+          
+          if (promo.promotion_type === 'featured') {
+            promotionBadges += '<span class="featured-badge"><i class="fas fa-star"></i> Featured</span>';
+            if (remainingDays > 0) {
+              promotionStatus += `<div class="promo-status"><i class="fas fa-clock"></i> Featured: ${remainingDays} days left</div>`;
+            }
+          } else if (promo.promotion_type === 'boost') {
+            promotionBadges += '<span class="boost-badge"><i class="fas fa-rocket"></i> Boosted</span>';
+            if (remainingDays > 0) {
+              promotionStatus += `<div class="promo-status"><i class="fas fa-clock"></i> Boost: ${remainingDays} days left</div>`;
+            }
+          } else if (promo.promotion_type === 'urgent') {
+            promotionBadges += '<span class="urgent-badge"><i class="fas fa-fire"></i> Urgent</span>';
+            if (remainingDays > 0) {
+              promotionStatus += `<div class="promo-status"><i class="fas fa-clock"></i> Urgent: ${remainingDays} days left</div>`;
+            }
+          }
+        }
+      });
+      
+      // Also check ads table for boost/featured status
+      if (ad.boost_until) {
+        const boostUntil = new Date(ad.boost_until);
+        if (boostUntil > now) {
+          const remainingDays = Math.ceil((boostUntil - now) / (1000 * 60 * 60 * 24));
+          if (!promotionBadges.includes('Boosted')) {
+            promotionBadges += '<span class="boost-badge"><i class="fas fa-rocket"></i> Boosted</span>';
+          }
+          if (remainingDays > 0 && !promotionStatus.includes('Boost')) {
+            promotionStatus += `<div class="promo-status"><i class="fas fa-clock"></i> Boost: ${remainingDays} days left</div>`;
+          }
+        }
+      }
+      
+      if (ad.is_featured && ad.featured_until) {
+        const featuredUntil = new Date(ad.featured_until);
+        if (featuredUntil > now) {
+          const remainingDays = Math.ceil((featuredUntil - now) / (1000 * 60 * 60 * 24));
+          if (!promotionBadges.includes('Featured')) {
+            promotionBadges += '<span class="featured-badge"><i class="fas fa-star"></i> Featured</span>';
+          }
+          if (remainingDays > 0 && !promotionStatus.includes('Featured')) {
+            promotionStatus += `<div class="promo-status"><i class="fas fa-clock"></i> Featured: ${remainingDays} days left</div>`;
+          }
+        }
+      }
+      
+      const badgesContainer = promotionBadges ? 
+        `<div class="badge-container">${promotionBadges}</div>` : '';
+
+      card.innerHTML = `
+        <div class="ad-content">
+          <img src="${imageUrl}" class="ad-image" alt="${ad.title}" onerror="this.src='https://via.placeholder.com/300x200?text=Image+Not+Found'">
+          
+          <div class="ad-info">
+            <div class="ad-header">
+              <div class="ad-title">${ad.title || 'Untitled Ad'}</div>
+              <div class="ad-status ${status.class}">
+                <i class="fas fa-${status.icon}"></i> ${status.label}
+              </div>
+            </div>
+            
+            ${badgesContainer}
+            ${promotionStatus}
+            
+            <div class="ad-price">${price}</div>
+            
+            <div class="ad-meta">
+              <div class="ad-meta-item">
+                <i class="fas fa-eye"></i>
+                ${ad.view_count || 0} views
+              </div>
+              <div class="ad-meta-item">
+                <i class="fas fa-calendar"></i>
+                ${date}
+              </div>
+            </div>
+            
+            <div class="ad-actions">
+              <button class="btn btn-secondary btn-sm" onclick="viewAd(${ad.id})">
+                <i class="fas fa-eye"></i>
+                View
+              </button>
+              ${ad.status === 'active' ? `
+                <button class="btn btn-warning btn-sm" onclick="boostAd(${ad.id})">
+                  <i class="fas fa-rocket"></i>
+                  Promote
+                </button>
+              ` : ''}
+              ${ad.status !== 'sold' && ad.status !== 'banned' ? `
+                <button class="btn btn-primary btn-sm" onclick="editAd(${ad.id})">
+                  <i class="fas fa-edit"></i>
+                  Edit
+                </button>
+                <button class="btn btn-success btn-sm" onclick="showSoldModal(${ad.id})">
+                  <i class="fas fa-check-circle"></i>
+                  Sold
+                </button>
+              ` : ''}
+              <button class="btn btn-danger btn-sm" onclick="showDeleteModal(${ad.id})">
+                <i class="fas fa-trash"></i>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // Filter ads
+    function filterAds(filter) {
+      // Update active filter button
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Set filter and reload ads
+      currentFilter = filter;
+      loadAds();
+    }
+
+    // View ad
+    function viewAd(id) {
+      window.location.href = `ad-detail.html?id=${id}`;
+    }
+
+    // Edit ad
+    function editAd(id) {
+      window.location.href = `edit-ad.html?id=${id}`;
+    }
+
+    // Boost ad - Redirect to boost-ad.html page
+    function boostAd(id) {
+      window.location.href = `boost-ad.html?ad=${id}`;
+    }
+
+    // Show delete modal
+    function showDeleteModal(id) {
+      adToDelete = id;
+      document.getElementById('deleteModal').style.display = 'flex';
+    }
+
+    // Show sold modal
+    function showSoldModal(id) {
+      adToMarkSold = id;
+      document.getElementById('soldModal').style.display = 'flex';
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('deleteModal').style.display = 'none';
+      document.getElementById('soldModal').style.display = 'none';
+      adToDelete = null;
+      adToMarkSold = null;
+    }
+
+    // Confirm delete
+    async function confirmDelete() {
+      if (!adToDelete) return;
+
+      try {
+        const { error } = await sb
+          .from("ads")
+          .delete()
+          .eq("id", adToDelete)
+          .eq("seller_id", currentUser.id);
+
+        if (error) throw error;
+
+        showAlert('Ad deleted successfully', 'success');
+        
+        // Reload ads and stats
+        await loadStats();
+        await loadAds();
+        
+      } catch (error) {
+        console.error('Delete error:', error);
+        showAlert('Error deleting ad', 'error');
+      } finally {
+        closeModal();
+      }
+    }
+
+    // Confirm sold
+    async function confirmSold() {
+      if (!adToMarkSold) return;
+
+      try {
+        const { error } = await sb
+          .from("ads")
+          .update({ 
+            status: 'sold',
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", adToMarkSold)
+          .eq("seller_id", currentUser.id);
+
+        if (error) throw error;
+
+        showAlert('Ad marked as sold', 'success');
+        
+        // Reload ads and stats
+        await loadStats();
+        await loadAds();
+        
+      } catch (error) {
+        console.error('Sold error:', error);
+        showAlert('Error marking ad as sold', 'error');
+      } finally {
+        closeModal();
+      }
+    }
+
+    // Show alert
+    function showAlert(message, type) {
+      const alertEl = document.getElementById('mainAlert');
+      alertEl.textContent = message;
+      alertEl.className = `alert alert-${type}`;
+      alertEl.style.display = 'block';
+      
+      // Hide after 3 seconds
+      setTimeout(() => {
+        alertEl.style.display = 'none';
+      }, 3000);
+    }
+
+    // Prevent form resubmission
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, window.location.href);
+    }
+  </script>
+</body>
+</html>

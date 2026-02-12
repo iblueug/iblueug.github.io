@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Ad Details – iBlue Uganda Marketplace</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #475569;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --light-gray: #e2e8f0;
+      --border: #cbd5e1;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      background: #f1f5f9;
+      color: var(--dark);
+      padding-bottom: 80px; /* Space for action bar */
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      height: 60px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--dark);
+      font-size: 1.2rem;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+
+    .header-title {
+      flex: 1;
+      font-size: 1.1rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      background: var(--light);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--dark);
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      transform: scale(0.95);
+    }
+
+    .home-btn {
+      background: var(--primary);
+      color: white !important;
+    }
+
+    .home-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-top: 60px;
+      background: white;
+    }
+
+    /* Image Gallery */
+    .image-gallery {
+      position: relative;
+      background: #000;
+    }
+
+    .main-image {
+      width: 100%;
+      height: 300px;
+      object-fit: contain;
+      background: #f8fafc;
+      transition: opacity 0.3s;
+    }
+
+    .image-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      z-index: 10;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+
+    .image-nav:hover {
+      opacity: 1;
+    }
+
+    .prev-btn { left: 10px; }
+    .next-btn { right: 10px; }
+
+    .image-thumbnails {
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      background: #f8fafc;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary) #f1f1f1;
+    }
+
+    .image-thumbnails::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .image-thumbnails::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+
+    .image-thumbnails::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 3px;
+    }
+
+    .thumbnail {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .thumbnail:hover {
+      opacity: 0.8;
+    }
+
+    .thumbnail.active {
+      opacity: 1;
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    .image-count {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      z-index: 10;
+    }
+
+    /* Ad Details */
+    .ad-details {
+      padding: 20px;
+    }
+
+    .ad-header {
+      margin-bottom: 16px;
+    }
+
+    .ad-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .ad-price {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .ad-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9rem;
+      color: var(--gray);
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-right: 6px;
+    }
+
+    .badge-featured {
+      background: var(--warning);
+      color: white;
+    }
+
+    .badge-negotiable {
+      background: var(--success);
+      color: white;
+    }
+
+    .badge-condition {
+      background: var(--light-gray);
+      color: var(--dark);
+    }
+
+    .badge-urgent {
+      background: var(--danger);
+      color: white;
+    }
+
+    .badge-boosted {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Info Sections */
+    .info-section {
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title i {
+      color: var(--primary);
+    }
+
+    .info-grid {
+      background: var(--light);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .info-value {
+      color: var(--dark);
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .description {
+      background: var(--light);
+      border-radius: var(--radius);
+      padding: 16px;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      white-space: pre-line;
+    }
+
+    /* Seller Info */
+    .seller-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .seller-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .seller-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .seller-info h3 {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
+    .seller-info p {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .seller-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      text-align: center;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: var(--light);
+      border-radius: var(--radius);
+    }
+
+    .stat-item .value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-item .label {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+
+    /* Action Bar */
+    .action-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      gap: 12px;
+      z-index: 1000;
+    }
+
+    .btn-save {
+      width: 50px;
+      height: 50px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--dark);
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+    }
+
+    .btn-save.active {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .btn-chat,
+    .btn-call {
+      flex: 1;
+      height: 50px;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+
+    .btn-chat {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-chat:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-call {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-call:hover {
+      background: #15803d;
+    }
+
+    /* Similar Ads */
+    .similar-ads {
+      padding: 20px;
+      background: var(--light);
+    }
+
+    .similar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .similar-header h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .similar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .similar-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
+    .similar-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .similar-image {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+
+    .similar-info {
+      padding: 10px;
+    }
+
+    .similar-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .similar-price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Loading States */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(37, 99, 235, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Error State */
+    .error-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+    }
+
+    .error-state i {
+      font-size: 3rem;
+      color: var(--light-gray);
+      margin-bottom: 16px;
+    }
+
+    .error-state h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      color: var(--dark);
+    }
+
+    .error-state p {
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+
+    /* Modals */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: var(--gray);
+      cursor: pointer;
+    }
+
+    .share-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .share-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: var(--dark);
+    }
+
+    .share-option:hover {
+      background: var(--light);
+      transform: translateY(-2px);
+    }
+
+    .share-option i {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    .share-option.facebook i { color: #1877F2; }
+    .share-option.whatsapp i { color: #25D366; }
+    .share-option.twitter i { color: #1DA1F2; }
+    .share-option.copy i { color: var(--primary); }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      padding: 12px;
+      background: var(--light);
+      color: var(--dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Report Button */
+    .report-btn {
+      position: fixed;
+      top: 70px;
+      right: 16px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      z-index: 1001;
+    }
+
+    /* Notifications */
+    .notification-toast {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      left: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 3000;
+      animation: slideIn 0.3s ease;
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-20px); opacity: 0; }
+    }
+
+    /* Responsive */
+    @media (min-width: 768px) {
+      .main-image {
+        height: 400px;
+      }
+      
+      .ad-details {
+        padding: 30px;
+      }
+      
+      .action-bar {
+        max-width: 700px;
+        margin: 0 auto;
+        border-radius: var(--radius) var(--radius) 0 0;
+        border: 1px solid var(--border);
+        border-bottom: none;
+      }
+      
+      .similar-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+      }
+
+      .notification-toast {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+    }
+
+    /* Utilities */
+    .hidden {
+      display: none !important;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .mb-2 { margin-bottom: 8px; }
+    .mb-3 { margin-bottom: 12px; }
+    .mb-4 { margin-bottom: 16px; }
+    .mt-2 { margin-top: 8px; }
+    .mt-3 { margin-top: 12px; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <button class="back-btn" onclick="window.history.back()">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+  <div class="header-title" id="headerTitle">Ad Details</div>
+  <div class="header-actions">
+    <button class="icon-btn home-btn" onclick="window.location.href='index.html'">
+      <i class="fas fa-home"></i>
+    </button>
+    <button class="icon-btn" onclick="openShareModal()">
+      <i class="fas fa-share-alt"></i>
+    </button>
+    <button class="icon-btn" onclick="reportAd()">
+      <i class="fas fa-flag"></i>
+    </button>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main>
+  <!-- Loading State -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state hidden" id="errorState">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3>Ad Not Found</h3>
+    <p>The ad you're looking for doesn't exist or has been removed.</p>
+    <button class="btn-chat" onclick="window.location.href='index.html'">
+      <i class="fas fa-home"></i> Browse Ads
+    </button>
+  </div>
+
+  <!-- Ad Content -->
+  <div id="adContent" class="hidden">
+    <!-- Image Gallery -->
+    <div class="image-gallery">
+      <img class="main-image" id="mainImage" alt="Ad Image">
+      <button class="image-nav prev-btn hidden" id="prevBtn" onclick="prevImage()">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="image-nav next-btn hidden" id="nextBtn" onclick="nextImage()">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      <div class="image-count" id="imageCount"></div>
+      <div class="image-thumbnails" id="thumbnails"></div>
+    </div>
+
+    <!-- Ad Details -->
+    <section class="ad-details">
+      <div class="ad-header">
+        <h1 class="ad-title" id="adTitle"></h1>
+        <div class="ad-price" id="adPrice"></div>
+        <div class="ad-meta">
+          <div id="badges"></div>
+          <span id="adTime"></span>
+        </div>
+      </div>
+
+      <!-- Basic Info -->
+      <div class="info-section">
+        <h3 class="section-title"><i class="fas fa-info-circle"></i> Basic Information</h3>
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="info-label">Condition</span>
+            <span class="info-value" id="condition"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Category</span>
+            <span class="info-value" id="category"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Location</span>
+            <span class="info-value" id="location"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Posted</span>
+            <span class="info-value" id="postedDate"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Views</span>
+            <span class="info-value" id="views"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="info-section">
+        <h3 class="section-title"><i class="fas fa-align-left"></i> Description</h3>
+        <div class="description" id="description"></div>
+      </div>
+
+      <!-- Seller Information -->
+      <div class="info-section">
+        <h3 class="section-title"><i class="fas fa-user"></i> Seller Information</h3>
+        <div class="seller-card">
+          <div class="seller-header">
+            <div class="seller-avatar" id="sellerAvatar">S</div>
+            <div class="seller-info">
+              <h3 id="sellerName"></h3>
+              <p id="sellerLocation"></p>
+              <p><i class="fas fa-clock"></i> <span id="memberSince"></span></p>
+            </div>
+          </div>
+          <div class="seller-stats">
+            <div class="stat-item">
+              <div class="value" id="sellerAds">0</div>
+              <div class="label">Ads</div>
+            </div>
+            <div class="stat-item">
+              <div class="value" id="sellerRating">4.8</div>
+              <div class="label">Rating</div>
+            </div>
+            <div class="stat-item">
+              <div class="value" id="responseRate">90%</div>
+              <div class="label">Response</div>
+            </div>
+          </div>
+          <div class="info-grid">
+            <div class="info-row">
+              <span class="info-label"><i class="fas fa-phone"></i> Phone</span>
+              <span class="info-value" id="sellerPhone"></span>
+            </div>
+            <div class="info-row">
+              <span class="info-label"><i class="fas fa-envelope"></i> Email</span>
+              <span class="info-value" id="sellerEmail"></span>
+            </div>
+            <div class="info-row">
+              <span class="info-label"><i class="fas fa-shield-alt"></i> Status</span>
+              <span class="info-value" id="sellerStatus"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Similar Ads -->
+    <section class="similar-ads">
+      <div class="similar-header">
+        <h2>Similar Ads</h2>
+        <a href="#" style="color: var(--primary); text-decoration: none; font-size: 0.95rem;">See all</a>
+      </div>
+      <div class="similar-grid" id="similarAds">
+        <!-- Similar ads will be loaded here -->
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Action Bar -->
+<div class="action-bar" id="actionBar">
+  <button class="btn-save" id="saveBtn" onclick="toggleSave()">
+    <i class="far fa-heart"></i>
+  </button>
+  <button class="btn-chat" onclick="startChat()">
+    <i class="fas fa-comment"></i> Chat Now
+  </button>
+  <button class="btn-call" onclick="callSeller()">
+    <i class="fas fa-phone"></i> Call Seller
+  </button>
+</div>
+
+<!-- Phone Modal -->
+<div class="modal" id="phoneModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Contact Seller</h3>
+      <button class="modal-close" onclick="closePhoneModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <p id="phoneNumber" style="font-size: 1.2rem; font-weight: 600; text-align: center; margin: 20px 0;"></p>
+    <p style="color: var(--gray); text-align: center; margin-bottom: 20px;">
+      Tap below to call or WhatsApp the seller
+    </p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="copyPhone()">
+        <i class="far fa-copy"></i> Copy
+      </button>
+      <button class="btn-chat" onclick="openWhatsApp()">
+        <i class="fab fa-whatsapp"></i> WhatsApp
+      </button>
+      <button class="btn-call" onclick="makeCall()">
+        <i class="fas fa-phone"></i> Call
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal" id="shareModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Share This Ad</h3>
+      <button class="modal-close" onclick="closeShareModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <p style="color: var(--gray); text-align: center; margin-bottom: 20px;">
+      Share this ad with your friends
+    </p>
+    <div class="share-options">
+      <a href="#" class="share-option facebook" onclick="shareOnFacebook(event)">
+        <i class="fab fa-facebook"></i>
+        <span>Facebook</span>
+      </a>
+      <a href="#" class="share-option whatsapp" onclick="shareOnWhatsApp(event)">
+        <i class="fab fa-whatsapp"></i>
+        <span>WhatsApp</span>
+      </a>
+      <a href="#" class="share-option twitter" onclick="shareOnTwitter(event)">
+        <i class="fab fa-twitter"></i>
+        <span>Twitter</span>
+      </a>
+      <a href="#" class="share-option copy" onclick="copyLink(event)">
+        <i class="fas fa-copy"></i>
+        <span>Copy Link</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ============================================
+  // GLOBAL CONFIGURATION
+  // ============================================
+  const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
+  const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  // Get ad ID from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const adId = urlParams.get('id');
+
+  // Global variables
+  let currentAd = null;
+  let currentImages = [];
+  let currentImageIndex = 0;
+  let sellerPhone = '';
+  let sellerWhatsApp = '';
+  let isSaved = false;
+  let currentUser = null;
+  let currentAdPromotions = [];
+
+  // DOM Elements
+  const loadingEl = document.getElementById('loading');
+  const errorEl = document.getElementById('errorState');
+  const adContentEl = document.getElementById('adContent');
+  const actionBarEl = document.getElementById('actionBar');
+  const saveBtn = document.getElementById('saveBtn');
+  const similarAdsEl = document.getElementById('similarAds');
+  const mainImageEl = document.getElementById('mainImage');
+
+  // ============================================
+  // INITIALIZATION
+  // ============================================
+  document.addEventListener('DOMContentLoaded', async function() {
+    if (!adId) {
+      showError();
+      return;
+    }
+    
+    // Check authentication first
+    await checkAuth();
+    // Load ad details
+    await loadAdDetails();
+    // Record view AFTER ad is loaded
+    await recordAdView();
+  });
+
+  // ============================================
+  // AUTHENTICATION
+  // ============================================
+  async function checkAuth() {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) {
+        const { data: profile } = await sb
+          .from('profiles')
+          .select('id, full_name')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (profile) {
+          currentUser = {
+            id: profile.id,
+            name: profile.full_name || 'User'
+          };
+          // Check if ad is saved for this user
+          await checkIfSaved();
+        }
+      }
+    } catch (error) {
+      console.error('Auth error:', error);
+    }
+  }
+
+  // ============================================
+  // AD LOADING
+  // ============================================
+  async function loadAdDetails() {
+    try {
+      // Fetch ad with seller info and promotions
+      const { data: ad, error } = await sb
+        .from('ads')
+        .select(`
+          *,
+          main_category:categories!ads_category_id_fkey(id, name, slug, icon),
+          sub_category:categories!ads_subcategory_id_fkey(id, name, slug, icon),
+          profiles!ads_seller_id_fkey(*),
+          ad_promotions!ad_promotions_ad_id_fkey(promotion_type, is_active, ends_at)
+        `)
+        .eq('id', adId)
+        .single();
+
+      if (error || !ad) {
+        throw new Error('Ad not found');
+      }
+
+      currentAd = ad;
+      currentAdPromotions = ad.ad_promotions || [];
+      
+      // Update header title
+      document.getElementById('headerTitle').textContent = ad.title.substring(0, 30) + (ad.title.length > 30 ? '...' : '');
+      
+      // Load images
+      loadImages(ad.image_urls || []);
+      
+      // Render ad details
+      renderAdDetails(ad);
+      
+      // Load similar ads
+      loadSimilarAds(ad.category_id);
+      
+      // Show content
+      loadingEl.classList.add('hidden');
+      adContentEl.classList.remove('hidden');
+      actionBarEl.classList.remove('hidden');
+      
+    } catch (error) {
+      console.error('Error loading ad:', error);
+      showError();
+    }
+  }
+
+  // ============================================
+  // IMAGE GALLERY
+  // ============================================
+  function loadImages(imageUrls) {
+    currentImages = imageUrls;
+    
+    if (currentImages.length === 0) {
+      currentImages = ['https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&auto=format&fit=crop'];
+    }
+    
+    // Set initial image
+    updateImage(0);
+    
+    // Show/hide navigation buttons
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    if (currentImages.length > 1) {
+      prevBtn.classList.remove('hidden');
+      nextBtn.classList.remove('hidden');
+    }
+    
+    // Update image count
+    document.getElementById('imageCount').textContent = `${currentImageIndex + 1}/${currentImages.length}`;
+    
+    // Create thumbnails
+    const thumbnailsContainer = document.getElementById('thumbnails');
+    thumbnailsContainer.innerHTML = '';
+    
+    currentImages.forEach((imageUrl, index) => {
+      const thumbnail = document.createElement('img');
+      thumbnail.className = `thumbnail ${index === 0 ? 'active' : ''}`;
+      thumbnail.src = imageUrl;
+      thumbnail.alt = `Image ${index + 1}`;
+      thumbnail.onclick = () => updateImage(index);
+      thumbnail.onerror = function() {
+        this.src = 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=200&auto=format&fit=crop';
+      };
+      thumbnailsContainer.appendChild(thumbnail);
+    });
+  }
+
+  function updateImage(index) {
+    if (index < 0 || index >= currentImages.length) return;
+    
+    currentImageIndex = index;
+    const imageUrl = currentImages[index];
+    
+    // Add fade effect
+    mainImageEl.style.opacity = '0.7';
+    
+    setTimeout(() => {
+      // Update main image
+      mainImageEl.src = imageUrl;
+      mainImageEl.onerror = function() {
+        this.src = 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&auto=format&fit=crop';
+      };
+      mainImageEl.style.opacity = '1';
+      
+      // Update thumbnails
+      const thumbnails = document.querySelectorAll('.thumbnail');
+      thumbnails.forEach((thumbnail, i) => {
+        thumbnail.classList.toggle('active', i === index);
+        
+        // Scroll thumbnail into view if not visible
+        if (i === index) {
+          thumbnail.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'center'
+          });
+        }
+      });
+      
+      // Update count
+      document.getElementById('imageCount').textContent = `${index + 1}/${currentImages.length}`;
+    }, 150);
+  }
+
+  function nextImage() {
+    const nextIndex = (currentImageIndex + 1) % currentImages.length;
+    updateImage(nextIndex);
+  }
+
+  function prevImage() {
+    const prevIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length;
+    updateImage(prevIndex);
+  }
+
+  // ============================================
+  // RENDER AD DETAILS
+  // ============================================
+  function renderAdDetails(ad) {
+    // Title and price
+    document.getElementById('adTitle').textContent = ad.title;
+    
+    // Format price
+    const price = ad.price ? formatPrice(ad.price, ad.currency) : 'Price on request';
+    document.getElementById('adPrice').textContent = price;
+    
+    // Check for promotions
+    const hasActivePromotion = currentAdPromotions.some(promo => 
+      promo.is_active && new Date(promo.ends_at) > new Date()
+    );
+    
+    const featuredPromotion = currentAdPromotions.find(promo => 
+      promo.promotion_type === 'featured' && promo.is_active && new Date(promo.ends_at) > new Date()
+    );
+    
+    const urgentPromotion = currentAdPromotions.find(promo => 
+      promo.promotion_type === 'urgent' && promo.is_active && new Date(promo.ends_at) > new Date()
+    );
+
+    const boostPromotion = currentAdPromotions.find(promo => 
+      promo.promotion_type === 'boost' && promo.is_active && new Date(promo.ends_at) > new Date()
+    );
+    
+    // Badges
+    const badgesEl = document.getElementById('badges');
+    let badges = [];
+    
+    if (featuredPromotion || ad.is_featured) {
+      badges.push('<span class="badge badge-featured">Featured</span>');
+    }
+    if (urgentPromotion) {
+      badges.push('<span class="badge badge-urgent">Urgent</span>');
+    }
+    if (boostPromotion) {
+      badges.push('<span class="badge badge-boosted">Boosted</span>');
+    }
+    if (ad.is_negotiable) {
+      badges.push('<span class="badge badge-negotiable">Negotiable</span>');
+    }
+    if (ad.condition && ad.condition !== 'unknown') {
+      badges.push(`<span class="badge badge-condition">${ad.condition}</span>`);
+    }
+    
+    badgesEl.innerHTML = badges.join(' ');
+    
+    // Time ago
+    const timeAgo = getTimeAgo(new Date(ad.created_at));
+    document.getElementById('adTime').textContent = `• ${timeAgo}`;
+    
+    // Determine which category to show
+    const mainCategory = ad.main_category?.name || 'Uncategorized';
+    const subCategory = ad.sub_category?.name;
+    const categoryDisplay = subCategory ? `${mainCategory} › ${subCategory}` : mainCategory;
+    
+    // Basic info
+    document.getElementById('condition').textContent = ad.condition ? ad.condition.charAt(0).toUpperCase() + ad.condition.slice(1) : 'Not specified';
+    document.getElementById('category').textContent = categoryDisplay;
+    document.getElementById('location').textContent = `${ad.district || 'Unknown'}, ${ad.region || 'Uganda'}`;
+    document.getElementById('postedDate').textContent = formatDate(ad.created_at);
+    document.getElementById('views').textContent = (ad.view_count || 0).toLocaleString();
+    
+    // Description with line breaks
+    const description = ad.description || 'No description provided.';
+    document.getElementById('description').textContent = description;
+    
+    // Seller info
+    const seller = ad.profiles || {};
+    sellerPhone = ad.contact_phone || seller.phone || '';
+    sellerWhatsApp = ad.contact_whatsapp || '';
+    
+    // Avatar initials
+    const avatarEl = document.getElementById('sellerAvatar');
+    if (seller.full_name) {
+      const initials = seller.full_name.split(' ').map(n => n[0]).join('').toUpperCase();
+      avatarEl.textContent = initials.substring(0, 2);
+      
+      // Set avatar background based on seller name
+      const colors = ['#2563eb', '#dc2626', '#16a34a', '#f59e0b', '#8b5cf6'];
+      const hash = seller.full_name.split('').reduce((acc, char) => char.charCodeAt(0) + acc, 0);
+      avatarEl.style.background = colors[hash % colors.length];
+    }
+    
+    document.getElementById('sellerName').textContent = seller.full_name || 'Anonymous Seller';
+    document.getElementById('sellerLocation').textContent = seller.location || 'Uganda';
+    document.getElementById('memberSince').textContent = seller.created_at ? `Member since ${formatDate(seller.created_at, true)}` : 'New member';
+    document.getElementById('sellerAds').textContent = seller.total_ads || 0;
+    
+    // Phone and email - respect privacy settings
+    const showPhone = ad.show_profile_phone !== false;
+    let phoneDisplay = 'Not shared';
+    if (showPhone && sellerPhone) {
+      // Show partial phone number for privacy
+      phoneDisplay = sellerPhone.length > 4 ? '•••• ' + sellerPhone.slice(-3) : sellerPhone;
+    }
+    
+    const emailDisplay = seller.email ? '••••@' + seller.email.split('@')[1] : 'Not shared';
+    
+    document.getElementById('sellerPhone').textContent = phoneDisplay;
+    document.getElementById('sellerEmail').textContent = emailDisplay;
+    
+    // Seller status
+    document.getElementById('sellerStatus').innerHTML = seller.is_verified 
+      ? '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> Verified</span>'
+      : '<span style="color: var(--gray);"><i class="fas fa-user"></i> Unverified</span>';
+  }
+
+  // ============================================
+  // CHAT FUNCTIONALITY - FIXED
+  // ============================================
+  async function startChat() {
+    try {
+      if (!currentUser) {
+        window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+        return;
+      }
+
+      // Don't allow chatting with yourself
+      if (currentUser.id === currentAd.seller_id) {
+        showNotification('This is your own ad');
+        return;
+      }
+      
+      // Check if there's already an existing message/conversation
+      const { data: existingMessage } = await sb
+        .from('messages')
+        .select('id')
+        .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${currentAd.seller_id}),and(sender_id.eq.${currentAd.seller_id},receiver_id.eq.${currentUser.id})`)
+        .eq('ad_id', adId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      let messageId;
+      
+      if (existingMessage) {
+        // Use existing conversation
+        messageId = existingMessage.id;
+      } else {
+        // Create a new message to start the conversation
+        const { data: newMessage, error } = await sb
+          .from('messages')
+          .insert({
+            sender_id: currentUser.id,
+            receiver_id: currentAd.seller_id,
+            ad_id: parseInt(adId),
+            content: `Hello! I'm interested in your ad: ${currentAd.title}`,
+            is_read: false,
+            created_at: new Date().toISOString()
+          })
+          .select()
+          .single();
+        
+        if (error) throw error;
+        messageId = newMessage.id;
+      }
+      
+      // Redirect to messages page with the chat ID
+      window.location.href = `messages.html?id=${messageId}`;
+      
+    } catch (error) {
+      console.error('Error starting chat:', error);
+      showNotification('Error starting chat. Please try again.');
+    }
+  }
+
+  // ============================================
+  // VIEW TRACKING
+  // ============================================
+  async function recordAdView() {
+    try {
+      // Only record views for active ads
+      if (!currentAd || currentAd.status !== 'active') {
+        return;
+      }
+      
+      // Get IP address
+      let userIp = 'unknown';
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        if (response.ok) {
+          const data = await response.json();
+          userIp = data.ip;
+        }
+      } catch (ipError) {
+        console.log('IP detection failed');
+      }
+      
+      // Record view in ad_views table
+      const { error: viewError } = await sb
+        .from('ad_views')
+        .insert({
+          ad_id: parseInt(adId),
+          viewer_id: currentUser?.id || null,
+          ip_address: userIp,
+          user_agent: navigator.userAgent,
+          viewed_at: new Date().toISOString()
+        });
+      
+      if (viewError) {
+        console.error('Error recording view:', viewError);
+      }
+      
+      // Increment view count
+      await incrementAdViewCount(adId);
+      
+    } catch (error) {
+      console.error('Error in recordAdView:', error);
+    }
+  }
+
+  async function incrementAdViewCount(adId) {
+    try {
+      // Try to call the PostgreSQL function
+      const { data, error } = await sb.rpc('increment_ad_view_count', {
+        ad_id_param: parseInt(adId)
+      });
+      
+      if (error) {
+        console.error('Error incrementing view count via RPC:', error);
+        // Fallback to manual update
+        await manualIncrementViewCount(adId);
+      }
+      
+    } catch (error) {
+      console.error('View count increment failed:', error);
+    }
+  }
+
+  async function manualIncrementViewCount(adId) {
+    try {
+      // Fallback method
+      const { data: ad, error: fetchError } = await sb
+        .from('ads')
+        .select('view_count')
+        .eq('id', parseInt(adId))
+        .single();
+      
+      if (fetchError) {
+        console.error('Error fetching ad:', fetchError);
+        return;
+      }
+      
+      const newViewCount = (ad.view_count || 0) + 1;
+      
+      const { error: updateError } = await sb
+        .from('ads')
+        .update({ 
+          view_count: newViewCount,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', parseInt(adId));
+      
+      if (updateError) {
+        console.error('Error updating view count manually:', updateError);
+      }
+      
+    } catch (error) {
+      console.error('Manual view count increment failed:', error);
+    }
+  }
+
+  // ============================================
+  // SAVED ADS
+  // ============================================
+  async function checkIfSaved() {
+    try {
+      if (!currentUser) return;
+      
+      const { data: saved, error } = await sb
+        .from('saved_ads')
+        .select('id')
+        .eq('user_id', currentUser.id)
+        .eq('ad_id', adId)
+        .single();
+      
+      if (saved && !error) {
+        isSaved = true;
+        saveBtn.innerHTML = '<i class="fas fa-heart"></i>';
+        saveBtn.classList.add('active');
+      }
+    } catch (error) {
+      console.log('Ad not saved or error:', error);
+    }
+  }
+
+  async function toggleSave() {
+    try {
+      if (!currentUser) {
+        window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+        return;
+      }
+      
+      if (isSaved) {
+        // Remove from saved
+        const { error } = await sb
+          .from('saved_ads')
+          .delete()
+          .eq('user_id', currentUser.id)
+          .eq('ad_id', adId);
+        
+        if (!error) {
+          isSaved = false;
+          saveBtn.innerHTML = '<i class="far fa-heart"></i>';
+          saveBtn.classList.remove('active');
+          showNotification('Removed from saved ads');
+        }
+      } else {
+        // Add to saved
+        const { error } = await sb
+          .from('saved_ads')
+          .upsert({
+            user_id: currentUser.id,
+            ad_id: parseInt(adId)
+          }, {
+            onConflict: 'user_id,ad_id'
+          });
+        
+        if (!error) {
+          isSaved = true;
+          saveBtn.innerHTML = '<i class="fas fa-heart"></i>';
+          saveBtn.classList.add('active');
+          showNotification('Added to saved ads');
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling save:', error);
+      showNotification('Error saving ad');
+    }
+  }
+
+  // ============================================
+  // CONTACT FUNCTIONS
+  // ============================================
+  function callSeller() {
+    const showPhone = currentAd.show_profile_phone !== false;
+    
+    if (!showPhone || !sellerPhone) {
+      showNotification('Phone number not available');
+      return;
+    }
+    
+    showPhoneModal();
+  }
+
+  function showPhoneModal() {
+    if (!sellerPhone) {
+      showNotification('Phone number not available');
+      return;
+    }
+    
+    document.getElementById('phoneNumber').textContent = sellerPhone;
+    document.getElementById('phoneModal').classList.add('active');
+  }
+
+  function closePhoneModal() {
+    document.getElementById('phoneModal').classList.remove('active');
+  }
+
+  function copyPhone() {
+    navigator.clipboard.writeText(sellerPhone)
+      .then(() => {
+        showNotification('Phone number copied!');
+        closePhoneModal();
+      })
+      .catch(err => {
+        console.error('Failed to copy:', err);
+        showNotification('Failed to copy phone number');
+      });
+  }
+
+  function openWhatsApp() {
+    const phoneNumber = sellerWhatsApp || sellerPhone;
+    
+    if (!phoneNumber) {
+      showNotification('No contact number available');
+      return;
+    }
+    
+    const cleanPhone = phoneNumber.replace(/\D/g, '');
+    const message = `Hello! I saw your ad "${currentAd.title}" on iBlue Uganda. Is it still available?`;
+    const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+    closePhoneModal();
+  }
+
+  function makeCall() {
+    if (!sellerPhone) {
+      showNotification('Phone number not available');
+      return;
+    }
+    
+    const telUrl = `tel:${sellerPhone}`;
+    window.location.href = telUrl;
+  }
+
+  // ============================================
+  // SHARE FUNCTIONS
+  // ============================================
+  function openShareModal() {
+    document.getElementById('shareModal').classList.add('active');
+  }
+
+  function closeShareModal() {
+    document.getElementById('shareModal').classList.remove('active');
+  }
+
+  function shareOnFacebook(e) {
+    e.preventDefault();
+    const url = encodeURIComponent(window.location.href);
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    window.open(facebookUrl, '_blank', 'width=600,height=400');
+    closeShareModal();
+  }
+
+  function shareOnWhatsApp(e) {
+    e.preventDefault();
+    const text = encodeURIComponent(`Check out this ad on iBlue Uganda: ${currentAd?.title || ''} ${window.location.href}`);
+    const whatsappUrl = `https://wa.me/?text=${text}`;
+    window.open(whatsappUrl, '_blank');
+    closeShareModal();
+  }
+
+  function shareOnTwitter(e) {
+    e.preventDefault();
+    const text = encodeURIComponent(`Check out this ad on iBlue Uganda: ${currentAd?.title || ''}`);
+    const url = encodeURIComponent(window.location.href);
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+    window.open(twitterUrl, '_blank', 'width=600,height=400');
+    closeShareModal();
+  }
+
+  function copyLink(e) {
+    e.preventDefault();
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => {
+        showNotification('Link copied to clipboard!');
+        closeShareModal();
+      })
+      .catch(err => {
+        console.error('Failed to copy:', err);
+        showNotification('Failed to copy link');
+      });
+  }
+
+  // ============================================
+  // SIMILAR ADS
+  // ============================================
+  async function loadSimilarAds(categoryId) {
+    try {
+      const { data: similarAds, error } = await sb
+        .from('ads')
+        .select('id, title, price, currency, image_urls, condition, district, region, created_at, view_count')
+        .eq('category_id', categoryId)
+        .neq('id', adId)
+        .eq('status', 'active')
+        .order('view_count', { ascending: false })
+        .limit(6);
+      
+      if (error || !similarAds || similarAds.length === 0) {
+        document.querySelector('.similar-ads').classList.add('hidden');
+        return;
+      }
+      
+      similarAdsEl.innerHTML = '';
+      
+      similarAds.forEach(ad => {
+        const card = createSimilarAdCard(ad);
+        similarAdsEl.appendChild(card);
+      });
+      
+    } catch (error) {
+      console.error('Error loading similar ads:', error);
+      document.querySelector('.similar-ads').classList.add('hidden');
+    }
+  }
+
+  function createSimilarAdCard(ad) {
+    const card = document.createElement('div');
+    card.className = 'similar-card';
+    
+    const imageUrl = ad.image_urls?.[0] || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&auto=format&fit=crop';
+    const price = formatPrice(ad.price, ad.currency);
+    const timeAgo = getTimeAgo(new Date(ad.created_at));
+    
+    card.innerHTML = `
+      <img src="${imageUrl}" class="similar-image" alt="${ad.title}" 
+           onerror="this.src='https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&auto=format&fit=crop'">
+      <div class="similar-info">
+        <div class="similar-title">${escapeHtml(ad.title.substring(0, 50))}${ad.title.length > 50 ? '...' : ''}</div>
+        <div class="similar-price">${price}</div>
+        <div style="font-size: 0.8rem; color: var(--gray); margin-top: 4px;">
+          ${escapeHtml(ad.district || ad.region || 'Unknown')} • ${timeAgo}
+        </div>
+      </div>
+    `;
+    
+    // Add click event to track view and redirect
+    card.addEventListener('click', async function() {
+      await recordSimilarAdView(ad.id);
+      window.location.href = `ad-detail.html?id=${ad.id}`;
+    });
+    
+    return card;
+  }
+
+  async function recordSimilarAdView(similarAdId) {
+    try {
+      // Get IP address
+      let userIp = 'unknown';
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        if (response.ok) {
+          const data = await response.json();
+          userIp = data.ip;
+        }
+      } catch (ipError) {
+        console.log('IP detection failed');
+      }
+      
+      // Record view in ad_views table
+      await sb
+        .from('ad_views')
+        .insert({
+          ad_id: parseInt(similarAdId),
+          viewer_id: currentUser?.id || null,
+          ip_address: userIp,
+          user_agent: navigator.userAgent,
+          viewed_at: new Date().toISOString()
+        });
+      
+      // Try to increment view count
+      await sb.rpc('increment_ad_view_count', {
+        ad_id_param: parseInt(similarAdId)
+      }).catch(() => {
+        // Silently fail for similar ad views
+      });
+      
+    } catch (error) {
+      // Silently fail for similar ad views
+    }
+  }
+
+  // ============================================
+  // UTILITY FUNCTIONS
+  // ============================================
+  function formatPrice(price, currency = 'UGX') {
+    if (!price) return 'Price on request';
+    
+    if (currency === 'UGX') {
+      return new Intl.NumberFormat('en-UG', {
+        style: 'currency',
+        currency: 'UGX',
+        minimumFractionDigits: 0
+      }).format(price);
+    }
+    
+    // For other currencies
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 0
+    }).format(price);
+  }
+
+  function formatDate(dateString, yearOnly = false) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    if (yearOnly) {
+      return date.getFullYear().toString();
+    }
+    return date.toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+
+  function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    
+    let interval = seconds / 31536000;
+    if (interval > 1) return Math.floor(interval) + "y ago";
+    
+    interval = seconds / 2592000;
+    if (interval > 1) return Math.floor(interval) + "mo ago";
+    
+    interval = seconds / 86400;
+    if (interval > 1) return Math.floor(interval) + "d ago";
+    
+    interval = seconds / 3600;
+    if (interval > 1) return Math.floor(interval) + "h ago";
+    
+    interval = seconds / 60;
+    if (interval > 1) return Math.floor(interval) + "m ago";
+    
+    return "Just now";
+  }
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function reportAd() {
+    if (!currentUser) {
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+      return;
+    }
+    window.location.href = `report.html?ad_id=${adId}`;
+  }
+
+  function showError() {
+    loadingEl.classList.add('hidden');
+    errorEl.classList.remove('hidden');
+    actionBarEl.classList.add('hidden');
+  }
+
+  function showNotification(message) {
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll('.notification-toast');
+    existingNotifications.forEach(n => n.remove());
+    
+    const notification = document.createElement('div');
+    notification.className = 'notification-toast';
+    notification.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 8px;"></i>${message}`;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.remove();
+        }
+      }, 300);
+    }, 2000);
+  }
+
+  // ============================================
+  // GLOBAL EXPORTS
+  // ============================================
+  window.sb = sb;
+  window.currentUser = currentUser;
+  window.checkAuth = checkAuth;
+  window.toggleSave = toggleSave;
+  window.startChat = startChat;
+  window.recordAdView = recordAdView;
+  window.incrementAdViewCount = incrementAdViewCount;
+  window.manualIncrementViewCount = manualIncrementViewCount;
+  window.formatPrice = formatPrice;
+  window.formatDate = formatDate;
+  window.getTimeAgo = getTimeAgo;
+  window.escapeHtml = escapeHtml;
+  window.showNotification = showNotification;
+  window.nextImage = nextImage;
+  window.prevImage = prevImage;
+  window.openShareModal = openShareModal;
+  window.closeShareModal = closeShareModal;
+  window.shareOnFacebook = shareOnFacebook;
+  window.shareOnWhatsApp = shareOnWhatsApp;
+  window.shareOnTwitter = shareOnTwitter;
+  window.copyLink = copyLink;
+  window.callSeller = callSeller;
+  window.closePhoneModal = closePhoneModal;
+  window.copyPhone = copyPhone;
+  window.openWhatsApp = openWhatsApp;
+  window.makeCall = makeCall;
+  window.reportAd = reportAd;
+</script>
+</body>
+</html>

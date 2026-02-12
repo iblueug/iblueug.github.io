@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Search Results | iBlue Uganda</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #475569;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --light-gray: #e2e8f0;
+      --border: #cbd5e1;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: var(--dark);
+      padding-bottom: 70px;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--dark);
+      font-size: 1.2rem;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-btn:hover {
+      background: var(--light);
+    }
+
+    .header-content {
+      flex: 1;
+    }
+
+    .header-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+
+    .search-query {
+      font-size: 0.85rem;
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .search-query i {
+      font-size: 0.8rem;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Results Header */
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .results-count {
+      font-size: 0.95rem;
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .results-count i {
+      color: var(--primary);
+    }
+
+    .sort-options {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sort-label {
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+
+    .sort-select {
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: white;
+      font-size: 0.9rem;
+      color: var(--dark);
+      cursor: pointer;
+      min-width: 160px;
+    }
+
+    .sort-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /* Quick Filters */
+    .quick-filters {
+      display: flex;
+      overflow-x: auto;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+
+    .quick-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-chip {
+      padding: 10px 18px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 25px;
+      font-size: 0.85rem;
+      color: var(--dark);
+      white-space: nowrap;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .filter-chip:hover,
+    .filter-chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    /* Ads Grid */
+    .ads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    /* Ad Card */
+    .ad-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .ad-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .ad-image {
+      position: relative;
+      padding-top: 75%;
+      overflow: hidden;
+    }
+
+    .ad-image img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .ad-badges {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 2;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: white;
+      text-transform: uppercase;
+    }
+
+    .badge-featured {
+      background: var(--warning);
+    }
+
+    .badge-negotiable {
+      background: var(--success);
+    }
+
+    .badge-urgent {
+      background: var(--danger);
+    }
+
+    .badge-verified {
+      background: var(--success);
+    }
+
+    .ad-info {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ad-title {
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .ad-price {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .ad-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: auto;
+    }
+
+    .ad-location,
+    .ad-time,
+    .ad-category {
+      font-size: 0.8rem;
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ad-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--light-gray);
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.3s;
+    }
+
+    .btn-chat {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-chat:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-save {
+      background: var(--light);
+      color: var(--dark);
+    }
+
+    .btn-save:hover {
+      background: var(--light-gray);
+    }
+
+    .btn-save.saved {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-save.saved:hover {
+      background: #b91c1c;
+    }
+
+    /* Loading State */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 20px;
+      grid-column: 1 / -1;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(37, 99, 235, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: var(--radius);
+      margin-top: 20px;
+      box-shadow: var(--shadow);
+      grid-column: 1 / -1;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: var(--light-gray);
+      margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+
+    .empty-state p {
+      color: var(--gray);
+      margin-bottom: 25px;
+      line-height: 1.5;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    /* Alert */
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: #fee2e2;
+      color: var(--danger);
+      border-left: 4px solid var(--danger);
+    }
+
+    .alert.show {
+      display: flex;
+    }
+
+    /* Filter Suggestions */
+    .filter-suggestions {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .suggestions-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .suggestions-title i {
+      color: var(--primary);
+    }
+
+    .suggestions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+
+    .suggestion-chip {
+      padding: 8px 16px;
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s;
+    }
+
+    .suggestion-chip:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--gray);
+      font-size: 0.8rem;
+      gap: 4px;
+      transition: all 0.3s;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-icon {
+      font-size: 1.2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .ads-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .results-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .sort-options {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .sort-select {
+        flex: 1;
+        max-width: 200px;
+      }
+      
+      .container {
+        padding: 12px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .ads-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      }
+      
+      .bottom-nav {
+        display: none;
+      }
+      
+      body {
+        padding-bottom: 0;
+      }
+    }
+
+    /* Category Tag */
+    .category-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--light);
+      border-radius: 15px;
+      font-size: 0.75rem;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .category-tag i {
+      color: var(--primary);
+      font-size: 0.7rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <button class="back-btn" onclick="goBack()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-content">
+      <div class="header-title">Search Results</div>
+      <div class="search-query" id="searchQuery">
+        <i class="fas fa-search"></i>
+        <span id="queryText">Loading...</span>
+      </div>
+    </div>
+    <button class="back-btn" onclick="refreshSearch()" title="Refresh results">
+      <i class="fas fa-redo"></i>
+    </button>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Alert -->
+    <div class="alert" id="alertMessage">
+      <i class="fas fa-exclamation-circle"></i>
+      <span id="alertText"></span>
+    </div>
+
+    <!-- Results Header -->
+    <div class="results-header">
+      <div class="results-count" id="resultsCount">
+        <i class="fas fa-search"></i>
+        <span id="countText">Searching...</span>
+      </div>
+      <div class="sort-options">
+        <span class="sort-label">Sort by:</span>
+        <select class="sort-select" id="sortSelect" onchange="sortResults()">
+          <option value="relevance">Relevance</option>
+          <option value="newest">Newest First</option>
+          <option value="price_low">Price: Low to High</option>
+          <option value="price_high">Price: High to Low</option>
+          <option value="featured">Featured First</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Quick Filters -->
+    <div class="quick-filters" id="quickFilters">
+      <!-- Filter chips will be populated dynamically -->
+    </div>
+
+    <!-- Filter Suggestions -->
+    <div class="filter-suggestions" id="filterSuggestions" style="display: none;">
+      <h3 class="suggestions-title">
+        <i class="fas fa-lightbulb"></i>
+        Search Suggestions
+      </h3>
+      <div class="suggestions-grid" id="suggestionsGrid">
+        <!-- Suggestions will be populated dynamically -->
+      </div>
+    </div>
+
+    <!-- Ads Grid -->
+    <div class="ads-grid" id="adsGrid">
+      <!-- Ads will be loaded here -->
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Searching ads...</div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <i class="fas fa-search"></i>
+      <h3>No Matching Ads Found</h3>
+      <p>We couldn't find any ads matching your search. Try adjusting your search terms or browse our categories.</p>
+      <button class="btn-primary" onclick="window.location.href='categories.html'">
+        <i class="fas fa-th-large"></i>
+        Browse Categories
+      </button>
+      <button class="btn-primary" onclick="window.location.href='post-ad.html'" style="margin-top: 12px; background: var(--success);">
+        <i class="fas fa-plus"></i>
+        Post Your Own Ad
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <i class="fas fa-home nav-icon"></i>
+      <span>Home</span>
+    </a>
+    <a href="search.html" class="nav-item active">
+      <i class="fas fa-search nav-icon"></i>
+      <span>Search</span>
+    </a>
+    <a href="categories.html" class="nav-item">
+      <i class="fas fa-th-large nav-icon"></i>
+      <span>Categories</span>
+    </a>
+    <a href="saved.html" class="nav-item">
+      <i class="fas fa-heart nav-icon"></i>
+      <span>Saved</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <i class="fas fa-user nav-icon"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Initialize Supabase
+    const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
+    const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Global variables
+    let searchQuery = '';
+    let searchResults = [];
+    let savedAdsCache = new Set();
+    let currentSort = 'relevance';
+    let currentFilters = {
+      category: null,
+      condition: null,
+      minPrice: null,
+      maxPrice: null,
+      region: null,
+      negotiable: false,
+      featured: false
+    };
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', async function() {
+      searchQuery = getQueryFromUrl();
+      document.getElementById('queryText').textContent = `"${searchQuery}"`;
+      
+      if (!searchQuery || searchQuery.trim() === '') {
+        showAlert('Please enter a search term', 'error');
+        setTimeout(() => window.location.href = 'index.html', 2000);
+        return;
+      }
+
+      await loadSearchResults();
+      await loadSavedAdsCache();
+      populateQuickFilters();
+      updateSearchSuggestions();
+    });
+
+    // Get query from URL
+    function getQueryFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('query') || '';
+    }
+
+    // Load search results
+    async function loadSearchResults() {
+      const loading = document.getElementById('loading');
+      const emptyState = document.getElementById('emptyState');
+      const adsGrid = document.getElementById('adsGrid');
+      
+      loading.style.display = 'flex';
+      emptyState.style.display = 'none';
+      adsGrid.innerHTML = '';
+      
+      try {
+        // First try full-text search
+        const searchTerm = searchQuery.trim().toLowerCase();
+        
+        // FIXED: Using specific relationship name for category join
+        const { data: ads, error } = await sb
+          .from('ads')
+          .select(`
+            *,
+            category:categories!ads_category_id_fkey(id, name, slug, icon),
+            profiles!inner(full_name, phone, avatar_url, is_verified)
+          `)
+          .or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,specific_location.ilike.%${searchTerm}%`)
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+          .limit(100);
+        
+        if (error) throw error;
+        
+        searchResults = ads || [];
+        
+        // If no results, try partial word matching
+        if (searchResults.length === 0) {
+          const words = searchTerm.split(' ');
+          let wordQueries = [];
+          
+          words.forEach(word => {
+            if (word.length > 2) {
+              wordQueries.push(`title.ilike.%${word}%`);
+              wordQueries.push(`description.ilike.%${word}%`);
+            }
+          });
+          
+          if (wordQueries.length > 0) {
+            const { data: partialResults, error: partialError } = await sb
+              .from('ads')
+              .select(`
+                *,
+                category:categories!ads_category_id_fkey(id, name, slug, icon),
+                profiles!inner(full_name, phone, avatar_url, is_verified)
+              `)
+              .or(wordQueries.join(','))
+              .eq('status', 'active')
+              .order('created_at', { ascending: false })
+              .limit(50);
+            
+            if (!partialError && partialResults) {
+              searchResults = partialResults;
+            }
+          }
+        }
+        
+        updateResultsCount();
+        applyFilters();
+        
+      } catch (error) {
+        console.error('Search error:', error);
+        showAlert('Error searching ads. Please try again.', 'error');
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+
+    // Update results count
+    function updateResultsCount() {
+      const countText = document.getElementById('countText');
+      const filteredCount = searchResults.length;
+      
+      countText.textContent = `${filteredCount} result${filteredCount !== 1 ? 's' : ''} for "${searchQuery}"`;
+      
+      const emptyState = document.getElementById('emptyState');
+      const adsGrid = document.getElementById('adsGrid');
+      
+      if (filteredCount === 0) {
+        emptyState.style.display = 'block';
+        adsGrid.style.display = 'none';
+      } else {
+        emptyState.style.display = 'none';
+        adsGrid.style.display = 'grid';
+      }
+    }
+
+    // Render search results
+    function renderResults() {
+      const adsGrid = document.getElementById('adsGrid');
+      adsGrid.innerHTML = '';
+      
+      searchResults.forEach(ad => {
+        const adCard = createAdCard(ad);
+        adsGrid.appendChild(adCard);
+      });
+    }
+
+    // Create ad card
+    function createAdCard(ad) {
+      const card = document.createElement('a');
+      card.className = 'ad-card';
+      card.href = `ad-detail.html?id=${ad.id}`;
+      
+      // Format price
+      const formattedPrice = formatPrice(ad.price);
+      
+      // Get first image
+      let imageUrl = 'https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+      if (ad.image_urls && ad.image_urls.length > 0 && ad.image_urls[0]) {
+        imageUrl = ad.image_urls[0];
+      }
+      
+      // Time ago
+      const timeAgo = getTimeAgo(new Date(ad.created_at));
+      
+      // Check if ad is saved
+      const isSaved = savedAdsCache.has(ad.id.toString());
+      
+      // Badges
+      let badgesHTML = '';
+      if (ad.is_featured) {
+        badgesHTML += '<div class="badge badge-featured">Featured</div>';
+      }
+      if (ad.is_negotiable) {
+        badgesHTML += '<div class="badge badge-negotiable">Negotiable</div>';
+      }
+      // Check if ad is urgent (boosted)
+      const isUrgent = ad.boost_until && new Date(ad.boost_until) > new Date();
+      if (isUrgent) {
+        badgesHTML += '<div class="badge badge-urgent">Urgent</div>';
+      }
+      // Verified seller badge
+      if (ad.profiles?.is_verified) {
+        badgesHTML += '<div class="badge badge-verified">Verified</div>';
+      }
+      
+      // Highlight search term in title
+      let highlightedTitle = ad.title;
+      const searchLower = searchQuery.toLowerCase();
+      if (searchLower && ad.title.toLowerCase().includes(searchLower)) {
+        const regex = new RegExp(searchLower, 'gi');
+        highlightedTitle = ad.title.replace(regex, match => `<span style="background-color: #dbeafe; padding: 2px 4px; border-radius: 4px;">${match}</span>`);
+      }
+      
+      card.innerHTML = `
+        <div class="ad-image">
+          <img src="${imageUrl}" 
+               alt="${ad.title}"
+               loading="lazy"
+               onerror="this.src='https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+          ${badgesHTML ? `<div class="ad-badges">${badgesHTML}</div>` : ''}
+        </div>
+        
+        <div class="ad-info">
+          <div class="category-tag">
+            <i class="fas fa-tag"></i>
+            ${ad.category?.name || 'Uncategorized'}
+          </div>
+          
+          <h3 class="ad-title">${highlightedTitle}</h3>
+          <div class="ad-price">${formattedPrice}</div>
+          
+          <div class="ad-meta">
+            <div class="ad-location">
+              <i class="fas fa-map-marker-alt"></i>
+              ${ad.district || ad.region || 'Uganda'}
+            </div>
+            <div class="ad-time">
+              <i class="far fa-clock"></i>
+              ${timeAgo}
+            </div>
+          </div>
+          
+          <div class="ad-actions">
+            <button class="action-btn btn-chat" onclick="event.preventDefault(); startChat(${ad.id})">
+              <i class="fas fa-comment"></i> Chat
+            </button>
+            <button class="action-btn btn-save ${isSaved ? 'saved' : ''}" onclick="event.preventDefault(); saveAd(${ad.id}, this)">
+              <i class="${isSaved ? 'fas' : 'far'} fa-heart"></i> ${isSaved ? 'Saved' : 'Save'}
+            </button>
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // Load user's saved ads cache
+    async function loadSavedAdsCache() {
+      try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) return;
+        
+        const { data: savedAds, error } = await sb
+          .from('saved_ads')
+          .select('ad_id')
+          .eq('user_id', user.id);
+        
+        if (error) throw error;
+        
+        savedAdsCache = new Set((savedAds || []).map(sa => sa.ad_id.toString()));
+        
+      } catch (error) {
+        console.error('Error loading saved ads cache:', error);
+      }
+    }
+
+    // Populate quick filters
+    function populateQuickFilters() {
+      const quickFilters = document.getElementById('quickFilters');
+      quickFilters.innerHTML = '';
+      
+      // Get unique categories from results
+      const categories = [...new Set(searchResults.map(ad => ad.category?.name).filter(Boolean))];
+      const regions = [...new Set(searchResults.map(ad => ad.region).filter(Boolean))];
+      
+      // Add "All" filter
+      const allFilter = document.createElement('button');
+      allFilter.className = 'filter-chip active';
+      allFilter.innerHTML = '<i class="fas fa-filter"></i> All Results';
+      allFilter.onclick = function() {
+        resetFilters();
+        setActiveFilter(this);
+      };
+      quickFilters.appendChild(allFilter);
+      
+      // Add category filters
+      categories.slice(0, 5).forEach(category => {
+        const chip = document.createElement('button');
+        chip.className = 'filter-chip';
+        chip.innerHTML = `
+          <i class="fas fa-tag"></i>
+          ${category}
+        `;
+        chip.dataset.filter = 'category';
+        chip.dataset.value = category;
+        chip.onclick = function() {
+          currentFilters.category = category;
+          applyFilters();
+          setActiveFilter(this);
+        };
+        quickFilters.appendChild(chip);
+      });
+      
+      // Add region filters
+      regions.slice(0, 3).forEach(region => {
+        const chip = document.createElement('button');
+        chip.className = 'filter-chip';
+        chip.innerHTML = `
+          <i class="fas fa-map-marker-alt"></i>
+          ${region}
+        `;
+        chip.dataset.filter = 'region';
+        chip.dataset.value = region;
+        chip.onclick = function() {
+          currentFilters.region = region;
+          applyFilters();
+          setActiveFilter(this);
+        };
+        quickFilters.appendChild(chip);
+      });
+      
+      // Add negotiable filter
+      if (searchResults.some(ad => ad.is_negotiable)) {
+        const chip = document.createElement('button');
+        chip.className = 'filter-chip';
+        chip.innerHTML = `
+          <i class="fas fa-handshake"></i>
+          Negotiable
+        `;
+        chip.dataset.filter = 'negotiable';
+        chip.onclick = function() {
+          currentFilters.negotiable = !currentFilters.negotiable;
+          applyFilters();
+          toggleActiveFilter(this, currentFilters.negotiable);
+        };
+        quickFilters.appendChild(chip);
+      }
+      
+      // Add featured filter
+      if (searchResults.some(ad => ad.is_featured)) {
+        const chip = document.createElement('button');
+        chip.className = 'filter-chip';
+        chip.innerHTML = `
+          <i class="fas fa-star"></i>
+          Featured
+        `;
+        chip.dataset.filter = 'featured';
+        chip.onclick = function() {
+          currentFilters.featured = !currentFilters.featured;
+          applyFilters();
+          toggleActiveFilter(this, currentFilters.featured);
+        };
+        quickFilters.appendChild(chip);
+      }
+    }
+
+    // Set active filter chip
+    function setActiveFilter(element) {
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.classList.remove('active');
+      });
+      element.classList.add('active');
+    }
+
+    // Toggle active filter chip
+    function toggleActiveFilter(element, isActive) {
+      if (isActive) {
+        element.classList.add('active');
+      } else {
+        element.classList.remove('active');
+      }
+    }
+
+    // Reset filters
+    function resetFilters() {
+      currentFilters = {
+        category: null,
+        condition: null,
+        minPrice: null,
+        maxPrice: null,
+        region: null,
+        negotiable: false,
+        featured: false
+      };
+      
+      // Reset all filter chips
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.classList.remove('active');
+        if (chip.textContent.includes('All Results')) {
+          chip.classList.add('active');
+        }
+      });
+      
+      applyFilters();
+    }
+
+    // Apply filters to search results
+    function applyFilters() {
+      let filtered = searchResults;
+      
+      // Apply filters
+      if (currentFilters.category) {
+        filtered = filtered.filter(ad => ad.category?.name === currentFilters.category);
+      }
+      
+      if (currentFilters.region) {
+        filtered = filtered.filter(ad => ad.region === currentFilters.region);
+      }
+      
+      if (currentFilters.negotiable) {
+        filtered = filtered.filter(ad => ad.is_negotiable === true);
+      }
+      
+      if (currentFilters.featured) {
+        filtered = filtered.filter(ad => ad.is_featured === true);
+      }
+      
+      // Apply sorting
+      sortResults(filtered);
+    }
+
+    // Sort results
+    function sortResults(filteredResults = null) {
+      currentSort = document.getElementById('sortSelect').value;
+      let resultsToSort = filteredResults || searchResults;
+      
+      resultsToSort.sort((a, b) => {
+        switch (currentSort) {
+          case 'newest':
+            return new Date(b.created_at) - new Date(a.created_at);
+          case 'price_low':
+            return (a.price || 0) - (b.price || 0);
+          case 'price_high':
+            return (b.price || 0) - (a.price || 0);
+          case 'featured':
+            if (a.is_featured && !b.is_featured) return -1;
+            if (!a.is_featured && b.is_featured) return 1;
+            return new Date(b.created_at) - new Date(a.created_at);
+          case 'relevance':
+          default:
+            // Relevance scoring based on search term
+            const query = searchQuery.toLowerCase();
+            const aTitle = a.title.toLowerCase();
+            const bTitle = b.title.toLowerCase();
+            const aDesc = a.description.toLowerCase();
+            const bDesc = b.description.toLowerCase();
+            
+            // Score based on title match
+            const aTitleScore = aTitle.includes(query) ? 100 : 0;
+            const bTitleScore = bTitle.includes(query) ? 100 : 0;
+            
+            // Score based on description match
+            const aDescScore = aDesc.includes(query) ? 50 : 0;
+            const bDescScore = bDesc.includes(query) ? 50 : 0;
+            
+            // Score for featured ads
+            const aFeaturedScore = a.is_featured ? 25 : 0;
+            const bFeaturedScore = b.is_featured ? 25 : 0;
+            
+            const aTotal = aTitleScore + aDescScore + aFeaturedScore;
+            const bTotal = bTitleScore + bDescScore + bFeaturedScore;
+            
+            if (aTotal !== bTotal) {
+              return bTotal - aTotal;
+            }
+            
+            // Fallback to newest first
+            return new Date(b.created_at) - new Date(a.created_at);
+        }
+      });
+      
+      searchResults = resultsToSort;
+      updateResultsCount();
+      renderResults();
+    }
+
+    // Update search suggestions
+    function updateSearchSuggestions() {
+      const suggestions = [
+        "Smartphones", "Laptops", "Cars", "Apartments", "Jobs",
+        "Furniture", "Electronics", "Fashion", "Real Estate", "Services"
+      ];
+      
+      const relatedSuggestions = suggestions.filter(suggestion =>
+        suggestion.toLowerCase().includes(searchQuery.toLowerCase().slice(0, 3)) ||
+        searchQuery.toLowerCase().includes(suggestion.toLowerCase().slice(0, 3))
+      ).slice(0, 6);
+      
+      const filterSuggestions = document.getElementById('filterSuggestions');
+      const suggestionsGrid = document.getElementById('suggestionsGrid');
+      
+      if (relatedSuggestions.length > 0) {
+        filterSuggestions.style.display = 'block';
+        suggestionsGrid.innerHTML = '';
+        
+        relatedSuggestions.forEach(suggestion => {
+          const chip = document.createElement('a');
+          chip.className = 'suggestion-chip';
+          chip.href = `search.html?query=${encodeURIComponent(suggestion)}`;
+          chip.innerHTML = `
+            <i class="fas fa-search"></i>
+            ${suggestion}
+          `;
+          suggestionsGrid.appendChild(chip);
+        });
+      } else {
+        filterSuggestions.style.display = 'none';
+      }
+    }
+
+    // Start chat with seller
+    async function startChat(adId) {
+      try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) {
+          window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+          return;
+        }
+        
+        window.location.href = `chat.html?ad=${adId}`;
+      } catch (error) {
+        console.error('Error starting chat:', error);
+        showAlert('Please login to chat with seller', 'error');
+      }
+    }
+
+    // Save ad to favorites
+    async function saveAd(adId, button) {
+      try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) {
+          window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+          return;
+        }
+        
+        const isSaved = savedAdsCache.has(adId.toString());
+        
+        if (isSaved) {
+          // Remove from saved
+          const { error } = await sb
+            .from('saved_ads')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('ad_id', adId);
+          
+          if (error) throw error;
+          
+          savedAdsCache.delete(adId.toString());
+          
+          if (button) {
+            button.innerHTML = '<i class="far fa-heart"></i> Save';
+            button.classList.remove('saved');
+          }
+          showAlert('Ad removed from favorites', 'success');
+        } else {
+          // Save ad
+          const { error } = await sb
+            .from('saved_ads')
+            .insert({
+              user_id: user.id,
+              ad_id: adId
+            });
+          
+          if (error) throw error;
+          
+          savedAdsCache.add(adId.toString());
+          
+          if (button) {
+            button.innerHTML = '<i class="fas fa-heart"></i> Saved';
+            button.classList.add('saved');
+          }
+          showAlert('Ad saved to favorites', 'success');
+        }
+        
+      } catch (error) {
+        console.error('Error saving ad:', error);
+        showAlert('Error saving ad. Please try again.', 'error');
+      }
+    }
+
+    // Show alert
+    function showAlert(message, type = 'error') {
+      const alert = document.getElementById('alertMessage');
+      const alertText = document.getElementById('alertText');
+      
+      alertText.textContent = message;
+      alert.className = 'alert';
+      alert.classList.add('show');
+      
+      if (type === 'success') {
+        alert.style.background = '#dcfce7';
+        alert.style.color = 'var(--success)';
+        alert.style.borderLeftColor = 'var(--success)';
+      }
+      
+      setTimeout(() => {
+        alert.classList.remove('show');
+      }, 5000);
+    }
+
+    // Refresh search
+    function refreshSearch() {
+      showAlert('Refreshing search results...', 'success');
+      loadSearchResults();
+    }
+
+    // Go back
+    function goBack() {
+      window.history.back();
+    }
+
+    // Helper functions
+    function formatPrice(price) {
+      if (!price || price === 0) return 'Price on request';
+      return new Intl.NumberFormat('en-UG', {
+        style: 'currency',
+        currency: 'UGX',
+        minimumFractionDigits: 0
+      }).format(price);
+    }
+
+    function getTimeAgo(date) {
+      const seconds = Math.floor((new Date() - date) / 1000);
+      
+      let interval = seconds / 31536000;
+      if (interval > 1) return Math.floor(interval) + "y ago";
+      
+      interval = seconds / 2592000;
+      if (interval > 1) return Math.floor(interval) + "mo ago";
+      
+      interval = seconds / 86400;
+      if (interval > 1) return Math.floor(interval) + "d ago";
+      
+      interval = seconds / 3600;
+      if (interval > 1) return Math.floor(interval) + "h ago";
+      
+      interval = seconds / 60;
+      if (interval > 1) return Math.floor(interval) + "m ago";
+      
+      return Math.floor(seconds) + "s ago";
+    }
+  </script>
+</body>
+</html>

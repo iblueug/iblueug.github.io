@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iBlue Uganda - Buy & Sell Everything</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.css">
+    <style>
+        /* Mobile-First Base Styles */
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1D4ED8;
+            --primary-light: #3B82F6;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --dark: #1F2937;
+            --dark-gray: #4B5563;
+            --gray: #6B7280;
+            --light-gray: #9CA3AF;
+            --lighter-gray: #E5E7EB;
+            --lightest-gray: #F3F4F6;
+            --white: #FFFFFF;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 12px rgba(0,0,0,0.15);
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html {
+            font-size: 14px;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.4;
+            color: var(--dark);
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            padding-bottom: 70px;
+        }
+        
+        /* Header - Mobile Optimized with Hide/Show on Scroll */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+            padding: 12px 0;
+            backdrop-filter: blur(10px);
+            transform: translateY(0);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+        
+        .header.hidden {
+            transform: translateY(-100%);
+        }
+        
+        .header.scrolled {
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            margin-bottom: 12px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--lightest-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 18px;
+            position: relative;
+            cursor: pointer;
+            border-radius: 10px;
+            text-decoration: none;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--danger);
+            color: white;
+            font-size: 10px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* Search Bar - Mobile Optimized */
+        .search-container {
+            padding: 0 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 1px solid var(--lighter-gray);
+            border-radius: var(--radius);
+            font-size: 15px;
+            background: var(--lightest-gray);
+            -webkit-appearance: none;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            background: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 16px;
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        /* Navigation Tabs - Mobile Scrollable */
+        .nav-tabs {
+            display: flex;
+            background: var(--white);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding: 0 16px;
+            gap: 4px;
+        }
+        
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray);
+            text-decoration: none;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+        
+        /* Location Bar */
+        .location-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            color: var(--gray);
+            font-size: 13px;
+            border-bottom: 1px solid var(--lighter-gray);
+            background: var(--white);
+            margin-top: 124px; /* Height of header */
+        }
+        
+        .location-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: var(--dark-gray);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Categories Grid - Mobile Optimized */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 16px;
+        }
+        
+        .category-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--dark);
+            padding: 12px 8px;
+            border-radius: var(--radius);
+            background: var(--white);
+            border: 1px solid var(--lighter-gray);
+            transition: all 0.2s;
+        }
+        
+        .category-card:active {
+            transform: scale(0.98);
+            background: var(--lightest-gray);
+        }
+        
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: var(--lightest-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 20px;
+            color: var(--primary);
+        }
+        
+        .category-name {
+            font-size: 12px;
+            text-align: center;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        /* Swiper Banner */
+        .swiper {
+            width: 100%;
+            height: 160px;
+            margin: 8px 0 16px;
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .swiper-pagination-bullet {
+            width: 6px;
+            height: 6px;
+            background: rgba(255,255,255,0.5);
+        }
+        
+        .swiper-pagination-bullet-active {
+            background: var(--white);
+            width: 20px;
+            border-radius: 3px;
+        }
+        
+        /* Section Headers */
+        .section {
+            padding: 0 16px;
+            margin-bottom: 24px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .section-link {
+            font-size: 13px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        /* Ads Grid - Mobile Optimized */
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .ad-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            border: 1px solid var(--lighter-gray);
+            cursor: pointer;
+        }
+        
+        .ad-card:active {
+            transform: scale(0.98);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .ad-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--warning);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 6px;
+            border-radius: 4px;
+            z-index: 2;
+            text-transform: uppercase;
+        }
+        
+        .ad-badge.featured {
+            background: var(--warning);
+        }
+        
+        .ad-badge.verified {
+            background: var(--secondary);
+        }
+        
+        .ad-badge.urgent {
+            background: var(--danger);
+        }
+        
+        .ad-image {
+            width: 100%;
+            height: 140px;
+            background: var(--lightest-gray);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ad-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-gray);
+            font-size: 32px;
+        }
+        
+        .save-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            color: var(--gray);
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        .save-btn.saved {
+            color: var(--danger);
+        }
+        
+        .ad-content {
+            padding: 12px;
+        }
+        
+        .ad-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .ad-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 4px;
+        }
+        
+        .ad-price.negotiable {
+            color: var(--secondary);
+        }
+        
+        .ad-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--lightest-gray);
+        }
+        
+        /* Promo Banner */
+        .promo-banner {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            margin: 16px;
+            padding: 16px;
+            border-radius: var(--radius);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .promo-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .promo-text {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+        
+        .promo-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        /* Bottom Navigation - Mobile Optimized */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 1px solid var(--lighter-gray);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray);
+            font-size: 11px;
+            flex: 1;
+            padding: 4px 0;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-icon {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+        
+        /* Post Ad Button */
+        .post-ad-btn {
+            position: fixed;
+            bottom: 70px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .post-ad-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Loading States */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--lighter-gray);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 12px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Skeleton Loading */
+        .skeleton-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .skeleton-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            padding: 12px;
+        }
+        
+        .skeleton-image {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(90deg, var(--lightest-gray) 25%, var(--lighter-gray) 50%, var(--lightest-gray) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .skeleton-text {
+            height: 12px;
+            background: linear-gradient(90deg, var(--lightest-gray) 25%, var(--lighter-gray) 50%, var(--lightest-gray) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .skeleton-text.short {
+            width: 60%;
+        }
+        
+        /* Location Modal */
+        .location-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--white);
+            z-index: 2000;
+            padding: 16px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            overflow-y: auto;
+        }
+        
+        .location-modal.active {
+            transform: translateY(0);
+        }
+        
+        .location-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .location-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--gray);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .regions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .region-btn {
+            padding: 16px;
+            border: 1px solid var(--lighter-gray);
+            border-radius: var(--radius);
+            background: var(--white);
+            text-align: left;
+            cursor: pointer;
+        }
+        
+        .region-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .region-count {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 16px;
+            right: 16px;
+            background: var(--dark);
+            color: white;
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 2000;
+            text-align: center;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        /* Error Message */
+        .error-message {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--gray);
+        }
+        
+        .error-message i {
+            font-size: 32px;
+            color: var(--light-gray);
+            margin-bottom: 12px;
+        }
+        
+        /* Touch-friendly sizes */
+        button, .btn, .category-card, .ad-card {
+            min-height: 44px; /* Apple's recommended minimum touch target */
+        }
+        
+        /* Hide scrollbars but keep functionality */
+        .location-modal::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Performance optimizations */
+        .ad-image img {
+            will-change: transform;
+        }
+        
+        /* Prevent zoom on iOS inputs */
+        input, select, textarea {
+            font-size: 16px;
+        }
+        
+        /* Pull to refresh indicator */
+        .pull-to-refresh {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .pull-to-refresh.show {
+            opacity: 1;
+        }
+        
+        /* Main content area */
+        .main-content {
+            padding-top: 124px; /* Adjust based on header height */
+        }
+        
+        /* Floating action button animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .post-ad-btn:hover {
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        /* Notification dot */
+        .notification-dot {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--white);
+        }
+        
+        /* Responsive adjustments for tablets */
+        @media (min-width: 768px) {
+            .categories-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 16px;
+                padding: 20px;
+            }
+            
+            .ads-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+            
+            .swiper {
+                height: 200px;
+            }
+            
+            .section {
+                padding: 0 20px;
+            }
+            
+            .promo-banner {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+        
+        /* Responsive adjustments for desktop */
+        @media (min-width: 1024px) {
+            .categories-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+            
+            .ads-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .swiper {
+                height: 240px;
+            }
+            
+            .header {
+                padding: 16px 0;
+            }
+            
+            .header-top {
+                padding: 0 24px;
+            }
+            
+            .search-container {
+                padding: 0 24px;
+            }
+            
+            .nav-tabs {
+                padding: 0 24px;
+            }
+            
+            .section {
+                padding: 0 24px;
+            }
+            
+            .promo-banner {
+                margin: 24px;
+                padding: 24px;
+            }
+        }
+        
+        /* Safe area insets for iOS */
+        @supports (padding: max(0px)) {
+            .header {
+                padding-left: max(16px, env(safe-area-inset-left));
+                padding-right: max(16px, env(safe-area-inset-right));
+            }
+            
+            .bottom-nav {
+                padding-bottom: max(8px, env(safe-area-inset-bottom));
+            }
+            
+            .post-ad-btn {
+                right: max(16px, env(safe-area-inset-right));
+                bottom: calc(70px + env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div style="font-size: 14px; color: var(--gray);">Loading...</div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="mainHeader">
+        <div class="header-top">
+            <a href="/index.html" class="logo">
+                <div class="logo-icon">iB</div>
+                <span>iBlue</span>
+            </a>
+            
+            <div class="header-actions">
+                <a href="/chat.html" class="icon-btn">
+                    <i class="far fa-comment"></i>
+                    <span class="badge" id="messageCount">5</span>
+                </a>
+                <a href="/profile.html" class="icon-btn">
+                    <i class="far fa-user"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search for anything..." id="searchInput">
+            <button class="search-btn" id="searchBtn">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <a href="#products" class="tab active" data-filter="products">
+                <i class="fas fa-box" style="margin-right: 4px;"></i> Products
+            </a>
+            <!--  <a href="central-marketplace.html" class="tab" data-filter="central">
+                <i class="fas fa-map-marker-alt" style="margin-right: 4px;"></i> Products Central
+            </a>
+           <a href="wholesellers.html" class="tab" data-filter="shops">
+               <i class="fas fa-store" style="margin-right: 4px;">Wholesellers</i>
+            </a>
+            <a href="#urgent" class="tab" data-filter="urgent">
+                <i class="fas fa-clock" style="margin-right: 4px;">urgent</i> 
+            </a>
+               <a href="#featured" class="tab" data-filter="featured">
+                <i class="fas fa-star" style="margin-right: 4px;">featured</i> 
+            </a>-->
+        </div>
+    </header>
+
+    <!-- Location Bar -->
+    <div class="location-bar">
+        <i class="fas fa-map-marker-alt"></i>
+        <button class="location-btn" id="locationBtn">
+            <span id="currentLocation">Kampala, Central</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Categories -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Categories</h2>
+                <a href="/categories.html" class="section-link">View All</a>
+            </div>
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Categories will load here -->
+            </div>
+        </section>
+
+        <!-- Swiper Banner -->
+        <div class="swiper" id="bannerSwiper">
+            <div class="swiper-wrapper">
+                <!-- Banners will load here -->
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+
+        <!-- Spotlight Sections -->
+        <div id="spotlightSections">
+            <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Promo Banner -->
+        <div class="promo-banner">
+            <h3 class="promo-title">Sell Fast on iBlue!</h3>
+            <p class="promo-text">Boost your ad to get 3x more views</p>
+            <button class="promo-btn" id="boostAdBtn">Boost Now</button>
+        </div>
+
+        <!-- Recent Ads -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Recently Posted</h2>
+                <a href="/search-results.html?sort=recent" class="section-link">See More</a>
+            </div>
+            <div class="ads-grid" id="recentAds">
+                <!-- Skeleton loading -->
+                <div class="skeleton-grid">
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Ads -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Most Popular</h2>
+                <a href="/search-results.html?sort=popular" class="section-link">See More</a>
+            </div>
+            <div class="ads-grid" id="popularAds">
+                <!-- Skeleton loading -->
+                <div class="skeleton-grid">
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- For You Section -->
+        <section class="section" id="forYouSection" style="display: none;">
+            <div class="section-header">
+                <h2 class="section-title">For You</h2>
+                <a href="/search-results.html?filter=personal" class="section-link">See More</a>
+            </div>
+            <div class="ads-grid" id="forYouAds">
+                <!-- Personalized ads will load here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Post Ad Button -->
+    <button class="post-ad-btn" id="postAdBtn">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/index.html" class="nav-item active">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="/categories.html" class="nav-item">
+            <i class="fas fa-th-large nav-icon"></i>
+            <span>Categories</span>
+        </a>
+        <a href="/saved.html" class="nav-item">
+            <i class="far fa-heart nav-icon"></i>
+            <span>Saved</span>
+        </a>
+        <a href="/my-ads.html" class="nav-item">
+            <i class="fas fa-bullhorn nav-icon"></i>
+            <span>My Ads</span>
+        </a>
+        <a href="/messages.html" class="nav-item">
+            <i class="far fa-comment nav-icon"></i>
+            <span>Messages</span>
+        </a>
+    </nav>
+
+    <!-- Location Modal -->
+    <div class="location-modal" id="locationModal">
+        <div class="location-header">
+            <h2 class="location-title">Select Location</h2>
+            <button class="close-btn" id="closeLocationModal">&times;</button>
+        </div>
+        
+        <div class="regions-grid" id="regionsGrid">
+            <!-- Regions will load here -->
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ============================================
+        // GLOBAL CONFIGURATION
+        // ============================================
+        const SUPABASE_URL = 'https://uufhvmmgwzkxvvdbqemz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc';
+        
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Global State
+        let currentLocation = 'Kampala, Central';
+        let savedAds = new Set();
+        let currentUser = null;
+        let currentFilter = 'products';
+        let lastScrollTop = 0;
+        let scrollThreshold = 100;
+        let swiper = null;
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }, 1000);
+            
+            await checkAuth();
+            setupEventListeners();
+            setupScrollBehavior();
+            loadInitialData();
+        });
+
+        // ============================================
+        // HEADER SCROLL BEHAVIOR
+        // ============================================
+        function setupScrollBehavior() {
+            const header = document.getElementById('mainHeader');
+            let ticking = false;
+            
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        handleScroll(header);
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        }
+        
+        function handleScroll(header) {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            if (scrollTop > lastScrollTop && scrollTop > scrollThreshold) {
+                header.classList.add('hidden');
+            } else {
+                header.classList.remove('hidden');
+            }
+            
+            lastScrollTop = scrollTop;
+        }
+
+        // ============================================
+        // AUTHENTICATION & USER MANAGEMENT
+        // ============================================
+        async function checkAuth() {
+            try {
+                const { data: { session } } = await sb.auth.getSession();
+                if (session) {
+                    const { data: profile } = await sb
+                        .from('profiles')
+                        .select('id, full_name, is_verified')
+                        .eq('id', session.user.id)
+                        .single();
+                    
+                    if (profile) {
+                        currentUser = {
+                            id: profile.id,
+                            name: profile.full_name || 'User',
+                            isVerified: profile.is_verified
+                        };
+                        await loadSavedAds();
+                    }
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
+        }
+
+        async function loadSavedAds() {
+            if (!currentUser) return;
+            
+            try {
+                const { data: saved } = await sb
+                    .from('saved_ads')
+                    .select('ad_id')
+                    .eq('user_id', currentUser.id);
+                
+                if (saved) {
+                    savedAds = new Set(saved.map(item => item.ad_id));
+                }
+            } catch (error) {
+                console.error('Saved ads error:', error);
+            }
+        }
+
+        // ============================================
+        // VIEW TRACKING SYSTEM (USING SQL FUNCTION)
+        // ============================================
+        async function trackAdView(adId) {
+            try {
+                // Get user IP
+                let userIp = 'unknown';
+                try {
+                    const ipResponse = await fetch('https://api.ipify.org?format=json');
+                    if (ipResponse.ok) {
+                        const ipData = await ipResponse.json();
+                        userIp = ipData.ip || 'unknown';
+                    }
+                } catch (ipError) {
+                    console.log('IP detection failed');
+                }
+                
+                const userAgent = navigator.userAgent || 'unknown';
+                const viewerId = currentUser?.id || null;
+                
+                // Record view in ad_views table
+                const { data, error } = await sb
+                    .from('ad_views')
+                    .insert({
+                        ad_id: parseInt(adId),
+                        viewer_id: viewerId,
+                        ip_address: userIp,
+                        user_agent: userAgent,
+                        viewed_at: new Date().toISOString()
+                    });
+                
+                if (error) {
+                    console.error('Error recording view:', error);
+                }
+                
+                // Update view count in ads table using PostgreSQL function
+                await incrementViewCount(adId);
+                
+            } catch (error) {
+                console.error('View tracking failed:', error);
+                // Try to at least update the view count
+                await incrementViewCount(adId);
+            }
+        }
+
+        async function incrementViewCount(adId) {
+            try {
+                // Call the PostgreSQL function you created
+                const { data, error } = await sb.rpc('increment_ad_view_count', {
+                    ad_id_param: parseInt(adId)
+                });
+                
+                if (error) {
+                    console.error('Error incrementing view count via RPC:', error);
+                    // Fallback: manual update
+                    await manualIncrementViewCount(adId);
+                }
+                
+            } catch (error) {
+                console.error('View count increment failed:', error);
+            }
+        }
+
+        async function manualIncrementViewCount(adId) {
+            try {
+                // Fallback method if RPC fails
+                const { data: ad, error: fetchError } = await sb
+                    .from('ads')
+                    .select('view_count')
+                    .eq('id', parseInt(adId))
+                    .single();
+                
+                if (fetchError) {
+                    console.error('Error fetching ad:', fetchError);
+                    return;
+                }
+                
+                const newViewCount = (ad.view_count || 0) + 1;
+                
+                const { error: updateError } = await sb
+                    .from('ads')
+                    .update({ 
+                        view_count: newViewCount,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', parseInt(adId));
+                
+                if (updateError) {
+                    console.error('Error updating view count manually:', updateError);
+                }
+                
+            } catch (error) {
+                console.error('Manual view count increment failed:', error);
+            }
+        }
+
+        // ============================================
+        // AD CLICK HANDLING WITH VIEW TRACKING
+        // ============================================
+        function setupAdClickTracking(container) {
+            container.querySelectorAll('.ad-card').forEach(card => {
+                card.addEventListener('click', async function(e) {
+                    // Don't trigger on save button clicks
+                    if (e.target.closest('.save-btn')) {
+                        return;
+                    }
+                    
+                    const adId = this.dataset.adId;
+                    
+                    // Track view asynchronously (don't wait for it to complete)
+                    trackAdView(adId);
+                    
+                    // Redirect immediately
+                    window.location.href = `/ad-detail.html?id=${adId}`;
+                });
+            });
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        function setupEventListeners() {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch(this.value);
+                }
+            });
+            
+            searchBtn.addEventListener('click', function() {
+                performSearch(searchInput.value);
+            });
+
+            // Location modal
+            document.getElementById('locationBtn').addEventListener('click', () => {
+                document.getElementById('locationModal').classList.add('active');
+            });
+            
+            document.getElementById('closeLocationModal').addEventListener('click', () => {
+                document.getElementById('locationModal').classList.remove('active');
+            });
+
+            // Post ad button
+            document.getElementById('postAdBtn').addEventListener('click', () => {
+                if (currentUser) {
+                    window.location.href = '/post-ad.html';
+                } else {
+                    window.location.href = '/login.html?redirect=/post-ad.html';
+                }
+            });
+
+            // Boost ad button
+            document.getElementById('boostAdBtn').addEventListener('click', () => {
+                if (currentUser) {
+                    window.location.href = '/boost-ad.html';
+                } else {
+                    window.location.href = '/login.html?redirect=/boost-ad.html';
+                }
+            });
+
+            // Tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    filterAds();
+                });
+            });
+        }
+
+        // ============================================
+        // DATA LOADING FUNCTIONS
+        // ============================================
+        function performSearch(query) {
+            if (query && query.trim()) {
+                window.location.href = `/search-results.html?query=${encodeURIComponent(query.trim())}`;
+            } else {
+                showToast('Please enter search term');
+            }
+        }
+
+        async function loadInitialData() {
+            loadCategories();
+            loadBanners();
+            
+            setTimeout(() => loadSpotlights(), 300);
+            setTimeout(() => loadRecentAds(), 500);
+            setTimeout(() => loadPopularAds(), 700);
+            loadRegions();
+            
+            if (currentUser) {
+                setTimeout(() => {
+                    document.getElementById('forYouSection').style.display = 'block';
+                    loadForYouAds();
+                }, 900);
+            }
+        }
+
+        async function loadCategories() {
+            const container = document.getElementById('categoriesGrid');
+            
+            try {
+                const { data: categories } = await sb
+                    .from('categories')
+                    .select('id, name, icon, color_hex')
+                    .eq('is_active', true)
+                    .is('parent_id', null)
+                    .order('display_order', { ascending: true })
+                    .limit(8);
+                
+                if (categories && categories.length > 0) {
+                    let html = '';
+                    categories.forEach(cat => {
+                        const color = cat.color_hex || '#3B82F6';
+                        html += `
+                            <a href="/category.html?id=${cat.id}" class="category-card">
+                                <div class="category-icon" style="color: ${color};">
+                                    <i class="fas fa-${cat.icon || 'tag'}"></i>
+                                </div>
+                                <div class="category-name">${cat.name}</div>
+                            </a>
+                        `;
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = getDefaultCategories();
+                }
+            } catch (error) {
+                console.error('Categories error:', error);
+                container.innerHTML = getDefaultCategories();
+            }
+        }
+
+        function getDefaultCategories() {
+            const categories = [
+                { id: 1, name: 'Phones', icon: 'mobile-alt' },
+                { id: 2, name: 'Cars', icon: 'car' },
+                { id: 3, name: 'Houses', icon: 'home' },
+                { id: 4, name: 'Jobs', icon: 'briefcase' },
+                { id: 5, name: 'Electronics', icon: 'tv' },
+                { id: 6, name: 'Fashion', icon: 'tshirt' },
+                { id: 7, name: 'Services', icon: 'tools' },
+                { id: 8, name: 'Furniture', icon: 'couch' }
+            ];
+            
+            return categories.map(cat => `
+                <a href="/category.html?id=${cat.id}" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-${cat.icon}"></i>
+                    </div>
+                    <div class="category-name">${cat.name}</div>
+                </a>
+            `).join('');
+        }
+
+        async function loadBanners() {
+            const wrapper = document.querySelector('.swiper-wrapper');
+            
+            try {
+                const banners = [
+                    { id: 1, image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&auto=format&fit=crop', title: 'Sell Fast' },
+                    { id: 2, image: 'https://images.unsplash.com/photo-1556742044-3c52d6e88c62?w=800&auto=format&fit=crop', title: 'Verified Sellers' },
+                    { id: 3, image: 'https://images.unsplash.com/photo-1556740738-6eb8fa3c5be0?w=800&auto=format&fit=crop', title: 'Safe Payments' },
+                ];
+                
+                let html = '';
+                banners.forEach(banner => {
+                    html += `
+                        <div class="swiper-slide">
+                            <img src="${banner.image}" alt="${banner.title}" 
+                                 onerror="this.onerror=null; this.style.background='#3B82F6'; this.style.color='white'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.style.fontWeight='bold'; this.style.fontSize='20px'; this.style.height='100%'; this.style.width='100%'; this.style.padding='20px'; this.textContent='${escapeHtml(banner.title)}'">
+                        </div>
+                    `;
+                });
+                
+                wrapper.innerHTML = html;
+                
+                // Initialize Swiper
+                if (swiper) {
+                    swiper.destroy();
+                }
+                swiper = new Swiper('#bannerSwiper', {
+                    autoplay: { delay: 5000 },
+                    pagination: { el: '.swiper-pagination', clickable: true },
+                    loop: true,
+                    speed: 500,
+                    effect: 'fade',
+                    fadeEffect: {
+                        crossFade: true
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Banners error:', error);
+            }
+        }
+
+        async function loadSpotlights() {
+            const container = document.getElementById('spotlightSections');
+            
+            try {
+                const { data: spotlights } = await sb
+                    .from('homepage_spotlights')
+                    .select(`
+                        spotlight_type,
+                        ads!homepage_spotlights_ad_id_fkey (
+                            id,
+                            title,
+                            price,
+                            currency,
+                            is_negotiable,
+                            image_urls,
+                            view_count,
+                            region,
+                            district,
+                            seller_id,
+                            profiles!ads_seller_id_fkey (full_name, is_verified),
+                            categories!ads_category_id_fkey (name),
+                            ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
+                        )
+                    `)
+                    .eq('is_active', true)
+                    .gt('ends_at', new Date().toISOString())
+                    .order('display_order', { ascending: true })
+                    .limit(8);
+                
+                if (spotlights && spotlights.length > 0) {
+                    const section = document.createElement('section');
+                    section.className = 'section';
+                    section.innerHTML = `
+                        <div class="section-header">
+                            <h2 class="section-title">Featured Deals</h2>
+                            <a href="/search-results.html?filter=featured" class="section-link">See More</a>
+                        </div>
+                        <div class="ads-grid">
+                            ${spotlights.map(spotlight => createAdCard(spotlight.ads)).join('')}
+                        </div>
+                    `;
+                    
+                    container.innerHTML = '';
+                    container.appendChild(section);
+                    
+                    // Add click tracking
+                    setupAdClickTracking(section);
+                }
+            } catch (error) {
+                console.error('Spotlights error:', error);
+            }
+        }
+
+        async function loadRecentAds() {
+            const container = document.getElementById('recentAds');
+            
+            try {
+                const { data: ads } = await sb
+                    .from('ads')
+                    .select(`
+                        id,
+                        title,
+                        price,
+                        currency,
+                        is_negotiable,
+                        image_urls,
+                        view_count,
+                        region,
+                        district,
+                        created_at,
+                        seller_id,
+                        profiles!ads_seller_id_fkey (is_verified),
+                        categories!ads_category_id_fkey (name),
+                        ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
+                    `)
+                    .eq('status', 'active')
+                    .order('created_at', { ascending: false })
+                    .limit(8);
+                
+                if (ads && ads.length > 0) {
+                    container.innerHTML = ads.map(ad => createAdCard(ad)).join('');
+                    setupAdClickTracking(container);
+                }
+            } catch (error) {
+                console.error('Recent ads error:', error);
+                container.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-triangle"></i><p>Failed to load recent ads</p></div>';
+            }
+        }
+
+        async function loadPopularAds() {
+            const container = document.getElementById('popularAds');
+            
+            try {
+                const { data: ads } = await sb
+                    .from('ads')
+                    .select(`
+                        id,
+                        title,
+                        price,
+                        currency,
+                        is_negotiable,
+                        image_urls,
+                        view_count,
+                        region,
+                        district,
+                        seller_id,
+                        profiles!ads_seller_id_fkey (is_verified),
+                        categories!ads_category_id_fkey (name),
+                        ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
+                    `)
+                    .eq('status', 'active')
+                    .order('view_count', { ascending: false })
+                    .limit(8);
+                
+                if (ads && ads.length > 0) {
+                    container.innerHTML = ads.map(ad => createAdCard(ad)).join('');
+                    setupAdClickTracking(container);
+                }
+            } catch (error) {
+                console.error('Popular ads error:', error);
+                container.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-triangle"></i><p>Failed to load popular ads</p></div>';
+            }
+        }
+
+        function createAdCard(ad) {
+            const isSaved = savedAds.has(ad.id);
+            const price = ad.price ? `UGX ${parseInt(ad.price).toLocaleString()}` : 'Price on request';
+            const imageUrl = ad.image_urls && ad.image_urls.length > 0 ? ad.image_urls[0] : null;
+            const location = ad.district || ad.region || 'Uganda';
+            const isVerified = ad.profiles?.is_verified || false;
+            
+            // Check promotions
+            const promotions = ad.ad_promotions || [];
+            const hasFeatured = promotions.some(p => p.promotion_type === 'featured' && p.is_active);
+            const hasUrgent = promotions.some(p => p.promotion_type === 'urgent' && p.is_active);
+            const hasBoost = promotions.some(p => p.promotion_type === 'boost' && p.is_active);
+            
+            let badges = '';
+            if (hasFeatured) badges += '<span class="ad-badge featured">FEATURED</span>';
+            else if (hasUrgent) badges += '<span class="ad-badge urgent">URGENT</span>';
+            else if (hasBoost) badges += '<span class="ad-badge">BOOSTED</span>';
+            if (isVerified) badges += '<span class="ad-badge verified">VERIFIED</span>';
+            
+            return `
+                <div class="ad-card" data-ad-id="${ad.id}">
+                    ${badges}
+                    <button class="save-btn ${isSaved ? 'saved' : ''}" onclick="event.stopPropagation(); toggleSaveAd(${ad.id}, this)">
+                        <i class="${isSaved ? 'fas' : 'far'} fa-heart"></i>
+                    </button>
+                    <div class="ad-image">
+                        ${imageUrl ? 
+                            `<img src="${imageUrl}" alt="${ad.title}" loading="lazy">` : 
+                            `<div class="image-placeholder"><i class="fas fa-image"></i></div>`
+                        }
+                    </div>
+                    <div class="ad-content">
+                        <h3 class="ad-title">${escapeHtml(ad.title)}</h3>
+                        <div class="ad-price ${ad.is_negotiable ? 'negotiable' : ''}">
+                            ${price} ${ad.is_negotiable ? '(Neg.)' : ''}
+                        </div>
+                        <div class="ad-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(location)}</span>
+                            <span><i class="fas fa-eye"></i> ${(ad.view_count || 0).toLocaleString()}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadRegions() {
+            const container = document.getElementById('regionsGrid');
+            
+            try {
+                const { data: regions } = await sb
+                    .from('ads')
+                    .select('region')
+                    .eq('status', 'active')
+                    .not('region', 'is', null)
+                    .limit(20);
+                
+                if (regions) {
+                    const counts = {};
+                    regions.forEach(ad => {
+                        const region = ad.region || 'Other';
+                        counts[region] = (counts[region] || 0) + 1;
+                    });
+                    
+                    const regionArray = Object.entries(counts)
+                        .map(([name, count]) => ({ name, ads: count }))
+                        .sort((a, b) => b.ads - a.ads)
+                        .slice(0, 6);
+                    
+                    let html = '';
+                    regionArray.forEach(region => {
+                        html += `
+                            <button class="region-btn" onclick="selectRegion('${escapeHtml(region.name)}')">
+                                <div class="region-name">${escapeHtml(region.name)}</div>
+                                <div class="region-count">${region.ads} ads</div>
+                            </button>
+                        `;
+                    });
+                    
+                    container.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Regions error:', error);
+            }
+        }
+
+        async function loadForYouAds() {
+            const container = document.getElementById('forYouAds');
+            
+            try {
+                const { data: ads } = await sb
+                    .from('ads')
+                    .select(`
+                        id,
+                        title,
+                        price,
+                        currency,
+                        is_negotiable,
+                        image_urls,
+                        view_count,
+                        region,
+                        district,
+                        seller_id,
+                        profiles!ads_seller_id_fkey (is_verified),
+                        categories!ads_category_id_fkey (name),
+                        ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
+                    `)
+                    .eq('status', 'active')
+                    .limit(4);
+                
+                if (ads) {
+                    container.innerHTML = ads.map(ad => createAdCard(ad)).join('');
+                    setupAdClickTracking(container);
+                }
+            } catch (error) {
+                console.error('For you ads error:', error);
+            }
+        }
+
+        // ============================================
+        // FILTER FUNCTIONS
+        // ============================================
+        async function filterAds() {
+            const sections = ['recentAds', 'popularAds'];
+            sections.forEach(section => {
+                const container = document.getElementById(section);
+                container.innerHTML = `
+                    <div class="skeleton-grid">
+                        <div class="skeleton-card">
+                            <div class="skeleton-image"></div>
+                            <div class="skeleton-text"></div>
+                            <div class="skeleton-text short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-image"></div>
+                            <div class="skeleton-text"></div>
+                            <div class="skeleton-text short"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            switch(currentFilter) {
+                case 'products':
+                    loadRecentAds();
+                    loadPopularAds();
+                    break;
+                    
+                case 'central':
+                    filterByRegion('Central');
+                    break;
+                    
+                case 'shops':
+                    filterByVerifiedSellers();
+                    break;
+                    
+                case 'urgent':
+                    filterByPromotion('urgent');
+                    break;
+                    
+                case 'featured':
+                    filterByPromotion('featured');
+                    break;
+            }
+        }
+
+        async function filterByRegion(region) {
+            const container = document.getElementById('recentAds');
+            
+            try {
+                const { data: ads } = await sb
+                    .from('ads')
+                    .select(`
+                        id,
+                        title,
+                        price,
+                        currency,
+                        is_negotiable,
+                        image_urls,
+                        view_count,
+                        region,
+                        district,
+                        seller_id,
+                        profiles!ads_seller_id_fkey (is_verified),
+                        categories!ads_category_id_fkey (name),
+                        ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
+                    `)
+                    .eq('status', 'active')
+                    .eq('region', region)
+                    .limit(8);
+                
+                if (ads) {
+                    container.innerHTML = ads.map(ad => createAdCard(ad)).join('');
+                    setupAdClickTracking(container);
+                }
+            } catch (error) {
+                console.error('Filter by region error:', error);
+            }
+        }
+
+        async function filterByVerifiedSellers() {
+            const container = document.getElementById('recentAds');
+            
+            try {
+                const { data: ads } = await sb
+                    .from('ads')
+                    .select(`
+                        id,
+                        title,
+                        price,
+                        currency,
+                        is_negotiable,
+                        image_urls,
+                        view_count,
+                        region,
+                        district,
+                        seller_id,
+                        profiles!ads_seller_id_fkey (is_verified),
+                        categories!ads_category_id_fkey (name),
+                        ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
+                    `)
+                    .eq('status', 'active')
+                    .eq('profiles.is_verified', true)
+                    .limit(8);
+                
+                if (ads) {
+                    container.innerHTML = ads.map(ad => createAdCard(ad)).join('');
+                    setupAdClickTracking(container);
+                }
+            } catch (error) {
+                console.error('Filter by verified sellers error:', error);
+            }
+        }
+
+        async function filterByPromotion(promotionType) {
+            const container = document.getElementById('recentAds');
+            
+            try {
+                const { data: ads } = await sb
+                    .from('ads')
+                    .select(`
+                        id,
+                        title,
+                        price,
+                        currency,
+                        is_negotiable,
+                        image_urls,
+                        view_count,
+                        region,
+                        district,
+                        seller_id,
+                        profiles!ads_seller_id_fkey (is_verified),
+                        ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
+                    `)
+                    .eq('status', 'active')
+                    .eq('ad_promotions.promotion_type', promotionType)
+                    .eq('ad_promotions.is_active', true)
+                    .limit(8);
+                
+                if (ads) {
+                    container.innerHTML = ads.map(ad => createAdCard(ad)).join('');
+                    setupAdClickTracking(container);
+                }
+            } catch (error) {
+                console.error('Filter by promotion error:', error);
+            }
+        }
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        async function toggleSaveAd(adId, button) {
+            if (!currentUser) {
+                window.location.href = '/login.html?redirect=/index.html';
+                return;
+            }
+            
+            try {
+                if (savedAds.has(adId)) {
+                    await sb
+                        .from('saved_ads')
+                        .delete()
+                        .eq('user_id', currentUser.id)
+                        .eq('ad_id', adId);
+                    
+                    savedAds.delete(adId);
+                    button.classList.remove('saved');
+                    button.innerHTML = '<i class="far fa-heart"></i>';
+                    showToast('Removed from saved');
+                } else {
+                    await sb
+                        .from('saved_ads')
+                        .insert({
+                            user_id: currentUser.id,
+                            ad_id: adId
+                        });
+                    
+                    savedAds.add(adId);
+                    button.classList.add('saved');
+                    button.innerHTML = '<i class="fas fa-heart"></i>';
+                    showToast('Added to saved');
+                }
+            } catch (error) {
+                console.error('Toggle save error:', error);
+                showToast('Error saving ad');
+            }
+        }
+
+        function selectRegion(regionName) {
+            currentLocation = regionName;
+            document.getElementById('currentLocation').textContent = regionName;
+            document.getElementById('locationModal').classList.remove('active');
+            showToast(`Location: ${regionName}`);
+            
+            if (currentFilter === 'central') {
+                filterByRegion(regionName);
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ============================================
+        // GLOBAL EXPORTS (for other pages)
+        // ============================================
+        window.toggleSaveAd = toggleSaveAd;
+        window.selectRegion = selectRegion;
+        window.performSearch = performSearch;
+        window.trackAdView = trackAdView;
+        window.incrementViewCount = incrementViewCount;
+        window.manualIncrementViewCount = manualIncrementViewCount;
+        window.sb = sb;
+        window.currentUser = currentUser;
+        window.savedAds = savedAds;
+        window.checkAuth = checkAuth;
+        window.loadSavedAds = loadSavedAds;
+        window.createAdCard = createAdCard;
+        window.escapeHtml = escapeHtml;
+        window.showToast = showToast;
+        window.setupAdClickTracking = setupAdClickTracking;
+    </script>
+</body>
+</html>

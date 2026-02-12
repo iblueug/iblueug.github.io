@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Edit Ad | iBlue Uganda</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #475569;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --light-gray: #e2e8f0;
+      --border: #cbd5e1;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      background: #f1f5f9;
+      color: var(--dark);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--dark);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .header-title {
+      flex: 1;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+    }
+
+    .delete-btn:hover {
+      background: #fee2e2;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Form Card */
+    .form-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title i {
+      color: var(--primary);
+    }
+
+    .required {
+      color: var(--danger);
+      margin-left: 4px;
+    }
+
+    /* Form Groups */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 0.95rem;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      color: var(--dark);
+      background: white;
+      transition: all 0.3s;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.5;
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+
+    /* Price Input */
+    .price-input {
+      position: relative;
+    }
+
+    .currency {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .price-input input {
+      padding-left: 50px;
+    }
+
+    /* Image Upload */
+    .image-upload {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 30px 20px;
+      text-align: center;
+      background: var(--light);
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 16px;
+    }
+
+    .image-upload:hover {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.05);
+    }
+
+    .upload-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .upload-text {
+      color: var(--dark);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .upload-subtext {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Image Preview */
+    .image-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .preview-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .remove-btn:hover {
+      background: var(--danger);
+    }
+
+    /* Checkbox */
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+    }
+
+    .checkbox-group input:checked + .checkbox {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .status-active {
+      background: #dcfce7;
+      color: var(--success);
+    }
+
+    .status-sold {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    .status-expired {
+      background: #fef3c7;
+      color: var(--warning);
+    }
+
+    .status-draft {
+      background: #e0e7ff;
+      color: var(--primary);
+    }
+
+    /* Location Grid */
+    .location-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      position: sticky;
+      bottom: 0;
+      background: #f1f5f9;
+      padding: 16px 0;
+      z-index: 100;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: var(--light);
+      color: var(--dark);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--light-gray);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Alert */
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .alert-success {
+      background: #dcfce7;
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      color: var(--danger);
+      border-left: 4px solid var(--danger);
+    }
+
+    .alert-info {
+      background: #e0f2fe;
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+    }
+
+    /* Validation */
+    .error-message {
+      color: var(--danger);
+      font-size: 0.85rem;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .form-input.error,
+    .form-select.error,
+    .form-textarea.error {
+      border-color: var(--danger);
+    }
+
+    .form-input.error + .error-message,
+    .form-select.error + .error-message,
+    .form-textarea.error + .error-message {
+      display: block;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 400px;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .modal-body {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .modal-body i {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    .modal-success i {
+      color: var(--success);
+    }
+
+    .modal-danger i {
+      color: var(--danger);
+    }
+
+    .modal-footer {
+      padding: 20px;
+      display: flex;
+      gap: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .location-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .container {
+        padding: 12px;
+      }
+      
+      .form-card {
+        padding: 16px;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <button class="back-btn" onclick="goBack()">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+  <div class="header-title">Edit Ad</div>
+  <button class="delete-btn" onclick="confirmDelete()">
+    <i class="fas fa-trash-alt"></i>
+  </button>
+</header>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal" id="successModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Ad Updated Successfully!</h3>
+    </div>
+    <div class="modal-body modal-success">
+      <i class="fas fa-check-circle"></i>
+      <p>Your ad has been updated and is now live on the marketplace.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="viewAd()">
+        View Ad
+      </button>
+      <button class="btn btn-primary" onclick="goToMyAds()">
+        My Ads
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal" id="deleteModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Delete Ad</h3>
+    </div>
+    <div class="modal-body modal-danger">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>Are you sure you want to delete this ad? This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">
+        Cancel
+      </button>
+      <button class="btn btn-danger" onclick="deleteAd()">
+        Delete Ad
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Form -->
+<div class="container">
+  <!-- Alert Messages -->
+  <div class="alert" id="alertMessage"></div>
+
+  <!-- Ad Status -->
+  <div id="adStatus" style="display: none;"></div>
+
+  <!-- Basic Details Section -->
+  <div class="form-card">
+    <h3 class="section-title"><i class="fas fa-info-circle"></i> Basic Details</h3>
+    
+    <div class="form-group">
+      <label class="form-label">Title <span class="required">*</span></label>
+      <input type="text" class="form-input" id="title" placeholder="What are you selling?" maxlength="100">
+      <div class="error-message" id="titleError">Please enter a title (max 100 characters)</div>
+      <div class="char-count"><span id="titleCount">0</span>/100</div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Description <span class="required">*</span></label>
+      <textarea class="form-textarea" id="description" placeholder="Describe your item in detail..." maxlength="2000"></textarea>
+      <div class="error-message" id="descriptionError">Please enter a description (max 2000 characters)</div>
+      <div class="char-count"><span id="descriptionCount">0</span>/2000</div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Category <span class="required">*</span></label>
+      <select class="form-select" id="category">
+        <option value="">Select a category</option>
+        <!-- Categories will be populated dynamically -->
+      </select>
+      <div class="error-message" id="categoryError">Please select a category</div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Subcategory</label>
+      <select class="form-select" id="subcategory" disabled>
+        <option value="">Select a subcategory</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Condition</label>
+      <select class="form-select" id="condition">
+        <option value="unknown">Select condition</option>
+        <option value="new">New</option>
+        <option value="used">Used</option>
+        <option value="refurbished">Refurbished</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Price Section -->
+  <div class="form-card">
+    <h3 class="section-title"><i class="fas fa-tag"></i> Pricing</h3>
+    
+    <div class="form-group">
+      <label class="form-label">Price (UGX) <span class="required">*</span></label>
+      <div class="price-input">
+        <span class="currency">UGX</span>
+        <input type="number" class="form-input" id="price" placeholder="0" min="0" step="1000">
+      </div>
+      <div class="error-message" id="priceError">Please enter a valid price</div>
+    </div>
+    
+    <div class="checkbox-group">
+      <input type="checkbox" id="negotiable">
+      <span class="checkbox"><i class="fas fa-check"></i></span>
+      <label for="negotiable" style="cursor: pointer;">Price is negotiable</label>
+    </div>
+  </div>
+
+  <!-- Location Section -->
+  <div class="form-card">
+    <h3 class="section-title"><i class="fas fa-map-marker-alt"></i> Location Details</h3>
+    
+    <div class="location-grid">
+      <div class="form-group">
+        <label class="form-label">Region <span class="required">*</span></label>
+        <select class="form-select" id="region">
+          <option value="">Select region</option>
+          <option value="Central">Central</option>
+          <option value="Northern">Northern</option>
+          <option value="Eastern">Eastern</option>
+          <option value="Western">Western</option>
+        </select>
+        <div class="error-message" id="regionError">Please select a region</div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">District <span class="required">*</span></label>
+        <input type="text" class="form-input" id="district" placeholder="e.g., Kampala">
+        <div class="error-message" id="districtError">Please enter your district</div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Specific Location</label>
+      <input type="text" class="form-input" id="specificLocation" placeholder="e.g., Ntinda, Kampala">
+    </div>
+  </div>
+
+  <!-- Photos Section -->
+  <div class="form-card">
+    <h3 class="section-title"><i class="fas fa-camera"></i> Photos</h3>
+    <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 16px;">
+      First photo will be the main image. You can upload up to 10 photos.
+    </p>
+    
+    <div class="image-upload" id="imageUpload">
+      <div class="upload-icon">
+        <i class="fas fa-cloud-upload-alt"></i>
+      </div>
+      <div class="upload-text">Tap to add more photos</div>
+      <div class="upload-subtext">JPEG, PNG (max 5MB each)</div>
+      <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+    </div>
+    
+    <div class="image-preview" id="imagePreview">
+      <!-- Preview images will appear here -->
+    </div>
+    
+    <div class="form-group" style="margin-top: 20px;">
+      <label class="form-label">Video URL (Optional)</label>
+      <input type="url" class="form-input" id="videoUrl" placeholder="https://youtube.com/watch?v=...">
+      <div style="font-size: 0.85rem; color: var(--gray); margin-top: 4px;">
+        Paste YouTube or other video link
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Section -->
+  <div class="form-card">
+    <h3 class="section-title"><i class="fas fa-phone"></i> Contact Information</h3>
+    
+    <div class="form-group">
+      <label class="form-label">Contact Phone</label>
+      <input type="tel" class="form-input" id="contactPhone" placeholder="+256 XXX XXX XXX">
+      <div style="font-size: 0.85rem; color: var(--gray); margin-top: 4px;">
+        This will be displayed on your ad. Leave empty to use your profile phone.
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">WhatsApp Number (Optional)</label>
+      <input type="tel" class="form-input" id="whatsapp" placeholder="+256 XXX XXX XXX">
+    </div>
+    
+    <div class="checkbox-group">
+      <input type="checkbox" id="showProfilePhone">
+      <span class="checkbox"><i class="fas fa-check"></i></span>
+      <label for="showProfilePhone" style="cursor: pointer;">Show my profile phone number</label>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button class="btn btn-secondary" onclick="goBack()">
+      <i class="fas fa-times"></i> Cancel
+    </button>
+    <button class="btn btn-primary" onclick="saveAd()">
+      <i class="fas fa-save"></i> Save Changes
+    </button>
+  </div>
+</div>
+
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // Initialize Supabase
+  const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
+  const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  // Global variables
+  let adId = null;
+  let adData = null;
+  let categories = [];
+  let subcategories = [];
+  let existingImages = [];
+  let newImages = [];
+  let removedImages = [];
+  let currentUser = null;
+
+  // DOM Elements
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  const alertMessage = document.getElementById('alertMessage');
+  const adStatus = document.getElementById('adStatus');
+
+  // Get ad ID from URL
+  function getAdIdFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('id');
+  }
+
+  // Initialize page
+  document.addEventListener('DOMContentLoaded', async function() {
+    adId = getAdIdFromUrl();
+    
+    if (!adId) {
+      showAlert('Ad ID not found in URL', 'error');
+      setTimeout(() => window.location.href = 'my-ads.html', 2000);
+      return;
+    }
+
+    await checkAuth();
+    await loadAdData();
+    await loadCategories();
+    setupEventListeners();
+  });
+
+  // Check authentication
+  async function checkAuth() {
+    const { data: { user }, error } = await sb.auth.getUser();
+    
+    if (error || !user) {
+      window.location.href = 'login.html';
+      return;
+    }
+    
+    currentUser = user;
+  }
+
+  // Load ad data
+  async function loadAdData() {
+    try {
+      loadingOverlay.classList.add('active');
+      
+      const { data: ad, error } = await sb
+        .from('ads')
+        .select('*')
+        .eq('id', adId)
+        .single();
+      
+      if (error) throw error;
+      
+      // Check if user owns this ad
+      if (ad.seller_id !== currentUser.id) {
+        showAlert('You do not have permission to edit this ad', 'error');
+        setTimeout(() => window.location.href = 'my-ads.html', 2000);
+        return;
+      }
+      
+      adData = ad;
+      populateForm(ad);
+      updateAdStatus(ad.status);
+      
+    } catch (error) {
+      console.error('Error loading ad:', error);
+      showAlert('Error loading ad data', 'error');
+      setTimeout(() => window.location.href = 'my-ads.html', 2000);
+    } finally {
+      loadingOverlay.classList.remove('active');
+    }
+  }
+
+  // Load categories
+  async function loadCategories() {
+    try {
+      const { data, error } = await sb
+        .from('categories')
+        .select('*')
+        .order('display_order');
+      
+      if (error) throw error;
+      
+      categories = data.filter(c => !c.parent_id);
+      subcategories = data.filter(c => c.parent_id);
+      
+      const categorySelect = document.getElementById('category');
+      categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = category.name;
+        categorySelect.appendChild(option);
+      });
+      
+      // Set selected category
+      if (adData) {
+        categorySelect.value = adData.category_id;
+        updateSubcategories();
+      }
+      
+    } catch (error) {
+      console.error('Error loading categories:', error);
+      showAlert('Failed to load categories', 'error');
+    }
+  }
+
+  // Update subcategories based on selected category
+  function updateSubcategories() {
+    const categoryId = parseInt(document.getElementById('category').value);
+    const subcategorySelect = document.getElementById('subcategory');
+    subcategorySelect.innerHTML = '<option value="">Select a subcategory</option>';
+    
+    if (categoryId) {
+      const filteredSubcategories = subcategories.filter(s => s.parent_id === categoryId);
+      
+      if (filteredSubcategories.length > 0) {
+        subcategorySelect.disabled = false;
+        filteredSubcategories.forEach(sub => {
+          const option = document.createElement('option');
+          option.value = sub.id;
+          option.textContent = sub.name;
+          subcategorySelect.appendChild(option);
+        });
+        
+        // Set selected subcategory if exists
+        if (adData.subcategory_id) {
+          subcategorySelect.value = adData.subcategory_id;
+        }
+      } else {
+        subcategorySelect.disabled = true;
+      }
+    } else {
+      subcategorySelect.disabled = true;
+    }
+  }
+
+  // Populate form with ad data
+  function populateForm(ad) {
+    // Basic details
+    document.getElementById('title').value = ad.title;
+    document.getElementById('description').value = ad.description;
+    document.getElementById('condition').value = ad.condition || 'unknown';
+    document.getElementById('price').value = ad.price;
+    document.getElementById('negotiable').checked = ad.is_negotiable || false;
+    
+    // Location
+    document.getElementById('region').value = ad.region || '';
+    document.getElementById('district').value = ad.district || '';
+    document.getElementById('specificLocation').value = ad.specific_location || '';
+    
+    // Contact
+    document.getElementById('contactPhone').value = ad.contact_phone || '';
+    document.getElementById('whatsapp').value = ad.contact_whatsapp || '';
+    document.getElementById('showProfilePhone').checked = ad.show_profile_phone || false;
+    
+    // Video
+    document.getElementById('videoUrl').value = ad.video_url || '';
+    
+    // Update character counts
+    updateCharCount('title');
+    updateCharCount('description');
+    
+    // Load existing images
+    existingImages = ad.image_urls || [];
+    updateImagePreview();
+  }
+
+  // Update ad status badge
+  function updateAdStatus(status) {
+    const statusMap = {
+      'active': { class: 'status-active', label: 'Active', icon: 'check-circle' },
+      'sold': { class: 'status-sold', label: 'Sold', icon: 'check-circle' },
+      'expired': { class: 'status-expired', label: 'Expired', icon: 'clock' },
+      'draft': { class: 'status-draft', label: 'Draft', icon: 'edit' },
+      'banned': { class: 'status-sold', label: 'Banned', icon: 'ban' }
+    };
+    
+    const statusInfo = statusMap[status] || { class: 'status-draft', label: 'Unknown', icon: 'question-circle' };
+    
+    adStatus.innerHTML = `
+      <div class="status-badge ${statusInfo.class}">
+        <i class="fas fa-${statusInfo.icon}"></i>
+        ${statusInfo.label}
+      </div>
+    `;
+    adStatus.style.display = 'block';
+  }
+
+  // Setup event listeners
+  function setupEventListeners() {
+    // Title character count
+    document.getElementById('title').addEventListener('input', function() {
+      updateCharCount('title');
+    });
+    
+    // Description character count
+    document.getElementById('description').addEventListener('input', function() {
+      updateCharCount('description');
+    });
+    
+    // Category change
+    document.getElementById('category').addEventListener('change', updateSubcategories);
+    
+    // Image upload
+    document.getElementById('imageUpload').addEventListener('click', () => {
+      document.getElementById('imageInput').click();
+    });
+    
+    document.getElementById('imageInput').addEventListener('change', handleImageUpload);
+  }
+
+  // Update character count
+  function updateCharCount(fieldId) {
+    const field = document.getElementById(fieldId);
+    const countElement = document.getElementById(fieldId + 'Count');
+    if (field && countElement) {
+      countElement.textContent = field.value.length;
+    }
+  }
+
+  // Handle image upload
+  function handleImageUpload(event) {
+    const files = Array.from(event.target.files);
+    
+    // Check total images
+    if (existingImages.length + newImages.length + files.length > 10) {
+      showAlert('Maximum 10 images allowed', 'error');
+      return;
+    }
+    
+    for (const file of files) {
+      // Check file type
+      if (!file.type.match('image.*')) {
+        showAlert('Please upload only images', 'error');
+        continue;
+      }
+      
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        showAlert(`Image ${file.name} is too large (max 5MB)`, 'error');
+        continue;
+      }
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        newImages.push({
+          file: file,
+          dataUrl: e.target.result
+        });
+        updateImagePreview();
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    // Reset input
+    event.target.value = '';
+  }
+
+  // Update image preview
+  function updateImagePreview() {
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+    
+    // Display existing images
+    existingImages.forEach((imageUrl, index) => {
+      if (removedImages.includes(index)) return;
+      
+      const previewItem = document.createElement('div');
+      previewItem.className = 'preview-item';
+      
+      previewItem.innerHTML = `
+        <img src="${imageUrl}" class="preview-image" alt="Preview">
+        <button class="remove-btn" onclick="removeExistingImage(${index})">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      
+      preview.appendChild(previewItem);
+    });
+    
+    // Display new images
+    newImages.forEach((image, index) => {
+      const previewItem = document.createElement('div');
+      previewItem.className = 'preview-item';
+      
+      previewItem.innerHTML = `
+        <img src="${image.dataUrl}" class="preview-image" alt="Preview">
+        <button class="remove-btn" onclick="removeNewImage(${index})">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      
+      preview.appendChild(previewItem);
+    });
+  }
+
+  // Remove existing image
+  function removeExistingImage(index) {
+    removedImages.push(index);
+    updateImagePreview();
+  }
+
+  // Remove new image
+  function removeNewImage(index) {
+    newImages.splice(index, 1);
+    updateImagePreview();
+  }
+
+  // Validate form
+  function validateForm() {
+    let isValid = true;
+    
+    // Clear previous errors
+    document.querySelectorAll('.error-message').forEach(el => {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(el => {
+      el.classList.remove('error');
+    });
+    
+    // Validate required fields
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const category = document.getElementById('category').value;
+    const price = document.getElementById('price').value;
+    const region = document.getElementById('region').value;
+    const district = document.getElementById('district').value.trim();
+    
+    if (!title || title.length < 5) {
+      document.getElementById('title').classList.add('error');
+      document.getElementById('titleError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (!description || description.length < 20) {
+      document.getElementById('description').classList.add('error');
+      document.getElementById('descriptionError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (!category) {
+      document.getElementById('category').classList.add('error');
+      document.getElementById('categoryError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (!price || parseFloat(price) < 0) {
+      document.getElementById('price').classList.add('error');
+      document.getElementById('priceError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (!region) {
+      document.getElementById('region').classList.add('error');
+      document.getElementById('regionError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (!district) {
+      document.getElementById('district').classList.add('error');
+      document.getElementById('districtError').style.display = 'block';
+      isValid = false;
+    }
+    
+    return isValid;
+  }
+
+  // Save ad
+  async function saveAd() {
+    if (!validateForm()) return;
+    
+    try {
+      loadingOverlay.classList.add('active');
+      
+      // Get form values
+      const updates = {
+        title: document.getElementById('title').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        price: parseFloat(document.getElementById('price').value),
+        category_id: parseInt(document.getElementById('category').value),
+        subcategory_id: document.getElementById('subcategory').value || null,
+        condition: document.getElementById('condition').value,
+        is_negotiable: document.getElementById('negotiable').checked,
+        region: document.getElementById('region').value,
+        district: document.getElementById('district').value.trim(),
+        specific_location: document.getElementById('specificLocation').value.trim() || null,
+        contact_phone: document.getElementById('contactPhone').value.trim() || null,
+        contact_whatsapp: document.getElementById('whatsapp').value.trim() || null,
+        show_profile_phone: document.getElementById('showProfilePhone').checked,
+        video_url: document.getElementById('videoUrl').value.trim() || null,
+        updated_at: new Date().toISOString()
+      };
+      
+      // Upload new images
+      const newImageUrls = await uploadNewImages();
+      
+      // Combine images (existing not removed + new)
+      const finalImages = [];
+      existingImages.forEach((url, index) => {
+        if (!removedImages.includes(index)) {
+          finalImages.push(url);
+        }
+      });
+      finalImages.push(...newImageUrls);
+      
+      updates.image_urls = finalImages;
+      
+      // Update ad in database
+      const { error } = await sb
+        .from('ads')
+        .update(updates)
+        .eq('id', adId)
+        .eq('seller_id', currentUser.id);
+      
+      if (error) throw error;
+      
+      // Show success message
+      document.getElementById('successModal').classList.add('active');
+      
+    } catch (error) {
+      console.error('Error updating ad:', error);
+      showAlert('Failed to update ad. Please try again.', 'error');
+    } finally {
+      loadingOverlay.classList.remove('active');
+    }
+  }
+
+  // Upload new images
+  async function uploadNewImages() {
+    const imageUrls = [];
+    
+    for (let i = 0; i < newImages.length; i++) {
+      const image = newImages[i];
+      const fileName = `ad-${adId}-${Date.now()}-${i}-${image.file.name.replace(/\s+/g, '-')}`;
+      
+      try {
+        const { error: uploadError } = await sb.storage
+          .from('ad-images')
+          .upload(fileName, image.file);
+        
+        if (uploadError) throw uploadError;
+        
+        // Get public URL
+        const { data: { publicUrl } } = sb.storage
+          .from('ad-images')
+          .getPublicUrl(fileName);
+        
+        imageUrls.push(publicUrl);
+        
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        // Use data URL as fallback
+        imageUrls.push(image.dataUrl);
+      }
+    }
+    
+    return imageUrls;
+  }
+
+  // Confirm delete
+  function confirmDelete() {
+    document.getElementById('deleteModal').classList.add('active');
+  }
+
+  // Delete ad
+  async function deleteAd() {
+    try {
+      loadingOverlay.classList.add('active');
+      
+      const { error } = await sb
+        .from('ads')
+        .delete()
+        .eq('id', adId)
+        .eq('seller_id', currentUser.id);
+      
+      if (error) throw error;
+      
+      showAlert('Ad deleted successfully', 'success');
+      setTimeout(() => window.location.href = 'my-ads.html', 1500);
+      
+    } catch (error) {
+      console.error('Error deleting ad:', error);
+      showAlert('Failed to delete ad', 'error');
+    } finally {
+      loadingOverlay.classList.remove('active');
+      closeModal();
+    }
+  }
+
+  // Show alert
+  function showAlert(message, type) {
+    alertMessage.textContent = message;
+    alertMessage.className = `alert alert-${type}`;
+    alertMessage.style.display = 'flex';
+    
+    // Auto-hide success alerts
+    if (type === 'success') {
+      setTimeout(() => {
+        alertMessage.style.display = 'none';
+      }, 5000);
+    }
+  }
+
+  // Close modal
+  function closeModal() {
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.classList.remove('active');
+    });
+  }
+
+  // Go back
+  function goBack() {
+    window.history.back();
+  }
+
+  // View ad
+  function viewAd() {
+    window.location.href = `ad-detail.html?id=${adId}`;
+  }
+
+  // Go to my ads
+  function goToMyAds() {
+    window.location.href = 'my-ads.html';
+  }
+</script>
+</body>
+</html>

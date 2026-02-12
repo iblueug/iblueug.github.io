@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Post New Ad | iBlue Uganda</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #475569;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --light-gray: #e2e8f0;
+      --border: #cbd5e1;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      background: #f1f5f9;
+      color: var(--dark);
+      padding-bottom: 20px;
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--dark);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .header-title {
+      flex: 1;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Form Steps */
+    .form-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .form-steps::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 20px;
+      right: 20px;
+      height: 2px;
+      background: var(--light-gray);
+      z-index: 1;
+    }
+
+    .step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--light-gray);
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .step.active .step-circle {
+      background: var(--primary);
+      color: white;
+    }
+
+    .step-label {
+      font-size: 0.8rem;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+
+    .step.active .step-label {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    /* Form Sections */
+    .form-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title i {
+      color: var(--primary);
+    }
+
+    .required {
+      color: var(--danger);
+      margin-left: 4px;
+    }
+
+    /* Form Groups */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 0.95rem;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      color: var(--dark);
+      background: white;
+      transition: all 0.3s;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.5;
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+
+    /* Image Upload */
+    .image-upload {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 30px 20px;
+      text-align: center;
+      background: var(--light);
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 16px;
+    }
+
+    .image-upload:hover {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.05);
+    }
+
+    .upload-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .upload-text {
+      color: var(--dark);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .upload-subtext {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .image-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .preview-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    /* Price Input */
+    .price-input {
+      position: relative;
+    }
+
+    .currency {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .price-input input {
+      padding-left: 50px;
+    }
+
+    /* Checkbox and Switch */
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+    }
+
+    .form-check input:checked + .checkbox {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border);
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--success);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    .switch-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    /* Location Picker */
+    .location-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Navigation Buttons */
+    .form-navigation {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      position: sticky;
+      bottom: 0;
+      background: #f1f5f9;
+      padding: 16px 0;
+      z-index: 100;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: var(--light);
+      color: var(--dark);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--light-gray);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Tips Section */
+    .tips-section {
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    .tips-title {
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tips-list {
+      padding-left: 20px;
+    }
+
+    .tips-list li {
+      margin-bottom: 6px;
+      color: var(--secondary);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 400px;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .modal-body {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .modal-body i {
+      font-size: 3rem;
+      color: var(--success);
+      margin-bottom: 16px;
+    }
+
+    .modal-actions {
+      padding: 20px;
+      display: flex;
+      gap: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .location-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .container {
+        padding: 12px;
+      }
+      
+      .form-section {
+        padding: 16px;
+      }
+    }
+
+    /* Validation */
+    .error-message {
+      color: var(--danger);
+      font-size: 0.85rem;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .form-input.error,
+    .form-select.error,
+    .form-textarea.error {
+      border-color: var(--danger);
+    }
+
+    .form-input.error + .error-message,
+    .form-select.error + .error-message,
+    .form-textarea.error + .error-message {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <button class="back-btn" onclick="goBack()">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+  <div class="header-title">Post New Ad</div>
+</header>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal" id="successModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Ad Posted Successfully!</h2>
+    </div>
+    <div class="modal-body">
+      <i class="fas fa-check-circle"></i>
+      <p>Your ad has been posted and is now live on the marketplace.</p>
+      <p style="color: var(--gray); font-size: 0.9rem; margin-top: 8px;">
+        You can manage your ads from your dashboard.
+      </p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">
+        View Ad
+      </button>
+      <button class="btn btn-primary" onclick="goToDashboard()">
+        My Dashboard
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Form -->
+<div class="container">
+  <!-- Form Steps -->
+  <div class="form-steps">
+    <div class="step active" id="step1">
+      <div class="step-circle">1</div>
+      <div class="step-label">Details</div>
+    </div>
+    <div class="step" id="step2">
+      <div class="step-circle">2</div>
+      <div class="step-label">Location</div>
+    </div>
+    <div class="step" id="step3">
+      <div class="step-circle">3</div>
+      <div class="step-label">Photos</div>
+    </div>
+    <div class="step" id="step4">
+      <div class="step-circle">4</div>
+      <div class="step-label">Review</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Basic Details -->
+  <div class="form-section" id="step1Section">
+    <h2 class="section-title"><i class="fas fa-info-circle"></i> Basic Details</h2>
+    
+    <div class="form-group">
+      <label class="form-label">Title <span class="required">*</span></label>
+      <input type="text" class="form-input" id="title" placeholder="What are you selling?" maxlength="100">
+      <div class="error-message" id="titleError">Please enter a title (max 100 characters)</div>
+      <div class="char-count"><span id="titleCount">0</span>/100</div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Description <span class="required">*</span></label>
+      <textarea class="form-textarea" id="description" placeholder="Describe your item in detail..." maxlength="2000"></textarea>
+      <div class="error-message" id="descriptionError">Please enter a description (max 2000 characters)</div>
+      <div class="char-count"><span id="descriptionCount">0</span>/2000</div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Category <span class="required">*</span></label>
+      <select class="form-select" id="category">
+        <option value="">Select a category</option>
+        <!-- Categories will be populated dynamically -->
+      </select>
+      <div class="error-message" id="categoryError">Please select a category</div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Subcategory</label>
+      <select class="form-select" id="subcategory" disabled>
+        <option value="">Select a subcategory</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Condition</label>
+      <select class="form-select" id="condition">
+        <option value="unknown">Select condition</option>
+        <option value="new">New</option>
+        <option value="used">Used</option>
+        <option value="refurbished">Refurbished</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Price (UGX) <span class="required">*</span></label>
+      <div class="price-input">
+        <span class="currency">UGX</span>
+        <input type="number" class="form-input" id="price" placeholder="0" min="0" step="1000">
+      </div>
+      <div class="error-message" id="priceError">Please enter a valid price</div>
+    </div>
+    
+    <div class="form-check">
+      <input type="checkbox" id="negotiable" checked>
+      <span class="checkbox"><i class="fas fa-check"></i></span>
+      <label for="negotiable">Price is negotiable</label>
+    </div>
+  </div>
+
+  <!-- Step 2: Location -->
+  <div class="form-section" id="step2Section" style="display: none;">
+    <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Location Details</h2>
+    
+    <div class="form-group">
+      <label class="form-label">Region <span class="required">*</span></label>
+      <select class="form-select" id="region">
+        <option value="">Select region</option>
+        <option value="Central">Central</option>
+        <option value="Northern">Northern</option>
+        <option value="Eastern">Eastern</option>
+        <option value="Western">Western</option>
+      </select>
+      <div class="error-message" id="regionError">Please select a region</div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">District <span class="required">*</span></label>
+      <input type="text" class="form-input" id="district" placeholder="e.g., Kampala">
+      <div class="error-message" id="districtError">Please enter your district</div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Specific Location</label>
+      <input type="text" class="form-input" id="specificLocation" placeholder="e.g., Ntinda, Kampala">
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Contact Phone</label>
+      <input type="tel" class="form-input" id="contactPhone" placeholder="+256 XXX XXX XXX">
+      <div style="font-size: 0.85rem; color: var(--gray); margin-top: 4px;">
+        This will be displayed on your ad. Leave empty to use your profile phone.
+      </div>
+    </div>
+    
+    <!-- WhatsApp Number Field -->
+    <div class="form-group">
+      <label class="form-label">WhatsApp Number (Optional)</label>
+      <input type="tel" class="form-input" id="whatsapp" placeholder="+256 XXX XXX XXX">
+      <div style="font-size: 0.85rem; color: var(--gray); margin-top: 4px;">
+        Buyers can contact you on WhatsApp
+      </div>
+    </div>
+    
+    <div class="form-check">
+      <input type="checkbox" id="showProfilePhone" checked>
+      <span class="checkbox"><i class="fas fa-check"></i></span>
+      <label for="showProfilePhone">Show my profile phone number</label>
+    </div>
+  </div>
+
+  <!-- Step 3: Photos -->
+  <div class="form-section" id="step3Section" style="display: none;">
+    <h2 class="section-title"><i class="fas fa-camera"></i> Add Photos</h2>
+    
+    <div class="image-upload" id="imageUpload">
+      <div class="upload-icon">
+        <i class="fas fa-cloud-upload-alt"></i>
+      </div>
+      <div class="upload-text">Tap to upload photos</div>
+      <div class="upload-subtext">Add up to 10 photos (JPEG, PNG)</div>
+      <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+    </div>
+    
+    <div class="image-preview" id="imagePreview">
+      <!-- Preview images will appear here -->
+    </div>
+    
+    <div class="tips-section">
+      <div class="tips-title">
+        <i class="fas fa-lightbulb"></i> Photo Tips
+      </div>
+      <ul class="tips-list">
+        <li>Use clear, well-lit photos</li>
+        <li>Show the item from different angles</li>
+        <li>Include photos of any flaws or damage</li>
+        <li>First photo will be the thumbnail</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Step 4: Review -->
+  <div class="form-section" id="step4Section" style="display: none;">
+    <h2 class="section-title"><i class="fas fa-eye"></i> Review Your Ad</h2>
+    
+    <div class="preview-card">
+      <div id="reviewTitle" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 8px;"></div>
+      <div id="reviewPrice" style="color: var(--primary); font-size: 1.1rem; font-weight: 700; margin-bottom: 12px;"></div>
+      <div id="reviewDescription" style="color: var(--gray); line-height: 1.5; margin-bottom: 16px;"></div>
+      
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <div style="flex: 1; height: 1px; background: var(--border);"></div>
+        <div style="color: var(--gray); font-size: 0.9rem;">Details</div>
+        <div style="flex: 1; height: 1px; background: var(--border);"></div>
+      </div>
+      
+      <div id="reviewDetails" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem;"></div>
+    </div>
+    
+    <div class="form-check" style="margin-top: 20px;">
+      <input type="checkbox" id="terms" required>
+      <span class="checkbox"><i class="fas fa-check"></i></span>
+      <label for="terms">I agree to the <a href="terms.html" style="color: var(--primary);">Terms of Service</a></label>
+    </div>
+    <div class="error-message" id="termsError" style="margin-top: 8px;">You must agree to the terms</div>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <div class="form-navigation">
+    <button class="btn btn-secondary" id="prevBtn" style="display: none;" onclick="prevStep()">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+      Continue <i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // Initialize Supabase
+  const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
+  const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  // Global variables
+  let currentStep = 1;
+  let categories = [];
+  let subcategories = [];
+  let selectedImages = [];
+  let userData = null;
+
+  // DOM Elements
+  const stepElements = [null, document.getElementById('step1'), document.getElementById('step2'), 
+                       document.getElementById('step3'), document.getElementById('step4')];
+  const sectionElements = [null, document.getElementById('step1Section'), document.getElementById('step2Section'),
+                          document.getElementById('step3Section'), document.getElementById('step4Section')];
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const loadingOverlay = document.getElementById('loadingOverlay');
+
+  // Initialize page
+  document.addEventListener('DOMContentLoaded', async function() {
+    // Check authentication
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) {
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+      return;
+    }
+
+    userData = user;
+    
+    // Check if profile exists, create if not
+    await ensureProfileExists(user);
+    
+    await loadCategories();
+    setupEventListeners();
+    updateStepDisplay();
+  });
+
+  // Ensure user has a profile
+  async function ensureProfileExists(authUser) {
+    try {
+      // Check if profile already exists
+      const { data: existingProfile, error: fetchError } = await sb
+        .from('profiles')
+        .select('id')
+        .eq('id', authUser.id)
+        .single();
+      
+      if (fetchError && fetchError.code === 'PGRST116') { // Profile not found
+        console.log('Creating new profile for user:', authUser.id);
+        
+        // Create profile according to your schema
+        const { error: createError } = await sb
+          .from('profiles')
+          .insert({
+            id: authUser.id,
+            email: authUser.email || '',
+            phone: '', // Default empty
+            full_name: authUser.user_metadata?.full_name || '',
+            avatar_url: authUser.user_metadata?.avatar_url || '',
+            location: '',
+            district: '',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            is_verified: false,
+            last_active: new Date().toISOString(),
+            total_ads: 0
+          });
+        
+        if (createError) {
+          console.error('Error creating profile:', createError);
+          // Don't throw - user might still be able to post
+          return;
+        }
+        
+        console.log('Profile created successfully');
+      } else if (fetchError) {
+        console.error('Error checking profile:', fetchError);
+        throw fetchError;
+      }
+      
+    } catch (error) {
+      console.error('Error in ensureProfileExists:', error);
+      // Don't block the user - show warning but allow them to continue
+      showError('Note: Profile setup issue. You can still post ads.');
+    }
+  }
+
+  // Load categories
+  async function loadCategories() {
+    try {
+      const { data, error } = await sb
+        .from('categories')
+        .select('*')
+        .order('display_order');
+      
+      if (error) throw error;
+      
+      categories = data.filter(c => !c.parent_id);
+      subcategories = data.filter(c => c.parent_id);
+      
+      const categorySelect = document.getElementById('category');
+      categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = category.name;
+        categorySelect.appendChild(option);
+      });
+      
+    } catch (error) {
+      console.error('Error loading categories:', error);
+      showError('Failed to load categories. Please refresh the page.');
+    }
+  }
+
+  // Setup event listeners
+  function setupEventListeners() {
+    // Title character count
+    document.getElementById('title').addEventListener('input', function() {
+      document.getElementById('titleCount').textContent = this.value.length;
+    });
+    
+    // Description character count
+    document.getElementById('description').addEventListener('input', function() {
+      document.getElementById('descriptionCount').textContent = this.value.length;
+    });
+    
+    // Category change
+    document.getElementById('category').addEventListener('change', function() {
+      const subcategorySelect = document.getElementById('subcategory');
+      subcategorySelect.innerHTML = '<option value="">Select a subcategory</option>';
+      
+      if (this.value) {
+        const parentId = parseInt(this.value);
+        const filteredSubcategories = subcategories.filter(s => s.parent_id === parentId);
+        
+        if (filteredSubcategories.length > 0) {
+          subcategorySelect.disabled = false;
+          filteredSubcategories.forEach(sub => {
+            const option = document.createElement('option');
+            option.value = sub.id;
+            option.textContent = sub.name;
+            subcategorySelect.appendChild(option);
+          });
+        } else {
+          subcategorySelect.disabled = true;
+        }
+      } else {
+        subcategorySelect.disabled = true;
+      }
+    });
+    
+    // Image upload
+    document.getElementById('imageUpload').addEventListener('click', () => {
+      document.getElementById('imageInput').click();
+    });
+    
+    document.getElementById('imageInput').addEventListener('change', handleImageUpload);
+  }
+
+  // Handle image upload
+  async function handleImageUpload(event) {
+    const files = Array.from(event.target.files);
+    
+    // Check total images
+    if (selectedImages.length + files.length > 10) {
+      showError('Maximum 10 images allowed');
+      return;
+    }
+    
+    for (const file of files) {
+      // Check file type
+      if (!file.type.match('image.*')) {
+        showError('Please upload only images');
+        continue;
+      }
+      
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        showError(`Image ${file.name} is too large (max 5MB)`);
+        continue;
+      }
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        selectedImages.push({
+          file: file,
+          dataUrl: e.target.result
+        });
+        updateImagePreview();
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    // Reset input
+    event.target.value = '';
+  }
+
+  // Update image preview
+  function updateImagePreview() {
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+    
+    selectedImages.forEach((image, index) => {
+      const previewItem = document.createElement('div');
+      previewItem.className = 'preview-item';
+      
+      previewItem.innerHTML = `
+        <img src="${image.dataUrl}" class="preview-image" alt="Preview">
+        <button class="remove-btn" onclick="removeImage(${index})">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      
+      preview.appendChild(previewItem);
+    });
+  }
+
+  // Remove image
+  function removeImage(index) {
+    selectedImages.splice(index, 1);
+    updateImagePreview();
+  }
+
+  // Navigate to next step
+  function nextStep() {
+    if (!validateCurrentStep()) return;
+    
+    if (currentStep < 4) {
+      currentStep++;
+      updateStepDisplay();
+      
+      if (currentStep === 4) {
+        updateReview();
+      }
+    } else {
+      submitAd();
+    }
+  }
+
+  // Navigate to previous step
+  function prevStep() {
+    if (currentStep > 1) {
+      currentStep--;
+      updateStepDisplay();
+    }
+  }
+
+  // Update step display
+  function updateStepDisplay() {
+    // Update step indicators
+    stepElements.forEach((step, index) => {
+      if (step) {
+        if (index === currentStep) {
+          step.classList.add('active');
+        } else {
+          step.classList.remove('active');
+        }
+      }
+    });
+    
+    // Update sections
+    sectionElements.forEach((section, index) => {
+      if (section) {
+        if (index === currentStep) {
+          section.style.display = 'block';
+        } else {
+          section.style.display = 'none';
+        }
+      }
+    });
+    
+    // Update buttons
+    prevBtn.style.display = currentStep > 1 ? 'flex' : 'none';
+    
+    if (currentStep === 4) {
+      nextBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Ad';
+      nextBtn.onclick = submitAd;
+    } else {
+      nextBtn.innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
+      nextBtn.onclick = nextStep;
+    }
+  }
+
+  // Validate current step
+  function validateCurrentStep() {
+    let isValid = true;
+    
+    // Clear previous errors
+    document.querySelectorAll('.error-message').forEach(el => {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(el => {
+      el.classList.remove('error');
+    });
+    
+    // Step 1 validation
+    if (currentStep === 1) {
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const category = document.getElementById('category').value;
+      const price = document.getElementById('price').value;
+      
+      if (!title || title.length < 5) {
+        document.getElementById('title').classList.add('error');
+        document.getElementById('titleError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!description || description.length < 20) {
+        document.getElementById('description').classList.add('error');
+        document.getElementById('descriptionError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!category) {
+        document.getElementById('category').classList.add('error');
+        document.getElementById('categoryError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!price || parseFloat(price) < 0) {
+        document.getElementById('price').classList.add('error');
+        document.getElementById('priceError').style.display = 'block';
+        isValid = false;
+      }
+    }
+    
+    // Step 2 validation
+    else if (currentStep === 2) {
+      const region = document.getElementById('region').value;
+      const district = document.getElementById('district').value.trim();
+      
+      if (!region) {
+        document.getElementById('region').classList.add('error');
+        document.getElementById('regionError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!district) {
+        document.getElementById('district').classList.add('error');
+        document.getElementById('districtError').style.display = 'block';
+        isValid = false;
+      }
+    }
+    
+    // Step 4 validation
+    else if (currentStep === 4) {
+      const terms = document.getElementById('terms').checked;
+      
+      if (!terms) {
+        document.getElementById('termsError').style.display = 'block';
+        isValid = false;
+      }
+    }
+    
+    return isValid;
+  }
+
+  // Update review section
+  function updateReview() {
+    // Title and price
+    document.getElementById('reviewTitle').textContent = document.getElementById('title').value;
+    const price = parseFloat(document.getElementById('price').value);
+    document.getElementById('reviewPrice').textContent = price ? `UGX ${price.toLocaleString()}` : 'Price on request';
+    
+    // Description (truncated)
+    const description = document.getElementById('description').value;
+    document.getElementById('reviewDescription').textContent = 
+      description.length > 200 ? description.substring(0, 200) + '...' : description;
+    
+    // Details grid
+    const details = document.getElementById('reviewDetails');
+    details.innerHTML = '';
+    
+    const detailItems = [
+      { label: 'Category', value: getSelectedText('category') },
+      { label: 'Subcategory', value: getSelectedText('subcategory') || 'None' },
+      { label: 'Condition', value: getSelectedText('condition') },
+      { label: 'Price Type', value: document.getElementById('negotiable').checked ? 'Negotiable' : 'Fixed' },
+      { label: 'Region', value: document.getElementById('region').value },
+      { label: 'District', value: document.getElementById('district').value },
+      { label: 'Photos', value: `${selectedImages.length} image${selectedImages.length !== 1 ? 's' : ''}` },
+      { label: 'Contact', value: document.getElementById('showProfilePhone').checked ? 'Profile Phone' : 'Custom Phone' },
+      { label: 'WhatsApp', value: document.getElementById('whatsapp').value || 'Not provided' }
+    ];
+    
+    detailItems.forEach(item => {
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <div style="color: var(--gray);">${item.label}:</div>
+        <div style="font-weight: 500;">${item.value}</div>
+      `;
+      details.appendChild(div);
+    });
+  }
+
+  // Get selected text from select element
+  function getSelectedText(elementId) {
+    const select = document.getElementById(elementId);
+    return select.options[select.selectedIndex]?.text || '';
+  }
+
+  // Submit ad
+  async function submitAd() {
+    if (!validateCurrentStep()) return;
+    
+    try {
+      loadingOverlay.classList.add('active');
+      
+      // Get form values
+      const adData = {
+        title: document.getElementById('title').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        price: parseFloat(document.getElementById('price').value),
+        category_id: parseInt(document.getElementById('category').value),
+        subcategory_id: document.getElementById('subcategory').value || null,
+        condition: document.getElementById('condition').value,
+        is_negotiable: document.getElementById('negotiable').checked,
+        region: document.getElementById('region').value,
+        district: document.getElementById('district').value.trim(),
+        specific_location: document.getElementById('specificLocation').value.trim() || null,
+        contact_phone: document.getElementById('contactPhone').value.trim() || null,
+        contact_whatsapp: document.getElementById('whatsapp').value.trim() || null,
+        show_profile_phone: document.getElementById('showProfilePhone').checked,
+        seller_id: userData.id
+      };
+      
+      // Upload images to Supabase Storage
+      const imageUrls = await uploadImages();
+      
+      // Try stored procedure first, but use the original version without whatsapp parameter
+      // since that's what exists in your database
+      const { data: newAdId, error } = await sb.rpc('create_new_ad', {
+        p_title: adData.title,
+        p_description: adData.description,
+        p_price: adData.price,
+        p_category_id: adData.category_id,
+        p_seller_id: adData.seller_id,
+        p_region: adData.region,
+        p_district: adData.district,
+        p_specific_location: adData.specific_location,
+        p_condition: adData.condition,
+        p_is_negotiable: adData.is_negotiable,
+        p_contact_phone: adData.contact_phone,
+        p_image_urls: imageUrls
+        // Note: p_contact_whatsapp is removed because the stored procedure doesn't have it
+      });
+      
+      if (error) {
+        console.error('Error creating ad with stored procedure:', error);
+        
+        // Fallback: Direct insert (always use this since stored procedure doesn't have whatsapp)
+        console.log('Using direct insert...');
+        const { data: fallbackAd, error: fallbackError } = await sb
+          .from('ads')
+          .insert({
+            title: adData.title,
+            description: adData.description,
+            price: adData.price,
+            currency: 'UGX',
+            is_negotiable: adData.is_negotiable,
+            condition: adData.condition,
+            image_urls: imageUrls,
+            category_id: adData.category_id,
+            seller_id: adData.seller_id,
+            region: adData.region,
+            district: adData.district,
+            specific_location: adData.specific_location,
+            contact_phone: adData.contact_phone,
+            contact_whatsapp: adData.contact_whatsapp, // This is where whatsapp is saved
+            show_profile_phone: adData.show_profile_phone,
+            status: 'active'
+          })
+          .select('id')
+          .single();
+        
+        if (fallbackError) throw fallbackError;
+        
+        // Send notification to user
+        await sb
+          .from('notifications')
+          .insert({
+            user_id: userData.id,
+            type: 'ad_approved',
+            title: 'Ad Posted Successfully',
+            message: `Your ad "${adData.title.substring(0, 30)}..." is now live!`,
+            link: `ad-detail.html?id=${fallbackAd.id}`
+          });
+        
+        loadingOverlay.classList.remove('active');
+        document.getElementById('successModal').classList.add('active');
+        return;
+      }
+      
+      // If stored procedure succeeded, we need to update the ad to add whatsapp
+      // since the stored procedure doesn't include it
+      if (adData.contact_whatsapp) {
+        await sb
+          .from('ads')
+          .update({ 
+            contact_whatsapp: adData.contact_whatsapp,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', newAdId);
+      }
+      
+      // Send notification to user
+      await sb
+        .from('notifications')
+        .insert({
+          user_id: userData.id,
+          type: 'ad_approved',
+          title: 'Ad Posted Successfully',
+          message: `Your ad "${adData.title.substring(0, 30)}..." is now live!`,
+          link: `ad-detail.html?id=${newAdId}`
+        });
+      
+      loadingOverlay.classList.remove('active');
+      document.getElementById('successModal').classList.add('active');
+      
+    } catch (error) {
+      loadingOverlay.classList.remove('active');
+      console.error('Error posting ad:', error);
+      
+      // More specific error messages
+      if (error.code === '23503') {
+        showError('User profile issue. Please complete your profile first.');
+      } else if (error.code === '23502') {
+        showError('Missing required information. Please fill all required fields.');
+      } else {
+        showError('Failed to post ad. Please try again.');
+      }
+    }
+  }
+
+  // Upload images to Supabase Storage
+  async function uploadImages() {
+    const imageUrls = [];
+    
+    for (let i = 0; i < selectedImages.length; i++) {
+      const image = selectedImages[i];
+      const fileName = `ad-${Date.now()}-${i}-${image.file.name.replace(/\s+/g, '-')}`;
+      
+      try {
+        const { error: uploadError } = await sb.storage
+          .from('ad-images')
+          .upload(fileName, image.file);
+        
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          // Use data URL as fallback
+          imageUrls.push(image.dataUrl);
+          continue;
+        }
+        
+        // Get public URL
+        const { data: { publicUrl } } = sb.storage
+          .from('ad-images')
+          .getPublicUrl(fileName);
+        
+        imageUrls.push(publicUrl);
+        
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        // Use data URL as fallback
+        imageUrls.push(image.dataUrl);
+      }
+    }
+    
+    return imageUrls;
+  }
+
+  // Show error message
+  function showError(message) {
+    // Remove any existing error notifications
+    const existingErrors = document.querySelectorAll('.error-notification');
+    existingErrors.forEach(el => el.remove());
+    
+    const errorEl = document.createElement('div');
+    errorEl.className = 'error-notification';
+    errorEl.style.cssText = `
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      left: 20px;
+      background: var(--danger);
+      color: white;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 3000;
+      animation: slideIn 0.3s ease;
+      text-align: center;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    `;
+    
+    errorEl.innerHTML = `<i class="fas fa-exclamation-circle"></i>${message}`;
+    document.body.appendChild(errorEl);
+    
+    setTimeout(() => {
+      errorEl.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => {
+        if (errorEl.parentNode) {
+          document.body.removeChild(errorEl);
+        }
+      }, 300);
+    }, 5000);
+    
+    // Add CSS for animations if not already present
+    if (!document.querySelector('#notification-styles')) {
+      const style = document.createElement('style');
+      style.id = 'notification-styles';
+      style.textContent = `
+        @keyframes slideIn {
+          from { transform: translateY(-20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+          from { transform: translateY(0); opacity: 1; }
+          to { transform: translateY(-20px); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+
+  // Go back
+  function goBack() {
+    if (currentStep > 1) {
+      prevStep();
+    } else {
+      window.history.back();
+    }
+  }
+
+  // Close modal
+  function closeModal() {
+    document.getElementById('successModal').classList.remove('active');
+    // Redirect to the new ad or dashboard
+    window.location.href = 'my-ads.html';
+  }
+
+  // Go to dashboard
+  function goToDashboard() {
+    window.location.href = 'my-ads.html';
+  }
+</script>
+</body>
+</html>

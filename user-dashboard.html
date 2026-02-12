@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ads Marketplace | iBlue Uganda</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #475569;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --light-gray: #e2e8f0;
+      --border: #cbd5e1;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: var(--dark);
+      padding-bottom: 70px;
+    }
+
+    /* Mobile Header */
+    .mobile-header {
+      background: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .header-logo i {
+      font-size: 1.5rem;
+    }
+
+    .search-container {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 20px 14px 50px; /* Increased padding for larger input */
+      border: 2px solid var(--light-gray);
+      border-radius: 25px;
+      font-size: 1rem; /* Slightly larger font */
+      background: var(--light);
+      transition: all 0.3s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      font-size: 1.1rem;
+    }
+
+    /* Search Suggestions Dropdown */
+    .search-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: var(--radius);
+      margin-top: 8px;
+      box-shadow: var(--shadow-hover);
+      z-index: 2000;
+      display: none;
+      overflow: hidden;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .search-suggestions.active {
+      display: block;
+    }
+
+    .suggestion-item {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--dark);
+      transition: background-color 0.2s;
+      border-bottom: 1px solid var(--light-gray);
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+      background-color: var(--light);
+    }
+
+    .suggestion-icon {
+      color: var(--primary);
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .suggestion-text {
+      flex: 1;
+      font-size: 0.95rem;
+    }
+
+    .suggestion-category {
+      font-size: 0.8rem;
+      color: var(--gray);
+      background: var(--light);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .suggestion-highlight {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .no-suggestions {
+      padding: 20px;
+      text-align: center;
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .header-btn {
+      background: var(--light);
+      color: var(--dark);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      position: relative;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .header-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: var(--danger);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white;
+      padding: 0 4px;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-top: 80px;
+      padding: 16px;
+    }
+
+    /* Location Bar */
+    .location-bar {
+      background: white;
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .location-icon {
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+
+    .location-select {
+      flex: 1;
+      border: none;
+      background: none;
+      font-size: 0.95rem;
+      color: var(--dark);
+      padding: 5px 0;
+      cursor: pointer;
+    }
+
+    .location-select:focus {
+      outline: none;
+    }
+
+    /* Quick Filters */
+    .quick-filters {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding: 5px 0;
+      scrollbar-width: none;
+    }
+
+    .quick-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-chip {
+      padding: 10px 18px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 25px;
+      font-size: 0.9rem;
+      color: var(--dark);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .filter-chip:hover,
+    .filter-chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .filter-chip i {
+      font-size: 0.9rem;
+    }
+
+    /* Categories Grid */
+    .categories-grid {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-title a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .categories-wrapper {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .category-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+      color: var(--dark);
+      padding: 12px 8px;
+      border-radius: var(--radius);
+      transition: all 0.3s;
+    }
+
+    .category-item:hover {
+      background: var(--light);
+      transform: translateY(-2px);
+    }
+
+    .category-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      color: white;
+      font-size: 1.3rem;
+    }
+
+    .category-name {
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+
+    /* Ads Section */
+    .ads-section {
+      margin-bottom: 24px;
+    }
+
+    .ads-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .ads-count {
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    .sort-options {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: white;
+      font-size: 0.9rem;
+      color: var(--dark);
+      cursor: pointer;
+    }
+
+    .ads-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    /* Ad Card - UPDATED: Removed button space */
+    .ad-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .ad-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .ad-image {
+      position: relative;
+      padding-top: 75%;
+      overflow: hidden;
+    }
+
+    .ad-image img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    /* Skeleton loading */
+    .ad-image.skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .ad-badges {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 2;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: white;
+      text-transform: uppercase;
+    }
+
+    .badge-featured {
+      background: var(--warning);
+    }
+
+    .badge-negotiable {
+      background: var(--success);
+    }
+
+    .badge-urgent {
+      background: var(--danger);
+    }
+
+    .badge-verified {
+      background: var(--success);
+    }
+
+    .ad-info {
+      padding: 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ad-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .ad-title.skeleton {
+      height: 20px;
+      width: 90%;
+      background: var(--light-gray);
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .ad-price {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .ad-price.skeleton {
+      height: 24px;
+      width: 60%;
+      background: var(--light-gray);
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .ad-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: auto;
+    }
+
+    .ad-location,
+    .ad-time,
+    .ad-category {
+      font-size: 0.8rem;
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ad-location.skeleton,
+    .ad-time.skeleton,
+    .ad-category.skeleton {
+      height: 14px;
+      width: 80%;
+      background: var(--light-gray);
+      border-radius: 3px;
+    }
+
+    /* Ad actions removed from homepage cards */
+
+    /* Loading States */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      grid-column: 1 / -1;
+    }
+
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(37, 99, 235, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      background: white;
+      border-radius: var(--radius);
+      margin-top: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: var(--light-gray);
+      margin-bottom: 15px;
+    }
+
+    .empty-state h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+
+    .empty-state p {
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Filter Modal */
+    .filter-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      display: none;
+      align-items: flex-end;
+    }
+
+    .filter-modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 2;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .filter-group {
+      margin-bottom: 24px;
+    }
+
+    .filter-group h4 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-option {
+      padding: 8px 16px;
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .filter-option:hover,
+    .filter-option.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .price-range {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .price-input {
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      width: 100%;
+    }
+
+    .modal-actions {
+      padding: 20px;
+      display: flex;
+      gap: 12px;
+      position: sticky;
+      bottom: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-apply {
+      flex: 1;
+      padding: 15px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-clear {
+      flex: 1;
+      padding: 15px;
+      background: var(--light);
+      color: var(--dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Load More Button */
+    .load-more-container {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .btn-load-more {
+      background: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 12px 30px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-load-more:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-load-more:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Bottom Navigation - UPDATED */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      z-index: 1000;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--gray);
+      font-size: 0.75rem;
+      gap: 4px;
+      transition: all 0.3s;
+      padding: 5px 10px;
+      border-radius: 8px;
+      flex: 1;
+      max-width: 80px;
+    }
+
+    .nav-item:hover {
+      background: var(--light);
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-icon {
+      font-size: 1.3rem;
+      margin-bottom: 2px;
+    }
+
+    .post-ad-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      z-index: 1001;
+      transition: all 0.3s;
+    }
+
+    .post-ad-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    /* Responsive Adjustments */
+    @media (min-width: 640px) {
+      .ads-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      
+      .categories-wrapper {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      .main-content {
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .search-input {
+        font-size: 1.05rem;
+        padding: 15px 20px 15px 55px;
+      }
+
+      .search-icon {
+        font-size: 1.2rem;
+        left: 18px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .ads-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      .categories-wrapper {
+        grid-template-columns: repeat(6, 1fr);
+      }
+      
+      .bottom-nav {
+        display: none;
+      }
+      
+      .post-ad-btn {
+        bottom: 30px;
+        right: 30px;
+      }
+      
+      body {
+        padding-bottom: 0;
+      }
+
+      .search-input {
+        font-size: 1.1rem;
+        padding: 16px 20px 16px 60px;
+      }
+
+      .search-icon {
+        font-size: 1.3rem;
+        left: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <a href="dashboard.html" class="header-logo">
+      <i class="fas fa-store"></i>
+      <span>iBlue</span>
+    </a>
+    
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search ads in Uganda..." autocomplete="off">
+      <!-- Search Suggestions Dropdown -->
+      <div class="search-suggestions" id="searchSuggestions">
+        <!-- Suggestions will be populated here -->
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <!-- Removed refresh button -->
+      <button class="header-btn" onclick="openFilterModal()">
+        <i class="fas fa-sliders-h"></i>
+      </button>
+      <!-- Removed chat button from header -->
+      <a href="notifications.html" class="header-btn">
+        <i class="fas fa-bell"></i>
+        <span class="notification-badge" id="notificationBadge" style="display: none;"></span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Location Bar -->
+    <div class="location-bar">
+      <i class="fas fa-map-marker-alt location-icon"></i>
+      <select class="location-select" id="locationSelect">
+        <option value="">All Uganda</option>
+      </select>
+      <i class="fas fa-chevron-down"></i>
+    </div>
+
+    <!-- Quick Filters -->
+    <div class="quick-filters" id="quickFilters">
+      <!-- Filter chips will be populated dynamically -->
+    </div>
+
+    <!-- Categories Grid -->
+    <section class="categories-grid">
+      <div class="section-title">
+        <span>Browse Categories</span>
+        <a href="categories.html">See all</a>
+      </div>
+      <div class="categories-wrapper" id="categoriesGrid">
+        <!-- Categories will be loaded here -->
+      </div>
+    </section>
+
+    <!-- Recent Ads Section -->
+    <section class="ads-section">
+      <div class="ads-header">
+        <div>
+          <h2 style="font-size: 1.2rem;">Recent Ads</h2>
+          <p class="ads-count" id="adsCount">Loading...</p>
+        </div>
+        <select class="sort-options" id="sortSelect">
+          <option value="newest">Newest First</option>
+          <option value="price_low">Price: Low to High</option>
+          <option value="price_high">Price: High to Low</option>
+          <option value="featured">Featured First</option>
+          <option value="urgent">Urgent First</option>
+        </select>
+      </div>
+
+      <!-- Ads Grid -->
+      <div class="ads-grid" id="adsGrid">
+        <!-- Ads will be loaded here with phased loading -->
+      </div>
+
+      <!-- Load More Container -->
+      <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+        <button class="btn-load-more" id="loadMoreBtn" onclick="loadMoreAds()">
+          <i class="fas fa-redo"></i> Load More Ads
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading" id="initialLoading">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h3>No Ads Found</h3>
+        <p>Try adjusting your filters or post a new ad</p>
+        <button class="btn-primary" onclick="window.location.href='post-ad.html'">
+          Post New Ad
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating Post Ad Button -->
+  <button class="post-ad-btn" onclick="handlePostAd()">
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <!-- Bottom Navigation - UPDATED with Chats -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item active">
+      <i class="fas fa-home nav-icon"></i>
+      <span>Home</span>
+    </a>
+    <a href="categories.html" class="nav-item">
+      <i class="fas fa-th-large nav-icon"></i>
+      <span>Categories</span>
+    </a>
+    <a href="messages.html" class="nav-item">
+      <i class="fas fa-comments nav-icon"></i>
+      <span>Chats</span>
+    </a>
+    <a href="saved.html" class="nav-item">
+      <i class="fas fa-heart nav-icon"></i>
+      <span>Saved</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <i class="fas fa-user nav-icon"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <!-- Filter Modal -->
+  <div class="filter-modal" id="filterModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem;">Filter Ads</h3>
+        <button onclick="closeFilterModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--dark);">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Category Filter -->
+        <div class="filter-group">
+          <h4><i class="fas fa-tags"></i> Category</h4>
+          <div class="filter-options" id="categoryFilters">
+            <!-- Categories will be loaded here -->
+          </div>
+        </div>
+        
+        <!-- Condition Filter -->
+        <div class="filter-group">
+          <h4><i class="fas fa-star"></i> Condition</h4>
+          <div class="filter-options" id="conditionFilters">
+            <div class="filter-option" data-value="new">New</div>
+            <div class="filter-option" data-value="used">Used</div>
+            <div class="filter-option" data-value="refurbished">Refurbished</div>
+          </div>
+        </div>
+        
+        <!-- Price Range -->
+        <div class="filter-group">
+          <h4><i class="fas fa-money-bill-wave"></i> Price Range (UGX)</h4>
+          <div class="price-range">
+            <input type="number" class="price-input" id="minPrice" placeholder="Min Price" min="0">
+            <input type="number" class="price-input" id="maxPrice" placeholder="Max Price" min="0">
+          </div>
+        </div>
+        
+        <!-- Location Filter -->
+        <div class="filter-group">
+          <h4><i class="fas fa-map-marker-alt"></i> Region</h4>
+          <div class="filter-options" id="regionFilters">
+            <!-- Regions will be loaded from ads -->
+          </div>
+        </div>
+        
+        <!-- Additional Filters -->
+        <div class="filter-group">
+          <h4><i class="fas fa-filter"></i> More Filters</h4>
+          <div class="filter-options" id="moreFilters">
+            <div class="filter-option" data-filter="negotiable">
+              <i class="fas fa-handshake"></i> Negotiable
+            </div>
+            <div class="filter-option" data-filter="featured">
+              <i class="fas fa-star"></i> Featured
+            </div>
+            <div class="filter-option" data-filter="urgent">
+              <i class="fas fa-bolt"></i> Urgent
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn-clear" onclick="clearFilters()">
+          Clear All
+        </button>
+        <button class="btn-apply" onclick="applyFilters()">
+          Apply Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Supabase client
+    const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
+    
+    const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // Icon mapping globally accessible
+    const iconMap = {
+      'smartphone': 'mobile-alt',
+      'car': 'car',
+      'home': 'home',
+      'tv': 'tv',
+      'shirt': 'tshirt',
+      'briefcase': 'briefcase',
+      'sofa': 'couch',
+      'tractor': 'tractor',
+      'paw-print': 'paw',
+      'building-storefront': 'store',
+      'motorcycle': 'motorcycle',
+      'bicycle': 'bicycle',
+      'house': 'home',
+      'building': 'building',
+      'tree': 'tree',
+      'store': 'store',
+      'tablet': 'tablet',
+      'phone': 'phone',
+      'headphones': 'headphones',
+      'truck': 'truck',
+      'cog': 'cog',
+      'tag': 'tag'
+    };
+    
+    // Global variables for phased loading
+    let allAds = [];
+    let filteredAds = [];
+    let allCategories = [];
+    let uniqueRegions = [];
+    let savedAdsCache = new Set();
+    let currentFilters = {
+      search: '',
+      location: '',
+      category: null,
+      condition: null,
+      minPrice: null,
+      maxPrice: null,
+      region: null,
+      negotiable: false,
+      featured: false,
+      urgent: false
+    };
+    
+    // Search suggestions variables
+    let searchSuggestions = [];
+    let searchTimeout = null;
+    
+    // Phased loading variables
+    const ADS_PER_PAGE = 12;
+    let currentPage = 0;
+    let isLoadingMore = false;
+    let hasMoreAds = true;
+    
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', async function() {
+      console.log('Page loaded, initializing...');
+      await loadCategories();
+      await loadInitialAds();
+      await loadRegions();
+      await loadSavedAdsCache();
+      setupEventListeners();
+      
+      // Initialize notification count after a short delay
+      setTimeout(async () => {
+        await updateNotificationCount();
+      }, 1000);
+    });
+    
+    // Setup event listeners
+    function setupEventListeners() {
+      // Search input
+      const searchInput = document.getElementById('searchInput');
+      const searchSuggestionsEl = document.getElementById('searchSuggestions');
+      
+      searchInput.addEventListener('input', debounce(function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        currentFilters.search = query;
+        
+        if (query.length >= 2) {
+          showSearchSuggestions(query);
+        } else {
+          hideSearchSuggestions();
+        }
+        
+        applyFilterLogic();
+      }, 300));
+      
+      searchInput.addEventListener('focus', function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        if (query.length >= 2) {
+          showSearchSuggestions(query);
+        }
+      });
+      
+      // Close suggestions when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !searchSuggestionsEl.contains(e.target)) {
+          hideSearchSuggestions();
+        }
+      });
+      
+      // Handle escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          hideSearchSuggestions();
+        }
+      });
+      
+      // Location select
+      const locationSelect = document.getElementById('locationSelect');
+      locationSelect.addEventListener('change', function(e) {
+        currentFilters.location = e.target.value;
+        applyFilterLogic();
+      });
+      
+      // Sort select
+      const sortSelect = document.getElementById('sortSelect');
+      sortSelect.addEventListener('change', function() {
+        applyFilterLogic();
+      });
+      
+      // Close modal when clicking outside
+      document.getElementById('filterModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeFilterModal();
+        }
+      });
+      
+      // Infinite scroll
+      window.addEventListener('scroll', handleScroll);
+    }
+    
+    // Handle infinite scroll
+    function handleScroll() {
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+      const loadMoreBtn = document.getElementById('loadMoreBtn');
+      
+      // Load more when near bottom and not already loading
+      if (scrollTop + clientHeight >= scrollHeight - 500 && 
+          !isLoadingMore && 
+          hasMoreAds && 
+          loadMoreBtn.style.display !== 'block') {
+        loadMoreAds();
+      }
+    }
+    
+    // Show search suggestions
+    async function showSearchSuggestions(query) {
+      const suggestionsEl = document.getElementById('searchSuggestions');
+      
+      if (!query || query.length < 2) {
+        hideSearchSuggestions();
+        return;
+      }
+      
+      try {
+        // Get suggestions from ads titles
+        const { data: ads, error } = await sb
+          .from('ads')
+          .select('id, title, categories(name)')
+          .ilike('title', `%${query}%`)
+          .eq('status', 'active')
+          .limit(10);
+        
+        if (error) throw error;
+        
+        // Get suggestions from categories
+        const { data: categories, error: catError } = await sb
+          .from('categories')
+          .select('id, name')
+          .ilike('name', `%${query}%`)
+          .eq('is_active', true)
+          .limit(5);
+        
+        if (catError) throw catError;
+        
+        // Combine and sort suggestions
+        let suggestions = [];
+        
+        // Add ad suggestions
+        if (ads) {
+          ads.forEach(ad => {
+            suggestions.push({
+              type: 'ad',
+              id: ad.id,
+              text: ad.title,
+              category: ad.categories?.name || 'Ad'
+            });
+          });
+        }
+        
+        // Add category suggestions
+        if (categories) {
+          categories.forEach(cat => {
+            suggestions.push({
+              type: 'category',
+              id: cat.id,
+              text: cat.name,
+              category: 'Category'
+            });
+          });
+        }
+        
+        // Remove duplicates and limit
+        suggestions = suggestions.slice(0, 15);
+        
+        // Render suggestions
+        renderSearchSuggestions(suggestions, query);
+        
+        // Show suggestions dropdown
+        suggestionsEl.classList.add('active');
+        
+      } catch (error) {
+        console.error('Error loading search suggestions:', error);
+        hideSearchSuggestions();
+      }
+    }
+    
+    // Render search suggestions
+    function renderSearchSuggestions(suggestions, query) {
+      const suggestionsEl = document.getElementById('searchSuggestions');
+      
+      if (suggestions.length === 0) {
+        suggestionsEl.innerHTML = `
+          <div class="no-suggestions">
+            <i class="fas fa-search" style="margin-bottom: 8px; display: block; font-size: 1.5rem; opacity: 0.5;"></i>
+            <div>No results found for "${query}"</div>
+            <div style="font-size: 0.8rem; margin-top: 5px;">Try different keywords</div>
+          </div>
+        `;
+        return;
+      }
+      
+      let html = '';
+      
+      suggestions.forEach(suggestion => {
+        const icon = suggestion.type === 'ad' ? 'tag' : 'folder';
+        const url = suggestion.type === 'ad' ? `ad-detail.html?id=${suggestion.id}` : `category.html?id=${suggestion.id}`;
+        
+        // Highlight matching text
+        const text = suggestion.text;
+        const lowerText = text.toLowerCase();
+        const lowerQuery = query.toLowerCase();
+        const queryIndex = lowerText.indexOf(lowerQuery);
+        
+        let highlightedText = text;
+        if (queryIndex !== -1) {
+          const before = text.substring(0, queryIndex);
+          const match = text.substring(queryIndex, queryIndex + query.length);
+          const after = text.substring(queryIndex + query.length);
+          highlightedText = `${before}<span class="suggestion-highlight">${match}</span>${after}`;
+        }
+        
+        html += `
+          <a href="${url}" class="suggestion-item" onclick="hideSearchSuggestions()">
+            <div class="suggestion-icon">
+              <i class="fas fa-${icon}"></i>
+            </div>
+            <div class="suggestion-text">${highlightedText}</div>
+            <div class="suggestion-category">${suggestion.category}</div>
+          </a>
+        `;
+      });
+      
+      // Add popular searches
+      html += `
+        <div class="no-suggestions" style="border-top: 1px solid var(--light-gray); padding-top: 15px; margin-top: 5px;">
+          <div style="font-size: 0.8rem; color: var(--gray); margin-bottom: 5px;">Popular Searches:</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
+            ${['Phones', 'Cars', 'Apartments', 'Jobs', 'Furniture', 'Electronics'].map(term => `
+              <span style="background: var(--light); padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; cursor: pointer;" 
+                    onclick="document.getElementById('searchInput').value='${term}'; applyFilterLogic(); hideSearchSuggestions()">
+                ${term}
+              </span>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      
+      suggestionsEl.innerHTML = html;
+    }
+    
+    // Hide search suggestions
+    function hideSearchSuggestions() {
+      const suggestionsEl = document.getElementById('searchSuggestions');
+      suggestionsEl.classList.remove('active');
+    }
+    
+    // Load categories from database
+    async function loadCategories() {
+      try {
+        console.log('Loading categories...');
+        const { data: categories, error } = await sb
+          .from('categories')
+          .select('id, name, slug, icon, color_hex')
+          .eq('is_active', true)
+          .is('parent_id', null)
+          .order('display_order')
+          .limit(9);
+        
+        if (error) throw error;
+        
+        allCategories = categories || [];
+        console.log(`Loaded ${allCategories.length} categories`);
+        
+        renderCategories();
+        populateCategoryFilters();
+        populateQuickFilters();
+        
+      } catch (error) {
+        console.error('Error loading categories:', error);
+        showNotification('Failed to load categories', 'error');
+      }
+    }
+    
+    // Load unique regions from ads
+    async function loadRegions() {
+      try {
+        console.log('Loading regions...');
+        const { data: regions, error } = await sb
+          .from('ads')
+          .select('region')
+          .not('region', 'is', null)
+          .eq('status', 'active');
+        
+        if (error) throw error;
+        
+        // Get unique regions
+        uniqueRegions = [...new Set((regions || []).map(r => r.region).filter(r => r && r.trim()))];
+        console.log(`Found ${uniqueRegions.length} unique regions`);
+        
+        populateRegionSelect();
+        populateRegionFilters();
+        
+      } catch (error) {
+        console.error('Error loading regions:', error);
+      }
+    }
+    
+    // Load user's saved ads cache
+    async function loadSavedAdsCache() {
+      try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) return;
+        
+        const { data: savedAds, error } = await sb
+          .from('saved_ads')
+          .select('ad_id')
+          .eq('user_id', user.id);
+        
+        if (error) throw error;
+        
+        savedAdsCache = new Set((savedAds || []).map(sa => sa.ad_id.toString()));
+        
+      } catch (error) {
+        console.error('Error loading saved ads cache:', error);
+      }
+    }
+    
+    // Populate region select dropdown
+    function populateRegionSelect() {
+      const select = document.getElementById('locationSelect');
+      
+      // Keep the first option
+      while (select.options.length > 1) {
+        select.remove(1);
+      }
+      
+      uniqueRegions.sort().forEach(region => {
+        const option = document.createElement('option');
+        option.value = region;
+        option.textContent = region;
+        select.appendChild(option);
+      });
+    }
+    
+    // Render categories grid
+    function renderCategories() {
+      const categoriesGrid = document.getElementById('categoriesGrid');
+      categoriesGrid.innerHTML = '';
+      
+      if (allCategories.length === 0) {
+        categoriesGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--gray);">No categories found</div>';
+        return;
+      }
+      
+      allCategories.forEach(category => {
+        const categoryItem = document.createElement('a');
+        categoryItem.className = 'category-item';
+        categoryItem.href = `category.html?id=${category.id}`;
+        
+        const iconName = iconMap[category.icon] || 'tag';
+        
+        categoryItem.innerHTML = `
+          <div class="category-icon" style="background: ${category.color_hex || 'var(--primary)'}">
+            <i class="fas fa-${iconName}"></i>
+          </div>
+          <span class="category-name">${category.name}</span>
+        `;
+        
+        categoriesGrid.appendChild(categoryItem);
+      });
+    }
+    
+    // Populate quick filters
+    function populateQuickFilters() {
+      const quickFilters = document.getElementById('quickFilters');
+      quickFilters.innerHTML = '';
+      
+      // Add "All" filter
+      const allFilter = document.createElement('button');
+      allFilter.className = 'filter-chip active';
+      allFilter.innerHTML = '<i class="fas fa-filter"></i> All';
+      allFilter.onclick = function(e) {
+        e.preventDefault();
+        setActiveFilter(null);
+      };
+      quickFilters.appendChild(allFilter);
+      
+      // Add top categories as filters
+      allCategories.slice(0, 8).forEach(category => {
+        const chip = document.createElement('button');
+        chip.className = 'filter-chip';
+        chip.innerHTML = `
+          <i class="fas fa-${iconMap[category.icon] || 'tag'}"></i>
+          ${category.name}
+        `;
+        chip.onclick = function(e) {
+          e.preventDefault();
+          setActiveFilter(category.id);
+        };
+        quickFilters.appendChild(chip);
+      });
+    }
+    
+    // Load initial ads - with phased loading skeleton
+    async function loadInitialAds() {
+      const initialLoading = document.getElementById('initialLoading');
+      const adsGrid = document.getElementById('adsGrid');
+      const emptyState = document.getElementById('emptyState');
+      const loadMoreContainer = document.getElementById('loadMoreContainer');
+      
+      initialLoading.style.display = 'flex';
+      adsGrid.innerHTML = '';
+      emptyState.style.display = 'none';
+      loadMoreContainer.style.display = 'none';
+      
+      // Show skeleton loading for initial load
+      showSkeletonLoading(adsGrid, ADS_PER_PAGE);
+      
+      try {
+        console.log('Loading initial ads...');
+        const { data: ads, error } = await sb
+          .from('ads')
+          .select(`
+            *,
+            categories!ads_category_id_fkey(id, name, slug, icon),
+            profiles!inner(full_name, phone, avatar_url, is_verified)
+          `)
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+          .limit(100); // Load more initially for filtering
+        
+        if (error) throw error;
+        
+        allAds = ads || [];
+        filteredAds = [...allAds];
+        
+        console.log(`Loaded ${allAds.length} ads`);
+        currentPage = 0;
+        hasMoreAds = filteredAds.length > ADS_PER_PAGE;
+        
+        updateAdsCount();
+        renderAdsChunk();
+        
+      } catch (error) {
+        console.error('Error loading ads:', error);
+        showNotification('Failed to load ads. Please try again.', 'error');
+        adsGrid.innerHTML = `
+          <div class="empty-state" style="display: block; grid-column: 1 / -1;">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Error Loading Ads</h3>
+            <p>Please check your connection and try again</p>
+            <button class="btn-primary" onclick="loadInitialAds()">
+              <i class="fas fa-redo"></i> Retry
+            </button>
+          </div>
+        `;
+      } finally {
+        initialLoading.style.display = 'none';
+      }
+    }
+    
+    // Show skeleton loading placeholders
+    function showSkeletonLoading(container, count) {
+      container.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const skeletonCard = document.createElement('div');
+        skeletonCard.className = 'ad-card';
+        skeletonCard.innerHTML = `
+          <div class="ad-image skeleton"></div>
+          <div class="ad-info">
+            <div class="ad-title skeleton"></div>
+            <div class="ad-price skeleton"></div>
+            <div class="ad-meta">
+              <div class="ad-location skeleton"></div>
+              <div class="ad-time skeleton"></div>
+              <div class="ad-category skeleton"></div>
+            </div>
+          </div>
+        `;
+        container.appendChild(skeletonCard);
+      }
+    }
+    
+    // Render ads in chunks (phased loading)
+    function renderAdsChunk() {
+      const adsGrid = document.getElementById('adsGrid');
+      const emptyState = document.getElementById('emptyState');
+      const loadMoreContainer = document.getElementById('loadMoreContainer');
+      
+      if (filteredAds.length === 0) {
+        adsGrid.innerHTML = '';
+        emptyState.style.display = 'block';
+        loadMoreContainer.style.display = 'none';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      // Calculate start and end indices
+      const startIndex = 0;
+      const endIndex = (currentPage + 1) * ADS_PER_PAGE;
+      const adsToShow = filteredAds.slice(startIndex, endIndex);
+      
+      // Clear grid and render ads
+      adsGrid.innerHTML = '';
+      adsToShow.forEach(ad => {
+        const adCard = createAdCard(ad);
+        adsGrid.appendChild(adCard);
+      });
+      
+      // Show/hide load more button
+      hasMoreAds = endIndex < filteredAds.length;
+      if (hasMoreAds) {
+        loadMoreContainer.style.display = 'block';
+      } else {
+        loadMoreContainer.style.display = 'none';
+      }
+      
+      // Update count
+      updateAdsCount();
+    }
+    
+    // Load more ads
+    async function loadMoreAds() {
+      if (isLoadingMore || !hasMoreAds) return;
+      
+      const loadMoreBtn = document.getElementById('loadMoreBtn');
+      const loadMoreContainer = document.getElementById('loadMoreContainer');
+      const adsGrid = document.getElementById('adsGrid');
+      
+      isLoadingMore = true;
+      loadMoreBtn.disabled = true;
+      loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+      
+      // Add small delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      try {
+        currentPage++;
+        
+        // Calculate indices for next chunk
+        const startIndex = 0;
+        const endIndex = (currentPage + 1) * ADS_PER_PAGE;
+        const adsToShow = filteredAds.slice(startIndex, endIndex);
+        
+        // Clear and render all ads up to current page
+        adsGrid.innerHTML = '';
+        adsToShow.forEach(ad => {
+          const adCard = createAdCard(ad);
+          adsGrid.appendChild(adCard);
+        });
+        
+        // Update hasMoreAds
+        hasMoreAds = endIndex < filteredAds.length;
+        
+        if (!hasMoreAds) {
+          loadMoreContainer.style.display = 'none';
+        }
+        
+      } catch (error) {
+        console.error('Error loading more ads:', error);
+        showNotification('Error loading more ads', 'error');
+      } finally {
+        isLoadingMore = false;
+        loadMoreBtn.disabled = false;
+        loadMoreBtn.innerHTML = '<i class="fas fa-redo"></i> Load More Ads';
+      }
+    }
+    
+    // Create ad card - UPDATED: Removed buttons
+    function createAdCard(ad) {
+      const card = document.createElement('a');
+      card.className = 'ad-card';
+      card.href = `ad-detail.html?id=${ad.id}`;
+      
+      // Format price
+      const formattedPrice = formatPrice(ad.price);
+      
+      // Get first image
+      let imageUrl = 'https://via.placeholder.com/300x225/3b82f6/ffffff?text=No+Image';
+      if (ad.image_urls && ad.image_urls.length > 0 && ad.image_urls[0]) {
+        imageUrl = ad.image_urls[0];
+      }
+      
+      // Time ago
+      const timeAgo = getTimeAgo(new Date(ad.created_at));
+      
+      // Badges
+      let badgesHTML = '';
+      if (ad.is_featured) {
+        badgesHTML += '<div class="badge badge-featured">Featured</div>';
+      }
+      if (ad.is_negotiable) {
+        badgesHTML += '<div class="badge badge-negotiable">Negotiable</div>';
+      }
+      // Check if ad is urgent (boosted)
+      const isUrgent = ad.boost_until && new Date(ad.boost_until) > new Date();
+      if (isUrgent) {
+        badgesHTML += '<div class="badge badge-urgent">Urgent</div>';
+      }
+      // Verified seller badge
+      if (ad.profiles?.is_verified) {
+        badgesHTML += '<div class="badge badge-verified">Verified</div>';
+      }
+      
+      card.innerHTML = `
+        <div class="ad-image">
+          <img src="${imageUrl}" 
+               alt="${ad.title}"
+               loading="lazy"
+               onerror="this.src='https://via.placeholder.com/300x225/64748b/ffffff?text=Image+Not+Found'">
+          ${badgesHTML ? `<div class="ad-badges">${badgesHTML}</div>` : ''}
+        </div>
+        
+        <div class="ad-info">
+          <h3 class="ad-title">${ad.title}</h3>
+          <div class="ad-price">${formattedPrice}</div>
+          
+          <div class="ad-meta">
+            <div class="ad-location">
+              <i class="fas fa-map-marker-alt"></i>
+              ${ad.district || ad.region || 'Uganda'}
+            </div>
+            <div class="ad-time">
+              <i class="far fa-clock"></i>
+              ${timeAgo}
+            </div>
+            <div class="ad-category">
+              <i class="fas fa-tag"></i>
+              ${ad.categories?.name || 'Uncategorized'}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+    
+    // Set active filter from quick filters
+    function setActiveFilter(categoryId) {
+      // Update quick filters UI
+      const chips = document.querySelectorAll('.filter-chip');
+      chips.forEach(chip => chip.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      currentFilters.category = categoryId;
+      applyFilterLogic();
+    }
+    
+    // Populate category filters in modal
+    function populateCategoryFilters() {
+      const categoryFilters = document.getElementById('categoryFilters');
+      categoryFilters.innerHTML = '';
+      
+      const allOption = document.createElement('div');
+      allOption.className = 'filter-option active';
+      allOption.textContent = 'All Categories';
+      allOption.onclick = function() {
+        setActiveCategoryFilter(null);
+      };
+      categoryFilters.appendChild(allOption);
+      
+      allCategories.forEach(category => {
+        const option = document.createElement('div');
+        option.className = 'filter-option';
+        option.textContent = category.name;
+        option.dataset.categoryId = category.id;
+        option.onclick = function() {
+          setActiveCategoryFilter(category.id);
+        };
+        categoryFilters.appendChild(option);
+      });
+    }
+    
+    // Populate region filters
+    function populateRegionFilters() {
+      const regionFilters = document.getElementById('regionFilters');
+      regionFilters.innerHTML = '';
+      
+      uniqueRegions.sort().forEach(region => {
+        const option = document.createElement('div');
+        option.className = 'filter-option';
+        option.textContent = region;
+        option.dataset.region = region;
+        option.onclick = function() {
+          toggleRegionFilter(region);
+        };
+        regionFilters.appendChild(option);
+      });
+    }
+    
+    // Set active category filter in modal
+    function setActiveCategoryFilter(categoryId) {
+      const options = document.querySelectorAll('#categoryFilters .filter-option');
+      options.forEach(opt => opt.classList.remove('active'));
+      event.target.classList.add('active');
+      currentFilters.category = categoryId;
+    }
+    
+    // Toggle region filter
+    function toggleRegionFilter(region) {
+      const element = event.target;
+      element.classList.toggle('active');
+      
+      if (element.classList.contains('active')) {
+        currentFilters.region = region;
+      } else {
+        currentFilters.region = null;
+      }
+    }
+    
+    // Apply filter logic with phased loading reset
+    function applyFilterLogic() {
+      filteredAds = allAds.filter(ad => {
+        // Search filter
+        if (currentFilters.search) {
+          const searchLower = currentFilters.search.toLowerCase();
+          const titleMatch = ad.title?.toLowerCase().includes(searchLower);
+          const descMatch = ad.description?.toLowerCase().includes(searchLower);
+          const locationMatch = ad.district?.toLowerCase().includes(searchLower) || 
+                              ad.region?.toLowerCase().includes(searchLower);
+          const categoryMatch = ad.categories?.name?.toLowerCase().includes(searchLower);
+          
+          if (!titleMatch && !descMatch && !locationMatch && !categoryMatch) {
+            return false;
+          }
+        }
+        
+        // Location filter
+        if (currentFilters.location && ad.region !== currentFilters.location) {
+          return false;
+        }
+        
+        // Category filter
+        if (currentFilters.category && ad.category_id !== currentFilters.category) {
+          return false;
+        }
+        
+        // Condition filter
+        if (currentFilters.condition && ad.condition !== currentFilters.condition) {
+          return false;
+        }
+        
+        // Price filters
+        const price = ad.price || 0;
+        if (currentFilters.minPrice && price < currentFilters.minPrice) {
+          return false;
+        }
+        
+        if (currentFilters.maxPrice && price > currentFilters.maxPrice) {
+          return false;
+        }
+        
+        // Region filter
+        if (currentFilters.region && ad.region !== currentFilters.region) {
+          return false;
+        }
+        
+        // Negotiable filter
+        if (currentFilters.negotiable && !ad.is_negotiable) {
+          return false;
+        }
+        
+        // Featured filter
+        if (currentFilters.featured && !ad.is_featured) {
+          return false;
+        }
+        
+        // Urgent filter (boosted ads)
+        if (currentFilters.urgent && (!ad.boost_until || new Date(ad.boost_until) <= new Date())) {
+          return false;
+        }
+        
+        return true;
+      });
+      
+      // Apply sorting
+      sortAds();
+      
+      // Reset phased loading
+      currentPage = 0;
+      hasMoreAds = filteredAds.length > ADS_PER_PAGE;
+      
+      // Render first chunk
+      renderAdsChunk();
+      hideSearchSuggestions();
+    }
+    
+    // Sort ads
+    function sortAds() {
+      const sortBy = document.getElementById('sortSelect').value;
+      
+      filteredAds.sort((a, b) => {
+        switch (sortBy) {
+          case 'newest':
+            return new Date(b.created_at) - new Date(a.created_at);
+          case 'price_low':
+            return (a.price || 0) - (b.price || 0);
+          case 'price_high':
+            return (b.price || 0) - (a.price || 0);
+          case 'featured':
+            if (a.is_featured && !b.is_featured) return -1;
+            if (!a.is_featured && b.is_featured) return 1;
+            return new Date(b.created_at) - new Date(a.created_at);
+          case 'urgent':
+            const aUrgent = a.boost_until && new Date(a.boost_until) > new Date();
+            const bUrgent = b.boost_until && new Date(b.boost_until) > new Date();
+            if (aUrgent && !bUrgent) return -1;
+            if (!aUrgent && bUrgent) return 1;
+            return new Date(b.created_at) - new Date(a.created_at);
+          default:
+            return new Date(b.created_at) - new Date(a.created_at);
+        }
+      });
+    }
+    
+    // Apply filters from modal
+    function applyFilters() {
+      // Get condition filter
+      const activeCondition = document.querySelector('#conditionFilters .filter-option.active');
+      currentFilters.condition = activeCondition ? activeCondition.dataset.value : null;
+      
+      // Get price filters
+      const minPrice = document.getElementById('minPrice').value;
+      const maxPrice = document.getElementById('maxPrice').value;
+      currentFilters.minPrice = minPrice ? parseInt(minPrice) : null;
+      currentFilters.maxPrice = maxPrice ? parseInt(maxPrice) : null;
+      
+      // Get region filter
+      const activeRegion = document.querySelector('#regionFilters .filter-option.active');
+      currentFilters.region = activeRegion ? activeRegion.dataset.region : null;
+      
+      // Get boolean filters
+      currentFilters.negotiable = document.querySelector('[data-filter="negotiable"]')?.classList.contains('active') || false;
+      currentFilters.featured = document.querySelector('[data-filter="featured"]')?.classList.contains('active') || false;
+      currentFilters.urgent = document.querySelector('[data-filter="urgent"]')?.classList.contains('active') || false;
+      
+      applyFilterLogic();
+      closeFilterModal();
+      showNotification('Filters applied successfully');
+    }
+    
+    // Clear all filters
+    function clearFilters() {
+      currentFilters = {
+        search: '',
+        location: '',
+        category: null,
+        condition: null,
+        minPrice: null,
+        maxPrice: null,
+        region: null,
+        negotiable: false,
+        featured: false,
+        urgent: false
+      };
+      
+      // Reset UI
+      document.getElementById('searchInput').value = '';
+      document.getElementById('locationSelect').value = '';
+      document.getElementById('minPrice').value = '';
+      document.getElementById('maxPrice').value = '';
+      document.getElementById('sortSelect').value = 'newest';
+      
+      // Clear all active classes in modal
+      document.querySelectorAll('.filter-option.active').forEach(el => {
+        el.classList.remove('active');
+      });
+      
+      // Set "All Categories" as active
+      const allCategoryOption = document.querySelector('#categoryFilters .filter-option:first-child');
+      if (allCategoryOption) allCategoryOption.classList.add('active');
+      
+      // Set "All" quick filter as active
+      const quickFilters = document.querySelectorAll('.filter-chip');
+      quickFilters.forEach((chip, index) => {
+        chip.classList.remove('active');
+        if (index === 0) chip.classList.add('active');
+      });
+      
+      // Reset phased loading
+      currentPage = 0;
+      filteredAds = [...allAds];
+      sortAds();
+      hasMoreAds = filteredAds.length > ADS_PER_PAGE;
+      renderAdsChunk();
+      
+      closeFilterModal();
+      showNotification('Filters cleared');
+    }
+    
+    // Open filter modal
+    function openFilterModal() {
+      document.getElementById('filterModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // Close filter modal
+    function closeFilterModal() {
+      document.getElementById('filterModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+    
+    // Handle post ad button
+    async function handlePostAd() {
+      try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) {
+          window.location.href = 'login.html?redirect=' + encodeURIComponent('post-ad.html');
+          return;
+        }
+        window.location.href = 'post-ad.html';
+      } catch (error) {
+        console.error('Error checking user:', error);
+        window.location.href = 'login.html';
+      }
+    }
+    
+    // Update notification count
+    async function updateNotificationCount() {
+      try {
+        const { data: { user }, error: authError } = await sb.auth.getUser();
+        
+        if (authError) {
+          console.error('Auth error:', authError);
+          hideNotificationBadge();
+          return;
+        }
+        
+        if (!user) {
+          hideNotificationBadge();
+          return;
+        }
+        
+        console.log('Fetching notifications for user:', user.id);
+        
+        const { data: notifications, error: fetchError } = await sb
+          .from('notifications')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('is_read', false);
+        
+        if (fetchError) {
+          console.error('Error fetching notifications:', fetchError);
+          hideNotificationBadge();
+          return;
+        }
+        
+        const badge = document.getElementById('notificationBadge');
+        if (!badge) {
+          console.log('Notification badge element not found');
+          return;
+        }
+        
+        const unreadCount = notifications ? notifications.length : 0;
+        console.log(`Unread notifications: ${unreadCount}`);
+        
+        if (unreadCount > 0) {
+          badge.textContent = unreadCount > 9 ? '9+' : unreadCount.toString();
+          badge.style.display = 'flex';
+        } else {
+          hideNotificationBadge();
+        }
+        
+      } catch (error) {
+        console.error('Error updating notification count:', error);
+        hideNotificationBadge();
+      }
+    }
+    
+    // Hide notification badge
+    function hideNotificationBadge() {
+      const badge = document.getElementById('notificationBadge');
+      if (badge) {
+        badge.style.display = 'none';
+        badge.textContent = '';
+      }
+    }
+    
+    // Helper functions
+    function formatPrice(price) {
+      if (!price || price === 0) return 'Price on request';
+      return new Intl.NumberFormat('en-UG', {
+        style: 'currency',
+        currency: 'UGX',
+        minimumFractionDigits: 0
+      }).format(price);
+    }
+    
+    function getTimeAgo(date) {
+      const seconds = Math.floor((new Date() - date) / 1000);
+      
+      let interval = seconds / 31536000;
+      if (interval > 1) return Math.floor(interval) + "y ago";
+      
+      interval = seconds / 2592000;
+      if (interval > 1) return Math.floor(interval) + "mo ago";
+      
+      interval = seconds / 86400;
+      if (interval > 1) return Math.floor(interval) + "d ago";
+      
+      interval = seconds / 3600;
+      if (interval > 1) return Math.floor(interval) + "h ago";
+      
+      interval = seconds / 60;
+      if (interval > 1) return Math.floor(interval) + "m ago";
+      
+      return Math.floor(seconds) + "s ago";
+    }
+    
+    function updateAdsCount() {
+      const endIndex = Math.min((currentPage + 1) * ADS_PER_PAGE, filteredAds.length);
+      document.getElementById('adsCount').textContent = 
+        `Showing ${endIndex} of ${filteredAds.length} ad${filteredAds.length !== 1 ? 's' : ''}`;
+    }
+    
+    function showNotification(message, type = 'success') {
+      // Remove any existing notifications
+      const existingNotifications = document.querySelectorAll('.custom-notification');
+      existingNotifications.forEach(notification => {
+        notification.remove();
+      });
+      
+      const notification = document.createElement('div');
+      notification.className = 'custom-notification';
+      const bgColor = type === 'error' ? 'var(--danger)' : 
+                     type === 'warning' ? 'var(--warning)' : 'var(--success)';
+      
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        left: 20px;
+        background: ${bgColor};
+        color: white;
+        padding: 15px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-hover);
+        z-index: 3000;
+        animation: slideIn 0.3s ease;
+        text-align: center;
+        font-weight: 500;
+      `;
+      
+      const icon = type === 'error' ? 'exclamation-circle' : 
+                  type === 'warning' ? 'exclamation-triangle' : 'check-circle';
+      notification.innerHTML = `<i class="fas fa-${icon}" style="margin-right: 8px;"></i>${message}`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+      
+      // Add CSS for animations if not already present
+      if (!document.querySelector('#notification-animations')) {
+        const style = document.createElement('style');
+        style.id = 'notification-animations';
+        style.textContent = `
+          @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+          }
+          @keyframes slideOut {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-20px); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+    
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+  </script>
+</body>
+</html>

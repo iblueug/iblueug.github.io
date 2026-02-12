@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categories | iBlue Uganda</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #475569;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --light-gray: #e2e8f0;
+      --border: #cbd5e1;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: var(--dark);
+    }
+
+    /* Header */
+    .mobile-header {
+      background: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--dark);
+      font-size: 1.2rem;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover {
+      background: var(--light);
+    }
+
+    .header-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .header-subtitle {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-btn {
+      background: var(--light);
+      color: var(--dark);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      position: relative;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .header-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-top: 80px;
+      padding: 16px;
+    }
+
+    /* Search Bar */
+    .search-container {
+      background: white;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .search-wrapper {
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      font-size: 1rem;
+      z-index: 2;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 16px 12px 45px;
+      border: 2px solid var(--light-gray);
+      border-radius: 25px;
+      font-size: 0.95rem;
+      background: var(--light);
+      transition: all 0.3s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /* Categories Section */
+    .categories-section {
+      margin-bottom: 80px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .categories-count {
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    /* Categories Grid */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+      }
+    }
+
+    /* Category Card */
+    .category-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border: 1px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .category-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary);
+    }
+
+    .category-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--primary);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .category-card:hover::before {
+      opacity: 1;
+    }
+
+    .category-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      color: white;
+      font-size: 1.5rem;
+      transition: all 0.3s;
+    }
+
+    .category-card:hover .category-icon {
+      transform: scale(1.1);
+    }
+
+    .category-name {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .category-description {
+      font-size: 0.85rem;
+      color: var(--gray);
+      margin-bottom: 12px;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .category-stats {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--light-gray);
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Subcategories (if parent category) */
+    .subcategories {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--light-gray);
+      width: 100%;
+    }
+
+    .subcategory-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--light);
+      border-radius: 6px;
+      margin-bottom: 6px;
+      text-decoration: none;
+      color: var(--dark);
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+
+    .subcategory-item:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .subcategory-icon {
+      width: 24px;
+      height: 24px;
+      background: rgba(37, 99, 235, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+      color: var(--primary);
+      font-size: 0.8rem;
+    }
+
+    /* Popular Categories */
+    .popular-section {
+      margin-top: 32px;
+    }
+
+    .popular-categories {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .popular-categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .popular-category {
+      background: white;
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .popular-category:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      background: var(--light);
+    }
+
+    .popular-rank {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary);
+      min-width: 24px;
+    }
+
+    /* Loading States */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 20px;
+      grid-column: 1 / -1;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(37, 99, 235, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: var(--radius);
+      margin-top: 20px;
+      box-shadow: var(--shadow);
+      grid-column: 1 / -1;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: var(--light-gray);
+      margin-bottom: 15px;
+    }
+
+    .empty-state h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+
+    .empty-state p {
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--gray);
+      font-size: 0.8rem;
+      gap: 4px;
+      transition: all 0.3s;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-icon {
+      font-size: 1.2rem;
+    }
+
+    /* Post Ad Button */
+    .post-ad-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      z-index: 1001;
+      transition: all 0.3s;
+    }
+
+    .post-ad-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    /* Responsive */
+    @media (min-width: 640px) {
+      .main-content {
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .bottom-nav {
+        display: none;
+      }
+      
+      .post-ad-btn {
+        bottom: 30px;
+        right: 30px;
+      }
+      
+      .categories-grid {
+        gap: 24px;
+      }
+    }
+
+    /* Featured Categories */
+    .featured-categories {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    @media (min-width: 768px) {
+      .featured-categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .featured-categories {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .featured-category {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: var(--radius);
+      padding: 24px;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.3s;
+      box-shadow: var(--shadow);
+    }
+
+    .featured-category:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      background: linear-gradient(135deg, var(--primary-dark), #1e40af);
+    }
+
+    .featured-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+
+    .featured-content h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .featured-content p {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <button class="back-btn" onclick="window.history.back()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    
+    <div class="header-content">
+      <div class="header-title">Browse Categories</div>
+      <div class="header-subtitle" id="categoriesCount">Loading...</div>
+    </div>
+    
+    <div class="header-actions">
+      <button class="header-btn" onclick="refreshCategories()">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Search Bar -->
+    <div class="search-container">
+      <div class="search-wrapper">
+        <i class="fas fa-search search-icon"></i>
+        <input 
+          type="text" 
+          class="search-input" 
+          id="searchInput" 
+          placeholder="Search categories..."
+          oninput="searchCategories()"
+        >
+      </div>
+    </div>
+
+    <!-- Featured Categories -->
+    <div class="featured-categories" id="featuredCategories">
+      <!-- Featured categories will be loaded here -->
+    </div>
+
+    <!-- All Categories Section -->
+    <section class="categories-section">
+      <div class="section-header">
+        <h2 class="section-title">All Categories</h2>
+        <span class="categories-count" id="allCategoriesCount">Loading...</span>
+      </div>
+
+      <!-- Categories Grid -->
+      <div class="categories-grid" id="categoriesGrid">
+        <!-- Categories will be loaded here -->
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h3>No Categories Found</h3>
+        <p>Try a different search term</p>
+      </div>
+    </section>
+
+    <!-- Popular Categories Section -->
+    <section class="popular-section" id="popularSection" style="display: none;">
+      <div class="section-header">
+        <h2 class="section-title">Popular Categories</h2>
+        <span class="categories-count">Most active</span>
+      </div>
+
+      <div class="popular-categories" id="popularCategories">
+        <!-- Popular categories will be loaded here -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating Post Ad Button -->
+  <button class="post-ad-btn" onclick="handlePostAd()">
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <i class="fas fa-home nav-icon"></i>
+      <span>Home</span>
+    </a>
+    <a href="categories.html" class="nav-item active">
+      <i class="fas fa-th-large nav-icon"></i>
+      <span>Categories</span>
+    </a>
+    <a href="messages.html" class="nav-item">
+      <i class="fas fa-comments nav-icon"></i>
+      <span>Chats</span>
+    </a>
+    <a href="saved.html" class="nav-item">
+      <i class="fas fa-heart nav-icon"></i>
+      <span>Saved</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <i class="fas fa-user nav-icon"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <script>
+    // Initialize Supabase client
+    const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
+    
+    const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // Icon mapping
+    const iconMap = {
+      'smartphone': 'mobile-alt',
+      'car': 'car',
+      'home': 'home',
+      'tv': 'tv',
+      'shirt': 'tshirt',
+      'briefcase': 'briefcase',
+      'sofa': 'couch',
+      'tractor': 'tractor',
+      'paw-print': 'paw',
+      'building-storefront': 'store',
+      'motorcycle': 'motorcycle',
+      'bicycle': 'bicycle',
+      'house': 'home',
+      'building': 'building',
+      'tree': 'tree',
+      'store': 'store',
+      'tablet': 'tablet',
+      'phone': 'phone',
+      'headphones': 'headphones',
+      'truck': 'truck',
+      'cog': 'cog',
+      'tag': 'tag'
+    };
+    
+    // Global variables
+    let allCategories = [];
+    let filteredCategories = [];
+    let popularCategories = [];
+    
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', async function() {
+      await loadCategories();
+      // Load popular categories separately to avoid errors
+      setTimeout(loadPopularCategories, 500);
+    });
+    
+    // Load all categories with ad counts (optimized)
+    async function loadCategories() {
+      const loading = document.getElementById('loading');
+      const categoriesGrid = document.getElementById('categoriesGrid');
+      const emptyState = document.getElementById('emptyState');
+      const featuredCategories = document.getElementById('featuredCategories');
+      
+      loading.style.display = 'flex';
+      categoriesGrid.innerHTML = '';
+      featuredCategories.innerHTML = '';
+      emptyState.style.display = 'none';
+      
+      try {
+        // Step 1: Load main categories (no parent)
+        const { data: categories, error: categoriesError } = await sb
+          .from('categories')
+          .select('*')
+          .eq('is_active', true)
+          .is('parent_id', null)
+          .order('display_order')
+          .order('name');
+        
+        if (categoriesError) throw categoriesError;
+        
+        allCategories = categories || [];
+        filteredCategories = [...allCategories];
+        
+        // Step 2: Get ad counts for main categories
+        await loadAdCountsForCategories();
+        
+        // Step 3: Load subcategories for each main category (in parallel)
+        await loadSubcategories();
+        
+        // Update counts
+        updateCategoryCounts();
+        
+        // Render featured categories (first 3)
+        renderFeaturedCategories(allCategories.slice(0, 3));
+        
+        // Render all categories
+        renderCategories();
+        
+      } catch (error) {
+        console.error('Error loading categories:', error);
+        showError('Failed to load categories. Please try again.');
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+    
+    // Load ad counts for categories (optimized)
+    async function loadAdCountsForCategories() {
+      try {
+        // Get all ads counts for main categories
+        const { data: mainCategoryAds, error: mainError } = await sb
+          .from('ads')
+          .select('category_id')
+          .eq('status', 'active');
+        
+        if (!mainError && mainCategoryAds) {
+          // Count ads per main category
+          const mainCategoryCounts = {};
+          mainCategoryAds.forEach(ad => {
+            mainCategoryCounts[ad.category_id] = (mainCategoryCounts[ad.category_id] || 0) + 1;
+          });
+          
+          // Get all ads counts for subcategories
+          const { data: subcategoryAds, error: subError } = await sb
+            .from('ads')
+            .select('subcategory_id')
+            .eq('status', 'active')
+            .not('subcategory_id', 'is', null);
+          
+          if (!subError && subcategoryAds) {
+            // Count ads per subcategory
+            const subcategoryCounts = {};
+            subcategoryAds.forEach(ad => {
+              subcategoryCounts[ad.subcategory_id] = (subcategoryCounts[ad.subcategory_id] || 0) + 1;
+            });
+            
+            // Assign counts to categories
+            allCategories.forEach(category => {
+              category.main_ad_count = mainCategoryCounts[category.id] || 0;
+              category.sub_ad_counts = {}; // Will be populated when loading subcategories
+              category.total_ads = category.main_ad_count;
+            });
+            
+            // Store subcategory counts for later use
+            window.subcategoryCounts = subcategoryCounts;
+          }
+        }
+      } catch (error) {
+        console.error('Error loading ad counts:', error);
+      }
+    }
+    
+    // Load subcategories (optimized)
+    async function loadSubcategories() {
+      try {
+        // Get all subcategories at once
+        const { data: allSubcategories, error } = await sb
+          .from('categories')
+          .select('*')
+          .eq('is_active', true)
+          .not('parent_id', 'is', null)
+          .order('display_order');
+        
+        if (error) throw error;
+        
+        // Group subcategories by parent_id
+        const subcategoriesByParent = {};
+        allSubcategories.forEach(sub => {
+          if (!subcategoriesByParent[sub.parent_id]) {
+            subcategoriesByParent[sub.parent_id] = [];
+          }
+          subcategoriesByParent[sub.parent_id].push(sub);
+        });
+        
+        // Assign subcategories to parent categories
+        allCategories.forEach(category => {
+          category.subcategories = subcategoriesByParent[category.id] || [];
+          
+          // Add subcategory ad counts
+          let totalSubAds = 0;
+          category.subcategories.forEach(sub => {
+            const subAdCount = window.subcategoryCounts?.[sub.id] || 0;
+            sub.sub_ad_count = subAdCount;
+            totalSubAds += subAdCount;
+          });
+          
+          // Update total ads count
+          category.total_ads = category.main_ad_count + totalSubAds;
+        });
+        
+      } catch (error) {
+        console.error('Error loading subcategories:', error);
+      }
+    }
+    
+    // Load popular categories (simplified to avoid relationship errors)
+    async function loadPopularCategories() {
+      try {
+        // Get top categories based on stored total_ads
+        const categoriesWithAds = allCategories
+          .filter(cat => cat.total_ads > 0)
+          .sort((a, b) => b.total_ads - a.total_ads)
+          .slice(0, 6);
+        
+        popularCategories = categoriesWithAds;
+        
+        // Show popular section if we have data
+        if (popularCategories.length > 0) {
+          document.getElementById('popularSection').style.display = 'block';
+          renderPopularCategories();
+        }
+        
+      } catch (error) {
+        console.error('Error loading popular categories:', error);
+        // Don't show error, just hide the section
+        document.getElementById('popularSection').style.display = 'none';
+      }
+    }
+    
+    // Render featured categories
+    function renderFeaturedCategories(categories) {
+      const featuredContainer = document.getElementById('featuredCategories');
+      
+      if (categories.length === 0) {
+        featuredContainer.style.display = 'none';
+        return;
+      }
+      
+      featuredContainer.innerHTML = '';
+      
+      categories.forEach(category => {
+        const featuredCard = document.createElement('a');
+        featuredCard.className = 'featured-category';
+        featuredCard.href = `category.html?id=${category.id}`;
+        featuredCard.style.background = category.color_hex 
+          ? `linear-gradient(135deg, ${category.color_hex}, ${darkenColor(category.color_hex, 20)})`
+          : 'linear-gradient(135deg, var(--primary), var(--primary-dark))';
+        
+        const iconName = iconMap[category.icon] || 'tag';
+        const adCount = category.total_ads || 0;
+        
+        featuredCard.innerHTML = `
+          <div class="featured-icon">
+            <i class="fas fa-${iconName}"></i>
+          </div>
+          <div class="featured-content">
+            <h3>${escapeHtml(category.name)}</h3>
+            <p>${adCount} ${adCount === 1 ? 'ad' : 'ads'} available</p>
+          </div>
+        `;
+        
+        featuredContainer.appendChild(featuredCard);
+      });
+    }
+    
+    // Render categories
+    function renderCategories() {
+      const categoriesGrid = document.getElementById('categoriesGrid');
+      const emptyState = document.getElementById('emptyState');
+      
+      if (filteredCategories.length === 0) {
+        categoriesGrid.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      categoriesGrid.innerHTML = '';
+      
+      filteredCategories.forEach(category => {
+        const categoryCard = createCategoryCard(category);
+        categoriesGrid.appendChild(categoryCard);
+      });
+    }
+    
+    // Render popular categories
+    function renderPopularCategories() {
+      const popularContainer = document.getElementById('popularCategories');
+      popularContainer.innerHTML = '';
+      
+      popularCategories.forEach((category, index) => {
+        const popularCard = document.createElement('a');
+        popularCard.className = 'popular-category';
+        popularCard.href = `category.html?id=${category.id}`;
+        
+        const iconName = iconMap[category.icon] || 'tag';
+        const adCount = category.total_ads || 0;
+        
+        popularCard.innerHTML = `
+          <div class="popular-rank">${index + 1}</div>
+          <div class="category-icon" style="background: ${category.color_hex || 'var(--primary)'}; width: 48px; height: 48px;">
+            <i class="fas fa-${iconName}"></i>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 2px;">${escapeHtml(category.name)}</div>
+            <div style="font-size: 0.8rem; color: var(--gray);">${adCount} ${adCount === 1 ? 'ad' : 'ads'}</div>
+          </div>
+          <i class="fas fa-chevron-right" style="color: var(--gray);"></i>
+        `;
+        
+        popularContainer.appendChild(popularCard);
+      });
+    }
+    
+    // Create category card
+    function createCategoryCard(category) {
+      const card = document.createElement('a');
+      card.className = 'category-card';
+      card.href = `category.html?id=${category.id}`;
+      
+      const iconName = iconMap[category.icon] || 'tag';
+      const adCount = category.total_ads || 0;
+      const subcategoryCount = category.subcategories?.length || 0;
+      
+      card.innerHTML = `
+        <div class="category-icon" style="background: ${category.color_hex || 'var(--primary)'}">
+          <i class="fas fa-${iconName}"></i>
+        </div>
+        <h3 class="category-name">${escapeHtml(category.name)}</h3>
+        
+        ${category.description ? `<p class="category-description">${escapeHtml(category.description)}</p>` : ''}
+        
+        <div class="category-stats">
+          <div class="stat">
+            <span class="stat-value">${adCount}</span>
+            <span class="stat-label">Ads</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">${subcategoryCount}</span>
+            <span class="stat-label">Subcats</span>
+          </div>
+        </div>
+      `;
+      
+      // Add subcategories if any
+      if (category.subcategories && category.subcategories.length > 0) {
+        const subcategoriesDiv = document.createElement('div');
+        subcategoriesDiv.className = 'subcategories';
+        
+        // Show only first 3 subcategories
+        category.subcategories.slice(0, 3).forEach(subcategory => {
+          const subcategoryLink = document.createElement('a');
+          subcategoryLink.className = 'subcategory-item';
+          subcategoryLink.href = `category.html?id=${subcategory.id}`;
+          
+          const subIconName = iconMap[subcategory.icon] || 'tag';
+          const subAdCount = subcategory.sub_ad_count || 0;
+          
+          subcategoryLink.innerHTML = `
+            <div class="subcategory-icon">
+              <i class="fas fa-${subIconName}"></i>
+            </div>
+            <span>${escapeHtml(subcategory.name)} (${subAdCount})</span>
+          `;
+          
+          subcategoriesDiv.appendChild(subcategoryLink);
+        });
+        
+        // Add "View more" if there are more subcategories
+        if (category.subcategories.length > 3) {
+          const viewMoreLink = document.createElement('a');
+          viewMoreLink.className = 'subcategory-item';
+          viewMoreLink.href = `category.html?id=${category.id}`;
+          viewMoreLink.style.fontSize = '0.8rem';
+          viewMoreLink.innerHTML = `
+            <div class="subcategory-icon">
+              <i class="fas fa-ellipsis-h"></i>
+            </div>
+            <span>View ${category.subcategories.length - 3} more</span>
+          `;
+          subcategoriesDiv.appendChild(viewMoreLink);
+        }
+        
+        card.appendChild(subcategoriesDiv);
+      }
+      
+      return card;
+    }
+    
+    // Search categories
+    function searchCategories() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+      
+      if (!searchTerm) {
+        filteredCategories = [...allCategories];
+      } else {
+        filteredCategories = allCategories.filter(category => {
+          const nameMatch = category.name?.toLowerCase().includes(searchTerm);
+          const descMatch = category.description?.toLowerCase().includes(searchTerm);
+          
+          // Check subcategories as well
+          const subcategoryMatch = category.subcategories?.some(sub => 
+            sub.name?.toLowerCase().includes(searchTerm)
+          );
+          
+          return nameMatch || descMatch || subcategoryMatch;
+        });
+      }
+      
+      updateCategoryCounts();
+      renderCategories();
+    }
+    
+    // Update category counts
+    function updateCategoryCounts() {
+      const totalCount = allCategories.length;
+      const filteredCount = filteredCategories.length;
+      
+      document.getElementById('categoriesCount').textContent = 
+        `${filteredCount} categor${filteredCount === 1 ? 'y' : 'ies'}`;
+      
+      document.getElementById('allCategoriesCount').textContent = 
+        `${filteredCount} ${filteredCount === 1 ? 'category' : 'categories'}`;
+    }
+    
+    // Refresh categories
+    function refreshCategories() {
+      loadCategories();
+      setTimeout(loadPopularCategories, 500);
+      showNotification('Refreshing categories...');
+    }
+    
+    // Handle post ad button
+    async function handlePostAd() {
+      try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) {
+          window.location.href = 'login.html?redirect=' + encodeURIComponent('post-ad.html');
+          return;
+        }
+        window.location.href = 'post-ad.html';
+      } catch (error) {
+        console.error('Error checking user:', error);
+        window.location.href = 'login.html';
+      }
+    }
+    
+    // Helper functions
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    function darkenColor(color, percent) {
+      if (!color || !color.startsWith('#')) return color;
+      
+      try {
+        const num = parseInt(color.replace('#', ''), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = Math.max(0, Math.min(255, (num >> 16) - amt));
+        const G = Math.max(0, Math.min(255, (num >> 8 & 0x00FF) - amt));
+        const B = Math.max(0, Math.min(255, (num & 0x0000FF) - amt));
+        
+        return '#' + ((1 << 24) + (R << 16) + (G << 8) + B).toString(16).slice(1);
+      } catch (e) {
+        return color;
+      }
+    }
+    
+    function showError(message) {
+      const categoriesGrid = document.getElementById('categoriesGrid');
+      const loading = document.getElementById('loading');
+      
+      loading.style.display = 'none';
+      categoriesGrid.innerHTML = `
+        <div class="empty-state" style="display: block; grid-column: 1 / -1;">
+          <i class="fas fa-exclamation-circle"></i>
+          <h3>Error Loading Categories</h3>
+          <p>${message}</p>
+          <button class="btn-primary" onclick="loadCategories()">
+            <i class="fas fa-redo"></i> Retry
+          </button>
+        </div>
+      `;
+    }
+    
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        left: 20px;
+        background: var(--primary);
+        color: white;
+        padding: 12px 16px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        z-index: 3000;
+        animation: slideIn 0.3s ease;
+        text-align: center;
+        font-size: 0.95rem;
+        font-weight: 500;
+      `;
+      
+      notification.innerHTML = `<i class="fas fa-info-circle" style="margin-right: 8px;"></i>${message}`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+      
+      // Add CSS for animations if not already present
+      if (!document.querySelector('#notification-animations')) {
+        const style = document.createElement('style');
+        style.id = 'notification-animations';
+        style.textContent = `
+          @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+          }
+          @keyframes slideOut {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-20px); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+  </script>
+</body>
+</html>
