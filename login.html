@@ -252,6 +252,34 @@
         } 
       });
 
+      // --- All allowed redirect URLs (matching Supabase configured URLs) ---
+      const ALLOWED_REDIRECTS = [
+        'https://iblueug.github.io/dashboard.html',
+        'https://iblueug.github.io/messages.html',
+        'https://iblueug.github.io/profile.html',
+        'https://iblueug.github.io/chat.html',
+        'https://iblueug.github.io/my-ads.html',
+        'https://iblueug.github.io/post-ad.html',
+        'https://iblueug.github.io/saved-ads.html'
+      ];
+
+      // --- Default redirect after login (dashboard) ---
+      const DEFAULT_REDIRECT = 'https://iblueug.github.io/dashboard.html';
+
+      // --- Helper to validate and get safe redirect URL ---
+      function getSafeRedirect(redirectTo) {
+        if (redirectTo && ALLOWED_REDIRECTS.includes(redirectTo)) {
+          return redirectTo;
+        }
+        // Check if there's a stored redirect from before login
+        const storedRedirect = sessionStorage.getItem('postLoginRedirect');
+        if (storedRedirect && ALLOWED_REDIRECTS.includes(storedRedirect)) {
+          sessionStorage.removeItem('postLoginRedirect');
+          return storedRedirect;
+        }
+        return DEFAULT_REDIRECT;
+      }
+
       // --- DOM references ---
       const msgEl = document.getElementById('msg');
       const loginBtn = document.getElementById('loginBtn');
@@ -272,6 +300,18 @@
             msgEl.classList.remove('show');
             // optional: clear text after hide
           }, 4000);
+        }
+      }
+
+      // --- Check for redirect parameter in URL (e.g., from protected route) ---
+      function checkForRedirectParam() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get('redirect');
+        if (redirect && ALLOWED_REDIRECTS.includes(redirect)) {
+          sessionStorage.setItem('postLoginRedirect', redirect);
+          // Clean URL without refreshing the page
+          const cleanUrl = window.location.pathname;
+          history.replaceState({}, document.title, cleanUrl);
         }
       }
 
@@ -321,9 +361,10 @@
           // success
           showMessage('✓ Success! Redirecting...', 'success');
           
-          // smooth redirect after success
+          // Get safe redirect URL and navigate
+          const redirectUrl = getSafeRedirect();
           setTimeout(() => {
-            window.location.href = 'https://iblueug.github.io/dashboard.html';
+            window.location.href = redirectUrl;
           }, 1000);
         } catch (err) {
           showMessage('Network error. Try again.', 'error');
@@ -342,11 +383,13 @@
         googleBtn.style.opacity = '0.7';
         
         try {
+          // Get the intended redirect destination
+          const redirectTo = getSafeRedirect();
+          
           const { data, error } = await sb.auth.signInWithOAuth({
             provider: 'google',
             options: {
-              redirectTo: 'https://iblueug.github.io/dashboard.html',
-              // recommended: use the current page as fallback
+              redirectTo: redirectTo, // Dynamic redirect based on context
               queryParams: {
                 access_type: 'offline',
                 prompt: 'consent', // helps mobile to refresh token
@@ -372,8 +415,9 @@
         try {
           const { data, error } = await sb.auth.getSession();
           if (data && data.session) {
-            // user already signed in – redirect silently
-            window.location.replace('https://iblueug.github.io/dashboard.html');
+            // user already signed in – redirect to appropriate page
+            const redirectUrl = getSafeRedirect();
+            window.location.replace(redirectUrl);
           }
         } catch (e) {
           // silent fail – no session, stay on login
@@ -386,6 +430,7 @@
 
       // check session on load, also after OAuth redirect (pkce)
       document.addEventListener('DOMContentLoaded', () => {
+        checkForRedirectParam();
         checkActiveSession();
         
         // set input padding consistency for android
