@@ -2,686 +2,431 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- SUPA-MOBILE RESPONSIVE - 99% Uganda Market Ready 🇺🇬 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <meta name="theme-color" content="#667eea">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>Sign In – iBlue Uganda</title>
-
+  <!-- Ultra-responsive viewport – works on all mobile screens -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+  <title>iBlue Uganda • sign in</title>
+  <!-- modern, system-font stack for crisp mobile typography -->
   <style>
-    /* ============================================
-       SUPA-MOBILE FIRST DESIGN - OPTIMIZED FOR UGANDAN NETWORKS
-       - Fast loading (under 2 seconds on 3G)
-       - Big touch targets (minimum 48px)
-       - No hover dependencies
-       - Battery efficient (no animations on slow connections)
-       - Works on $50 Android phones
-    ============================================ */
-    
+    /* reset & safe area support */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(145deg, #0B4F6C 0%, #2C3E50 100%);
-      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(145deg, #e6eef5 0%, #d9e3ec 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;
-      padding-top: env(safe-area-inset-top, 12px);
-      padding-bottom: env(safe-area-inset-bottom, 12px);
+      min-height: 100vh;
+      min-height: 100dvh; /* dynamic viewport, perfect for mobile */
+      margin: 0;
+      padding: 16px;
+      /* ensure background covers even on notch devices */
+      background-attachment: fixed;
     }
 
+    /* ultra‑optimised card – truly mobile-first, 99% width on small, never overflows */
     .card {
-      background: rgba(255, 255, 255, 0.98);
-      width: 100%;
-      max-width: 480px;
-      padding: 28px 24px;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 2rem 1.5rem;
       border-radius: 32px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 40px -12px rgba(0, 35, 45, 0.25), 0 4px 18px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255,255,255,0.5);
+      transition: all 0.2s ease;
     }
 
+    /* mobile-optimised spacing */
     h1 {
-      text-align: center;
-      margin-bottom: 4px;
-      font-size: 34px;
-      font-weight: 700;
-      color: #0B4F6C;
-      letter-spacing: -0.5px;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #64748B;
-      margin-bottom: 32px;
-      font-size: 16px;
-      font-weight: 400;
-    }
-
-    .field {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #1E293B;
-      font-size: 15px;
+      font-size: 2.1rem;
       font-weight: 600;
+      letter-spacing: -0.02em;
+      text-align: center;
+      color: #0B4F6C;
+      margin-bottom: 0.5rem;
+      margin-top: 0.25rem;
+      line-height: 1.1;
+      word-break: break-word;
     }
 
+    /* subtle tagline – professional, friendly */
+    .brand-tag {
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: #3a6e7f;
+      margin-bottom: 2rem;
+      border-bottom: 1.5px solid rgba(11, 79, 108, 0.12);
+      padding-bottom: 1rem;
+      letter-spacing: 0.3px;
+    }
+
+    /* input fields – perfect tap size 48px, thumb-friendly */
     input {
       width: 100%;
-      padding: 16px 18px;
-      border-radius: 16px;
-      border: 1.5px solid #E2E8F0;
-      font-size: 16px;
-      transition: all 0.2s;
-      background: #F8FAFC;
-      -webkit-appearance: none;
+      padding: 15px 18px;
+      margin-bottom: 1rem;
+      border-radius: 18px;
+      border: 1.5px solid #e2e9f0;
+      background: #ffffff;
+      font-size: 1rem;
+      line-height: 1.4;
+      font-weight: 450;
+      color: #0a2e3a;
+      transition: border 0.15s, box-shadow 0.2s;
       appearance: none;
+      -webkit-appearance: none;
     }
 
     input:focus {
       border-color: #0B4F6C;
+      outline: 0;
+      box-shadow: 0 0 0 4px rgba(11, 79, 108, 0.12);
       background: white;
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(11, 79, 108, 0.1);
     }
 
-    input::placeholder {
-      color: #94A3B8;
-      font-size: 15px;
+    /* hide autofill background flash (mobile) */
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 50px white inset;
+      -webkit-text-fill-color: #0a2e3a;
     }
 
-    .password-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .forgot-link {
-      color: #0B4F6C;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-      padding: 8px;
-    }
-
+    /* primary button – big, clear, tactile */
     button {
       width: 100%;
-      padding: 16px 20px;
+      padding: 15px 18px;
       border: none;
-      border-radius: 16px;
-      background: #0B4F6C;
-      color: white;
-      font-weight: 700;
-      font-size: 17px;
+      border-radius: 30px; /* pill shape, modern */
+      font-size: 1.06rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: transform 0.1s, background 0.2s;
-      margin-top: 8px;
-      min-height: 56px;
-      letter-spacing: 0.3px;
-    }
-
-    button:active {
-      background: #0A3B4F;
-      transform: scale(0.98);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      transform: none;
-    }
-
-    .google-btn {
-      background: white;
-      color: #1E293B;
-      border: 1.5px solid #E2E8F0;
+      transition: all 0.18s;
       display: flex;
       align-items: center;
       justify-content: center;
+      letter-spacing: 0.3px;
+      background: #0B4F6C;
+      color: white;
+      box-shadow: 0 10px 18px -8px rgba(11, 79, 108, 0.4);
+      margin-bottom: 0.8rem;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    button:active {
+      transform: scale(0.98);
+      box-shadow: 0 5px 12px -6px rgba(11, 79, 108, 0.5);
+    }
+
+    /* google button – elegant, clean, mobile contrast */
+    .google-btn {
+      background: white;
+      color: #1f2e3a;
+      border: 1.5px solid #d4dee6;
+      box-shadow: none;
+      margin-top: 0.4rem;
       gap: 12px;
-      margin-top: 8px;
-      font-weight: 600;
+      font-weight: 500;
+      backdrop-filter: blur(4px);
     }
 
     .google-btn:active {
-      background: #F1F5F9;
+      background: #f4f8fc;
       border-color: #0B4F6C;
-      transform: scale(0.98);
     }
 
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 24px 0 16px;
-      color: #64748B;
-      font-size: 14px;
-    }
-
-    .divider::before,
-    .divider::after {
-      content: "";
-      flex: 1;
-      border-bottom: 1px solid #E2E8F0;
-    }
-
-    .divider span {
-      margin: 0 16px;
-      color: #64748B;
-      font-weight: 500;
-    }
-
-    .signup-prompt {
-      text-align: center;
-      margin-top: 24px;
-      padding-top: 20px;
-      border-top: 1px solid #E2E8F0;
-      color: #64748B;
-      font-size: 16px;
-    }
-
-    .signup-prompt a {
-      color: #0B4F6C;
-      text-decoration: none;
-      font-weight: 700;
-      padding: 8px;
+    /* google icon – pure SVG, crisp on retina */
+    .google-icon {
+      width: 20px;
+      height: 20px;
       display: inline-block;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="%23FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="%2323A1F1" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="%2334A853" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="%23EA4335" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>') no-repeat center;
+      background-size: contain;
     }
 
+    /* message container – fluid, non‑jittery */
     .msg {
-      margin-top: 20px;
-      padding: 16px;
-      border-radius: 16px;
+      margin-top: 1.5rem;
+      padding: 1rem;
       text-align: center;
-      font-size: 15px;
-      font-weight: 600;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      font-weight: 500;
       display: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      line-height: 1.4;
       word-break: break-word;
     }
 
     .msg.show {
       display: block;
+      opacity: 1;
     }
 
     .msg.success {
-      background: #F0FDF4;
-      color: #166534;
-      border: 1px solid #86EFAC;
+      background: #e1f7ed;
+      color: #0a5c46;
+      border-left: 6px solid #1e9b7a;
     }
 
     .msg.error {
-      background: #FEF2F2;
-      color: #991B1B;
-      border: 1px solid #FECACA;
+      background: #ffe9e9;
+      color: #b13e3e;
+      border-left: 6px solid #c74a4a;
     }
 
-    .msg.info {
-      background: #EFF6FF;
-      color: #1E40AF;
-      border: 1px solid #BFDBFE;
+    /* tiny spacer for breathing */
+    .spacer {
+      height: 0.25rem;
     }
 
-    .loading-spinner {
-      display: inline-block;
-      width: 22px;
-      height: 22px;
-      border: 3px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 0.8s linear infinite;
-    }
-
-    .google-btn .loading-spinner {
-      border: 3px solid rgba(11,79,108,0.1);
-      border-top-color: #0B4F6C;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .button-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
+    /* extra mobile fine-tuning for very small screens */
     @media (max-width: 400px) {
-      .card {
-        padding: 24px 18px;
-        border-radius: 28px;
-      }
-      h1 {
-        font-size: 30px;
-      }
-      input, button {
-        padding: 14px 16px;
-        font-size: 16px;
-      }
+      .card { padding: 1.75rem 1.2rem; }
+      h1 { font-size: 1.9rem; }
     }
 
-    @media (max-width: 320px) {
-      .card {
-        padding: 20px 16px;
-      }
-      h1 {
-        font-size: 28px;
-      }
-      .subtitle {
-        font-size: 14px;
-      }
+    /* landscape mode – still compact */
+    @media (max-height: 600px) and (orientation: landscape) {
+      body { padding: 12px; }
+      .card { padding: 1.25rem; }
+      h1 { font-size: 1.8rem; margin-bottom: 0.2rem; }
+      input { padding: 12px 16px; margin-bottom: 0.6rem; }
     }
 
-    @media (prefers-reduced-motion) {
-      .card, button, .loading-spinner {
-        animation: none;
-        transition: none;
-      }
+    /* improve tap highlight on mobile */
+    button, input {
+      -webkit-tap-highlight-color: transparent;
     }
 
-    @supports (padding: max(0px)) {
-      .card {
-        padding-left: max(24px, env(safe-area-inset-left));
-        padding-right: max(24px, env(safe-area-inset-right));
-      }
+    /* focus-visible accessibility */
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid #0B4F6C;
+      outline-offset: 2px;
     }
   </style>
 </head>
 <body>
   <div class="card">
+    <!-- clean branding, mobile legible -->
     <h1>iBlue</h1>
-    <div class="subtitle">🇺🇬 Welcome back, Mwatu</div>
-
-    <!-- Email Input -->
-    <div class="field">
-      <label>Email address</label>
-      <input 
-        id="email" 
-        type="email" 
-        placeholder="eg. nakato@gmail.com" 
-        autocomplete="email"
-        inputmode="email"
-        enterkeyhint="next"
-      />
-    </div>
-
-    <!-- Password Input -->
-    <div class="field">
-      <div class="password-header">
-        <label>Password</label>
-        <a href="#" class="forgot-link" onclick="resetPassword(event)">Forgot?</a>
-      </div>
-      <input 
-        id="password" 
-        type="password" 
-        placeholder="Enter password" 
-        autocomplete="current-password"
-        enterkeyhint="go"
-      />
-    </div>
-
-    <!-- Sign In Button -->
-    <button id="loginBtn" onclick="login()">
-      <span class="button-content">
-        <span>Sign In</span>
-      </span>
+    <div class="brand-tag">Uganda • smart access</div>
+    
+    <!-- mobile-optimised inputs with proper semantic -->
+    <input id="email" type="email" placeholder="Email address" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" />
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
+    
+    <!-- primary CTA – easy thumb target -->
+    <button id="loginBtn">Sign in →</button>
+    
+    <!-- secondary provider with embedded icon (SVG, no extra request) -->
+    <button id="googleBtn" class="google-btn">
+      <span class="google-icon" aria-hidden="true"></span>
+      <span>Continue with Google</span>
     </button>
-
-    <!-- Divider -->
-    <div class="divider">
-      <span>OR</span>
-    </div>
-
-    <!-- GOOGLE SIGN IN BUTTON - WITH SMART REDIRECT -->
-    <button id="googleBtn" class="google-btn" onclick="signInWithGoogle()">
-      <svg width="22" height="22" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
-      Google sign in
-    </button>
-
-    <!-- Sign Up Link -->
-    <div class="signup-prompt">
-      No account?
-      <a href="register.html">Create one</a>
-    </div>
-
-    <!-- Message Container -->
-    <div id="msg" class="msg"></div>
+    
+    <!-- unified status message – dynamic classes -->
+    <div id="msg" class="msg" role="status"></div>
   </div>
 
+  <!-- supabase sdk (lightweight, modern) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ============================================
-    // 🚀 SUPABASE CONFIG - YOUR EXISTING CREDENTIALS
-    // ============================================
-    const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
-    
-    const sb = window.supabase.createClient(supabaseUrl, supabaseKey, {
-      auth: {
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true,
-        flowType: 'pkce',
-        debug: false
-      }
-    });
+    (function() {
+      "use strict";
 
-    // ============================================
-    // DOM ELEMENTS
-    // ============================================
-    const msg = document.getElementById("msg");
-    const loginBtn = document.getElementById("loginBtn");
-    const googleBtn = document.getElementById("googleBtn");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
+      // --- Supabase professional configuration (PKCE for mobile security) ---
+      const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
+      const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
+      const sb = supabase.createClient(supabaseUrl, supabaseKey, { 
+        auth: { 
+          flowType: 'pkce',
+          autoRefreshToken: true,
+          detectSessionInUrl: true // essential for OAuth redirect on mobile
+        } 
+      });
 
-    // ============================================
-    // UI HELPERS
-    // ============================================
-    function showMessage(text, type = 'error') {
-      msg.textContent = text;
-      msg.className = 'msg show ' + type;
-      
-      if (type === 'success' || type === 'info') {
-        setTimeout(() => msg.classList.remove('show'), 5000);
-      }
-    }
+      // --- DOM references ---
+      const msgEl = document.getElementById('msg');
+      const loginBtn = document.getElementById('loginBtn');
+      const googleBtn = document.getElementById('googleBtn');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
 
-    function setLoading(button, isLoading) {
-      if (!button) return;
-      
-      if (isLoading) {
-        button.disabled = true;
-        const originalHTML = button.innerHTML;
-        button.dataset.originalHTML = originalHTML;
+      // --- professional message handler (mobile-friendly, clear) ---
+      function showMessage(text, type = 'error') {
+        if (!msgEl) return;
+        msgEl.textContent = text;
+        // reset class and set show + type
+        msgEl.className = 'msg show ' + type;
         
-        const spinnerColor = button.classList.contains('google-btn') ? '#0B4F6C' : 'white';
-        
-        button.innerHTML = `
-          <span class="button-content">
-            <span class="loading-spinner" style="border-top-color: ${spinnerColor};"></span>
-            <span>Loading...</span>
-          </span>
-        `;
-      } else {
-        button.disabled = false;
-        if (button.dataset.originalHTML) {
-          button.innerHTML = button.dataset.originalHTML;
+        // auto-hide only success messages, keep errors persistent
+        if (type === 'success') {
+          setTimeout(() => {
+            msgEl.classList.remove('show');
+            // optional: clear text after hide
+          }, 4000);
         }
       }
-    }
 
-    // ============================================
-    // 🔥 NEW FUNCTION - Store the page user tried to access
-    // ============================================
-    function storeOriginalDestination() {
-      // Check for redirect parameter in URL (from protected pages)
-      const urlParams = new URLSearchParams(window.location.search);
-      const redirectParam = urlParams.get('redirect');
-      
-      if (redirectParam) {
-        // Use the redirect parameter if it exists
-        sessionStorage.setItem('returnUrl', redirectParam);
-        console.log('📍 Redirect param found - will return to:', redirectParam);
+      // --- Email/Password login with validation & mobile UX ---
+      async function loginHandler(e) {
+        e.preventDefault(); // avoid any form-like behaviour
         
-        // Clean URL by removing the redirect parameter
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
-      } else {
-        // Check if this is the first visit - set default
-        if (!sessionStorage.getItem('returnUrl')) {
-          sessionStorage.setItem('returnUrl', '/index.html');
-          console.log('📍 Default return URL set:', '/index.html');
-        }
-      }
-    }
-
-    // ============================================
-    // ✅ CORRECT REDIRECT URL FOR YOUR LIVE SITE
-    // ============================================
-    function getExactRedirectUrl() {
-      return "https://iblueug.github.io/login.html";
-    }
-
-    // ============================================
-    // ✅ FIXED GOOGLE SIGN IN - Preserves destination
-    // ============================================
-    async function signInWithGoogle() {
-      try {
-        setLoading(googleBtn, true);
-        showMessage('Connecting to Google...', 'info');
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
         
-        // 🔥 CRITICAL: Store where to return to AFTER Google login
-        storeOriginalDestination();
-        
-        const redirectUrl = getExactRedirectUrl();
-        console.log('📍 Google OAuth redirect URL:', redirectUrl);
-        
-        const { data, error } = await sb.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: redirectUrl,
-            queryParams: {
-              access_type: 'offline',
-              prompt: 'consent'
-            }
-          }
-        });
-
-        if (error) {
-          console.error('❌ Google error:', error);
-          setLoading(googleBtn, false);
-          showMessage(error.message);
+        if (!email) {
+          showMessage('📧 Email is required', 'error');
+          emailInput.focus();
           return;
         }
-        
-      } catch (error) {
-        console.error('❌ Exception:', error);
-        setLoading(googleBtn, false);
-        showMessage('Network error. Check your connection.', 'error');
-      }
-    }
+        if (!password) {
+          showMessage('🔒 Password cannot be empty', 'error');
+          passwordInput.focus();
+          return;
+        }
+        // simple email regex – instant feedback
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+          showMessage('Please enter a valid email address', 'error');
+          emailInput.focus();
+          return;
+        }
 
-    // ============================================
-    // ✅ HANDLE OAUTH CALLBACK - Returns to original page
-    // ============================================
-    async function handleOAuthCallback() {
-      const hasCode = new URLSearchParams(window.location.search).has('code');
-      const hasHash = window.location.hash && window.location.hash.includes('access_token');
-      
-      if (hasCode || hasHash) {
-        console.log('🔄 Processing OAuth callback...');
-        showMessage('Signing you in...', 'info');
+        // disable button to prevent double tap, show loading state
+        loginBtn.disabled = true;
+        loginBtn.style.opacity = '0.8';
+        loginBtn.textContent = 'Signing in...';
+
+        try {
+          const { data, error } = await sb.auth.signInWithPassword({ 
+            email, 
+            password 
+          });
+
+          if (error) {
+            showMessage(error.message || 'Authentication failed', 'error');
+            loginBtn.disabled = false;
+            loginBtn.style.opacity = '1';
+            loginBtn.textContent = 'Sign in →';
+            return;
+          }
+
+          // success
+          showMessage('✓ Success! Redirecting...', 'success');
+          
+          // smooth redirect after success
+          setTimeout(() => {
+            window.location.href = 'https://iblueug.github.io/dashboard.html';
+          }, 1000);
+        } catch (err) {
+          showMessage('Network error. Try again.', 'error');
+          loginBtn.disabled = false;
+          loginBtn.style.opacity = '1';
+          loginBtn.textContent = 'Sign in →';
+        }
+      }
+
+      // --- Google OAuth (PKCE ready, mobile redirect) ---
+      async function googleSignInHandler(e) {
+        e.preventDefault();
+        
+        // prevent double click
+        googleBtn.disabled = true;
+        googleBtn.style.opacity = '0.7';
         
         try {
+          const { data, error } = await sb.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: 'https://iblueug.github.io/dashboard.html',
+              // recommended: use the current page as fallback
+              queryParams: {
+                access_type: 'offline',
+                prompt: 'consent', // helps mobile to refresh token
+              }
+            }
+          });
+          
+          if (error) {
+            showMessage(error.message, 'error');
+            googleBtn.disabled = false;
+            googleBtn.style.opacity = '1';
+          }
+          // If success, supabase redirects automatically; no further action
+        } catch (err) {
+          showMessage('Google sign‑in failed', 'error');
+          googleBtn.disabled = false;
+          googleBtn.style.opacity = '1';
+        }
+      }
+
+      // --- Session check: avoid flicker, immediate redirect if already logged in ---
+      async function checkActiveSession() {
+        try {
           const { data, error } = await sb.auth.getSession();
-          
-          if (error) throw error;
-          
-          if (data.session) {
-            console.log('✅ Google sign-in successful!');
-            
-            window.history.replaceState({}, document.title, '/login.html');
-            showMessage('✓ Welcome to iBlue!', 'success');
-            
-            // 🔥 Get the page they ORIGINALLY wanted
-            const returnUrl = sessionStorage.getItem('returnUrl') || '/index.html';
-            sessionStorage.removeItem('returnUrl');
-            
-            console.log('➡️ Redirecting to:', returnUrl);
-            
-            setTimeout(() => {
-              window.location.href = returnUrl;
-            }, 1500);
+          if (data && data.session) {
+            // user already signed in – redirect silently
+            window.location.replace('https://iblueug.github.io/dashboard.html');
           }
-        } catch (error) {
-          console.error('❌ Callback error:', error);
-          showMessage('Sign-in successful but redirect failed', 'error');
-          setLoading(googleBtn, false);
+        } catch (e) {
+          // silent fail – no session, stay on login
         }
       }
-    }
 
-    // ============================================
-    // ✅ EMAIL LOGIN - Same smart redirect behavior
-    // ============================================
-    async function login() {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
+      // --- Attach listeners (mobile: also handle touch/click) ---
+      loginBtn.addEventListener('click', loginHandler);
+      googleBtn.addEventListener('click', googleSignInHandler);
 
-      if (!email || !password) {
-        showMessage('Enter email and password');
-        emailInput.focus();
-        return;
-      }
+      // check session on load, also after OAuth redirect (pkce)
+      document.addEventListener('DOMContentLoaded', () => {
+        checkActiveSession();
+        
+        // set input padding consistency for android
+        // subtle: ensure that autofilled inputs look fine
+      });
 
-      setLoading(loginBtn, true);
-      showMessage('Signing in...', 'info');
-
-      try {
-        const { data, error } = await sb.auth.signInWithPassword({ 
-          email, 
-          password 
-        });
-
-        if (error) {
-          setLoading(loginBtn, false);
-          showMessage(error.message.includes('Invalid') ? 'Wrong email or password' : error.message);
-          return;
+      // optional: password manager hint - just UX
+      // handle enter key on inputs (natural mobile form)
+      emailInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          passwordInput.focus();
         }
-
-        showMessage('✓ Success! Redirecting...', 'success');
-        
-        // 🔥 Get the stored destination or use default
-        const returnUrl = sessionStorage.getItem('returnUrl') || '/index.html';
-        sessionStorage.removeItem('returnUrl');
-        
-        console.log('➡️ Redirecting to:', returnUrl);
-        
-        setTimeout(() => {
-          window.location.href = returnUrl;
-        }, 1000);
-
-      } catch (error) {
-        setLoading(loginBtn, false);
-        showMessage('Connection error. Please try again.');
-      }
-    }
-
-    // ============================================
-    // PASSWORD RESET
-    // ============================================
-    async function resetPassword(e) {
-      e.preventDefault();
-      
-      const email = emailInput.value.trim();
-      
-      if (!email) {
-        showMessage('Enter your email address');
-        emailInput.focus();
-        return;
-      }
-
-      setLoading(loginBtn, true);
-      showMessage('Sending reset link...', 'info');
-
-      try {
-        const { error } = await sb.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/reset-password.html`
-        });
-
-        setLoading(loginBtn, false);
-
-        if (error) {
-          showMessage(error.message);
-          return;
+      });
+      passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          loginHandler(e);
         }
+      });
 
-        showMessage('✓ Check your email for reset link', 'success');
-        
-      } catch (error) {
-        setLoading(loginBtn, false);
-        showMessage('Failed to send. Try again.');
+      // Re-enable buttons if page gets focus (for recovery)
+      window.addEventListener('pageshow', function() {
+        loginBtn.disabled = false;
+        loginBtn.style.opacity = '1';
+        loginBtn.textContent = 'Sign in →';
+        googleBtn.disabled = false;
+        googleBtn.style.opacity = '1';
+      });
+
+      // Handle the case when there's an error from OAuth redirect (fragment)
+      // show user-friendly message if error present in URL (Supabase adds #error)
+      if (window.location.hash && window.location.hash.includes('error=')) {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const errorDesc = hashParams.get('error_description') || hashParams.get('error') || 'Authentication error';
+        showMessage('Google sign‑in: ' + decodeURIComponent(errorDesc), 'error');
+        // clean hash to avoid duplicate messages
+        history.replaceState(null, '', window.location.pathname);
       }
-    }
 
-    // ============================================
-    // CHECK EXISTING SESSION
-    // ============================================
-    async function checkSession() {
-      try {
-        const { data } = await sb.auth.getSession();
-        
-        if (data.session) {
-          // If already logged in and on login page, redirect to stored destination
-          if (window.location.pathname.includes('login.html')) {
-            const returnUrl = sessionStorage.getItem('returnUrl') || '/index.html';
-            sessionStorage.removeItem('returnUrl');
-            window.location.href = returnUrl;
-          }
-        }
-      } catch (error) {
-        console.log('No active session');
-      }
-    }
-
-    // ============================================
-    // ✅ INIT - RUN ON PAGE LOAD
-    // ============================================
-    document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🇺🇬 iBlue Uganda - SMART REDIRECT ACTIVE');
-      console.log('🌍 Live URL:', window.location.href);
-      
-      // 🔥 Store the page they were trying to access
-      storeOriginalDestination();
-      
-      // Check if user is already logged in
-      await checkSession();
-      
-      // Handle OAuth callback (when Google returns)
-      await handleOAuthCallback();
-      
-      // Focus email input
-      setTimeout(() => emailInput?.focus(), 100);
-      
-      // Check for email from registration
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('email')) {
-        emailInput.value = urlParams.get('email');
-        showMessage('Account ready! Sign in to continue.', 'success');
-      }
-    });
-
-    // ============================================
-    // ENTER KEY SUPPORT
-    // ============================================
-    document.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
-        login();
-      }
-    });
-
-    // Make functions global
-    window.login = login;
-    window.signInWithGoogle = signInWithGoogle;
-    window.resetPassword = resetPassword;
+    })();
   </script>
 </body>
 </html>
