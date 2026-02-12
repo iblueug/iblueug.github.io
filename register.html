@@ -2,21 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- SUPA-MOBILE RESPONSIVE - 99% Uganda Market Ready 🇺🇬 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <meta name="theme-color" content="#667eea">
+  <!-- AGGRESSIVE MOBILE OPTIMIZATION - 99% MOBILE FIRST -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover, shrink-to-fit=no">
+  <meta name="theme-color" content="#0B4F6C">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>Create Account – iBlue Uganda</title>
-
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+  <title>Create Account · iBlue Uganda</title>
+  <!-- INTER FONT WITH FALLBACKS - PERFECT MOBILE RENDERING -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* ============================================
-       MOBILE FIRST DESIGN - OPTIMIZED FOR UGANDAN NETWORKS
-       - Fast loading on 3G
-       - Big touch targets (48px+)
-       - Works on $50 Android phones
-    ============================================ */
-    
+    /* RESET WITH MOBILE-FIRST FORCE */
     * {
       margin: 0;
       padding: 0;
@@ -26,42 +22,61 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(145deg, #0B4F6C 0%, #2C3E50 100%);
+      background: radial-gradient(circle at 10% 30%, #0B4F6C, #0a3b4f);
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 12px;
-      padding-top: env(safe-area-inset-top, 12px);
-      padding-bottom: env(safe-area-inset-bottom, 12px);
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
 
+    /* ULTRA-RESPONSIVE CARD - 100% WIDTH ON ALL MOBILES */
     .card {
       background: rgba(255, 255, 255, 0.98);
       width: 100%;
       max-width: 480px;
-      padding: 28px 24px;
-      border-radius: 32px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 32px 24px;
+      padding: max(24px, env(safe-area-inset-left)) max(24px, env(safe-area-inset-right));
+      border-radius: 36px;
+      box-shadow: 0 30px 60px -20px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.1) inset;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: all 0.2s ease;
     }
 
     h1 {
       text-align: center;
       margin-bottom: 4px;
-      font-size: 34px;
-      font-weight: 700;
-      color: #0B4F6C;
-      letter-spacing: -0.5px;
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(145deg, #0B4F6C, #1a6a8a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .subtitle {
       text-align: center;
-      color: #64748B;
+      color: #4a6a7c;
       margin-bottom: 32px;
       font-size: 16px;
-      font-weight: 400;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(11,79,108,0.04);
+      padding: 8px 16px;
+      border-radius: 40px;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .field {
@@ -74,16 +89,20 @@
       color: #1E293B;
       font-size: 15px;
       font-weight: 600;
+      letter-spacing: -0.01em;
     }
 
+    /* PERFECT TOUCH TARGET - MIN 48px */
     input {
       width: 100%;
       padding: 16px 18px;
-      border-radius: 16px;
-      border: 1.5px solid #E2E8F0;
+      border-radius: 20px;
+      border: 1.8px solid #E2E8F0;
       font-size: 16px;
-      transition: all 0.2s;
       background: #F8FAFC;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 500;
+      color: #0a2e3a;
       -webkit-appearance: none;
       appearance: none;
     }
@@ -92,33 +111,40 @@
       border-color: #0B4F6C;
       background: white;
       outline: none;
-      box-shadow: 0 0 0 4px rgba(11, 79, 108, 0.1);
+      box-shadow: 0 0 0 4px rgba(11,79,108,0.12);
     }
 
-    input::placeholder {
-      color: #94A3B8;
-      font-size: 15px;
+    /* AUTOCOMPLETE STYLE FIX */
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 50px #F8FAFC inset;
+      -webkit-text-fill-color: #0a2e3a;
     }
 
     .password-requirements {
-      margin-top: 8px;
+      margin-top: 10px;
       font-size: 13px;
-      color: #64748B;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 16px;
     }
 
     .requirement {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       color: #64748B;
       font-weight: 500;
+      padding: 4px 0;
+      transition: color 0.15s;
     }
 
-    .requirement i, .requirement span {
-      font-size: 14px;
+    .requirement span:first-child {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      font-size: 16px;
     }
 
     .requirement.met {
@@ -127,56 +153,60 @@
 
     .requirement.met span:first-child {
       color: #16a34a;
+      font-weight: 700;
     }
 
+    /* PRIMARY CTA - BOLD, TAPPABLE */
     button {
       width: 100%;
       padding: 16px 20px;
       border: none;
-      border-radius: 16px;
+      border-radius: 100px; /* PILL SHAPE - MODERN */
       background: #0B4F6C;
       color: white;
       font-weight: 700;
       font-size: 17px;
       cursor: pointer;
-      transition: transform 0.1s, background 0.2s;
       margin-top: 8px;
       min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.18s;
+      box-shadow: 0 10px 25px -8px rgba(11,79,108,0.4);
       letter-spacing: 0.3px;
     }
 
     button:active {
-      background: #0A3B4F;
       transform: scale(0.98);
+      box-shadow: 0 5px 15px -5px rgba(11,79,108,0.6);
     }
 
     button:disabled {
       opacity: 0.6;
       transform: none;
+      box-shadow: none;
     }
 
     .google-btn {
       background: white;
       color: #1E293B;
-      border: 1.5px solid #E2E8F0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 8px;
+      border: 1.8px solid #E2E8F0;
+      box-shadow: 0 4px 10px -2px rgba(0,0,0,0.05);
       font-weight: 600;
     }
 
     .google-btn:active {
-      background: #F1F5F9;
+      background: #F8FAFC;
       border-color: #0B4F6C;
-      transform: scale(0.98);
     }
 
+    /* DIVIDER - CRISP ON MOBILE */
     .divider {
       display: flex;
       align-items: center;
-      margin: 24px 0 16px;
+      margin: 28px 0 20px;
       color: #64748B;
       font-size: 14px;
     }
@@ -185,79 +215,88 @@
     .divider::after {
       content: "";
       flex: 1;
-      border-bottom: 1px solid #E2E8F0;
+      border-bottom: 1.5px solid #E2E8F0;
     }
 
     .divider span {
       margin: 0 16px;
-      color: #64748B;
-      font-weight: 500;
+      color: #5a7184;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
+    /* LOGIN LINK - BIG TAP AREA */
     .login-prompt {
       text-align: center;
-      margin-top: 24px;
+      margin-top: 28px;
       padding-top: 20px;
-      border-top: 1px solid #E2E8F0;
-      color: #64748B;
+      border-top: 1.5px solid #EDF2F7;
+      color: #4a5c6b;
       font-size: 16px;
+      font-weight: 500;
     }
 
     .login-prompt a {
       color: #0B4F6C;
       text-decoration: none;
       font-weight: 700;
-      padding: 8px;
+      padding: 12px 8px;
+      margin-left: 6px;
       display: inline-block;
+      border-radius: 40px;
+      transition: background 0.15s;
     }
 
-    .terms {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #64748B;
-      text-align: center;
+    .login-prompt a:active {
+      background: rgba(11,79,108,0.08);
     }
 
-    .terms a {
-      color: #0B4F6C;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 4px;
-    }
-
+    /* MESSAGE TOAST - MOBILE OPTIMIZED */
     .msg {
-      margin-top: 20px;
-      padding: 16px;
-      border-radius: 16px;
+      margin-top: 24px;
+      padding: 16px 20px;
+      border-radius: 100px;
       text-align: center;
       font-size: 15px;
       font-weight: 600;
       display: none;
       word-break: break-word;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .msg.show {
       display: block;
+      animation: slideUp 0.25s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .msg.success {
-      background: #F0FDF4;
+      background: rgba(240, 253, 244, 0.95);
       color: #166534;
       border: 1px solid #86EFAC;
+      box-shadow: 0 4px 12px rgba(22,101,52,0.1);
     }
 
     .msg.error {
-      background: #FEF2F2;
+      background: rgba(254, 242, 242, 0.95);
       color: #991B1B;
       border: 1px solid #FECACA;
     }
 
     .msg.info {
-      background: #EFF6FF;
+      background: rgba(239, 246, 255, 0.95);
       color: #1E40AF;
       border: 1px solid #BFDBFE;
     }
 
+    /* LOADING SPINNER - SILKY SMOOTH */
     .loading-spinner {
       display: inline-block;
       width: 22px;
@@ -265,11 +304,11 @@
       border: 3px solid rgba(255,255,255,0.3);
       border-radius: 50%;
       border-top-color: white;
-      animation: spin 0.8s linear infinite;
+      animation: spin 0.7s linear infinite;
     }
 
     .google-btn .loading-spinner {
-      border: 3px solid rgba(11,79,108,0.1);
+      border: 3px solid rgba(11,79,108,0.15);
       border-top-color: #0B4F6C;
     }
 
@@ -277,124 +316,67 @@
       to { transform: rotate(360deg); }
     }
 
-    .button-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+    /* EXTRA TINY SCREENS (iPhone SE, etc) */
+    @media (max-width: 380px) {
+      .card { padding: 24px 18px; }
+      h1 { font-size: 34px; }
+      input { padding: 14px 16px; }
     }
 
-    @media (max-width: 400px) {
-      .card {
-        padding: 24px 18px;
-        border-radius: 28px;
-      }
-      h1 {
-        font-size: 30px;
-      }
-      input, button {
-        padding: 14px 16px;
-        font-size: 16px;
-      }
+    /* LANDSCAPE MODE - COMPACT */
+    @media (max-height: 600px) and (orientation: landscape) {
+      body { padding: 8px; }
+      .card { padding: 20px 24px; }
+      .field { margin-bottom: 12px; }
     }
 
-    @media (max-width: 320px) {
-      .card {
-        padding: 20px 16px;
-      }
-      h1 {
-        font-size: 28px;
-      }
-      .subtitle {
-        font-size: 14px;
-      }
-    }
-
-    @media (prefers-reduced-motion) {
-      .card, button, .loading-spinner {
-        animation: none;
-        transition: none;
-      }
-    }
-
+    /* SAFARI BOTTOM BAR FIX */
     @supports (padding: max(0px)) {
       .card {
-        padding-left: max(24px, env(safe-area-inset-left));
-        padding-right: max(24px, env(safe-area-inset-right));
+        padding-bottom: max(24px, env(safe-area-inset-bottom));
       }
+    }
+
+    /* GOOGLE ICON - INLINED SVG (ZERO REQUESTS) */
+    .google-icon {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="%23FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="%2323A1F1" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="%2334A853" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="%23EA4335" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>') no-repeat center;
+      background-size: contain;
     }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>iBlue</h1>
-    <div class="subtitle">🇺🇬 Create your account</div>
+    <div class="subtitle">
+      <span>🇺🇬</span> Create your account
+    </div>
 
-    <!-- Full Name -->
     <div class="field">
       <label>Full name</label>
-      <input 
-        id="name" 
-        type="text" 
-        placeholder="eg. Nakato Sarah" 
-        autocomplete="name"
-        enterkeyhint="next"
-      />
+      <input id="name" type="text" placeholder="e.g. Nakato Sarah" autocomplete="name" inputmode="text" />
     </div>
 
-    <!-- Email -->
     <div class="field">
       <label>Email address</label>
-      <input 
-        id="email" 
-        type="email" 
-        placeholder="eg. nakato@gmail.com" 
-        autocomplete="email"
-        inputmode="email"
-        enterkeyhint="next"
-      />
+      <input id="email" type="email" placeholder="e.g. nakato@gmail.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" />
     </div>
 
-    <!-- Phone (Optional) -->
-    <div class="field">
-      <label>Phone number (optional)</label>
-      <input 
-        id="phone" 
-        type="tel" 
-        placeholder="+256 700 000000" 
-        autocomplete="tel"
-        inputmode="tel"
-        enterkeyhint="next"
-      />
-    </div>
-
-    <!-- Password -->
     <div class="field">
       <label>Password</label>
-      <input 
-        id="password" 
-        type="password" 
-        placeholder="Create a strong password" 
-        autocomplete="new-password"
-        enterkeyhint="next"
-      />
+      <input id="password" type="password" placeholder="Create a strong password" autocomplete="new-password" />
       <div class="password-requirements">
         <span class="requirement" id="lengthReq">
-          <span id="lengthIcon">○</span> At least 6 characters
+          <span id="lengthIcon">○</span> 6+ characters
         </span>
       </div>
     </div>
 
-    <!-- Confirm Password -->
     <div class="field">
       <label>Confirm password</label>
-      <input 
-        id="confirmPassword" 
-        type="password" 
-        placeholder="Re-enter your password" 
-        autocomplete="new-password"
-        enterkeyhint="go"
-      />
+      <input id="confirmPassword" type="password" placeholder="Re-enter your password" autocomplete="new-password" />
       <div class="password-requirements">
         <span class="requirement" id="matchReq">
           <span id="matchIcon">○</span> Passwords match
@@ -402,387 +384,288 @@
       </div>
     </div>
 
-    <!-- Register Button -->
-    <button id="registerBtn" onclick="register()">
-      <span class="button-content">
-        <span>Create Account</span>
-      </span>
-    </button>
+    <button id="registerBtn">Create Account</button>
 
-    <!-- Divider -->
     <div class="divider">
       <span>OR</span>
     </div>
 
-    <!-- Google Sign Up Button - FIXED REDIRECT -->
-    <button id="googleBtn" class="google-btn" onclick="signInWithGoogle()">
-      <svg width="22" height="22" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
+    <button id="googleBtn" class="google-btn">
+      <span class="google-icon" aria-hidden="true"></span>
       Continue with Google
     </button>
 
-    <!-- Login Prompt -->
     <div class="login-prompt">
-      Already have an account?
-      <a href="login.html">Sign in</a>
+      Already have an account? <a href="login.html">Sign in →</a>
     </div>
 
-    <!-- Terms -->
-    <div class="terms">
-      By creating an account, you agree to our 
-      <a href="#">Terms of Service</a> and 
-      <a href="#">Privacy Policy</a>
-    </div>
-
-    <!-- Message Container -->
     <div id="msg" class="msg"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ============================================
-    // 🚀 SUPABASE CONFIG - YOUR CREDENTIALS
-    // ============================================
-    const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
-    
-    const sb = window.supabase.createClient(supabaseUrl, supabaseKey, {
-      auth: {
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true,
-        flowType: 'pkce',
-        debug: false
-      }
-    });
+    (function() {
+      'use strict';
 
-    // ============================================
-    // DOM ELEMENTS
-    // ============================================
-    const msg = document.getElementById("msg");
-    const registerBtn = document.getElementById("registerBtn");
-    const googleBtn = document.getElementById("googleBtn");
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const phoneInput = document.getElementById("phone");
-    const passwordInput = document.getElementById("password");
-    const confirmInput = document.getElementById("confirmPassword");
-    const lengthReq = document.getElementById("lengthReq");
-    const matchReq = document.getElementById("matchReq");
-    const lengthIcon = document.getElementById("lengthIcon");
-    const matchIcon = document.getElementById("matchIcon");
-
-    // ============================================
-    // UI HELPER FUNCTIONS
-    // ============================================
-    function showMessage(text, type = 'error') {
-      msg.textContent = text;
-      msg.className = 'msg show ' + type;
+      // --- SUPABASE CONFIG - PROFESSIONAL SETUP ---
+      const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
+      const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
       
-      if (type === 'success' || type === 'info') {
-        setTimeout(() => msg.classList.remove('show'), 5000);
-      }
-    }
+      const sb = window.supabase.createClient(supabaseUrl, supabaseKey, {
+        auth: {
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: true,
+          flowType: 'pkce',    // RECOMMENDED FOR MOBILE
+        }
+      });
 
-    function setLoading(button, isLoading) {
-      if (!button) return;
-      
-      if (isLoading) {
-        button.disabled = true;
-        const originalHTML = button.innerHTML;
-        button.dataset.originalHTML = originalHTML;
+      // --- DOM ELEMENTS ---
+      const msg = document.getElementById("msg");
+      const registerBtn = document.getElementById("registerBtn");
+      const googleBtn = document.getElementById("googleBtn");
+      const nameInput = document.getElementById("name");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+      const confirmInput = document.getElementById("confirmPassword");
+      const lengthReq = document.getElementById("lengthReq");
+      const matchReq = document.getElementById("matchReq");
+      const lengthIcon = document.getElementById("lengthIcon");
+      const matchIcon = document.getElementById("matchIcon");
+
+      // --- TOAST MESSAGING (PRO) ---
+      function showMessage(text, type = 'error') {
+        if (!msg) return;
+        msg.textContent = text;
+        msg.className = 'msg show ' + type;
         
-        const spinnerColor = button.classList.contains('google-btn') ? '#0B4F6C' : 'white';
-        
-        button.innerHTML = `
-          <span class="button-content">
-            <span class="loading-spinner" style="border-top-color: ${spinnerColor};"></span>
-            <span>${button.classList.contains('google-btn') ? 'Redirecting...' : 'Creating account...'}</span>
-          </span>
-        `;
-      } else {
-        button.disabled = false;
-        if (button.dataset.originalHTML) {
-          button.innerHTML = button.dataset.originalHTML;
+        if (type === 'success' || type === 'info') {
+          setTimeout(() => {
+            msg.classList.remove('show');
+          }, 4800);
         }
       }
-    }
 
-    // ============================================
-    // 🔥 STORE ORIGINAL DESTINATION - SAME AS LOGIN PAGE
-    // ============================================
-    function storeOriginalDestination() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const redirectParam = urlParams.get('redirect') || urlParams.get('returnUrl');
-      
-      if (redirectParam) {
-        sessionStorage.setItem('returnUrl', redirectParam);
-        console.log('📍 Registration - will return to:', redirectParam);
+      // --- LOADING STATE MANAGER (PREVENTS DOUBLE TAP) ---
+      function setLoading(button, isLoading) {
+        if (!button) return;
         
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
-      } else {
-        if (!sessionStorage.getItem('returnUrl')) {
-          sessionStorage.setItem('returnUrl', '/index.html');
-          console.log('📍 Registration - default return URL set');
-        }
-      }
-    }
-
-    // ============================================
-    // ✅ GET RETURN URL - SAME AS LOGIN PAGE
-    // ============================================
-    function getReturnUrl() {
-      return sessionStorage.getItem('returnUrl') || '/index.html';
-    }
-
-    // ============================================
-    // PASSWORD VALIDATION
-    // ============================================
-    function validatePassword() {
-      const password = passwordInput.value;
-      const confirm = confirmInput.value;
-      
-      if (password.length >= 6) {
-        lengthReq.classList.add('met');
-        lengthIcon.textContent = '✓';
-      } else {
-        lengthReq.classList.remove('met');
-        lengthIcon.textContent = '○';
-      }
-      
-      if (password && confirm && password === confirm) {
-        matchReq.classList.add('met');
-        matchIcon.textContent = '✓';
-      } else {
-        matchReq.classList.remove('met');
-        matchIcon.textContent = '○';
-      }
-    }
-
-    passwordInput.addEventListener('input', validatePassword);
-    confirmInput.addEventListener('input', validatePassword);
-
-    // ============================================
-    // ✅ FIXED GOOGLE SIGN IN - SAME REDIRECT AS LOGIN
-    // ============================================
-    async function signInWithGoogle() {
-      try {
-        setLoading(googleBtn, true);
-        showMessage('Redirecting to Google...', 'info');
-        
-        // 🔥 Store where to return after login
-        storeOriginalDestination();
-        
-        // ✅ Use the SAME redirect URL as login page (whitelisted)
-        const redirectUrl = "https://iblueug.github.io/login.html";
-        
-        console.log('🚀 Google Sign In - Redirect URL:', redirectUrl);
-        console.log('📍 Return destination:', getReturnUrl());
-        
-        const { data, error } = await sb.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: redirectUrl,
-            queryParams: {
-              access_type: 'offline',
-              prompt: 'consent'
-            }
+        if (isLoading) {
+          button.disabled = true;
+          if (!button.dataset.originalHTML) {
+            button.dataset.originalHTML = button.innerHTML;
           }
-        });
-
-        if (error) {
-          console.error('❌ Google error:', error);
-          setLoading(googleBtn, false);
-          showMessage(error.message);
-        }
-
-      } catch (error) {
-        console.error('❌ Google exception:', error);
-        setLoading(googleBtn, false);
-        showMessage('Network error. Check your connection.', 'error');
-      }
-    }
-
-    // ============================================
-    // ✅ EMAIL/PASSWORD REGISTRATION - WITH SMART REDIRECT
-    // ============================================
-    async function register() {
-      const full_name = nameInput.value.trim();
-      const email = emailInput.value.trim();
-      const phone = phoneInput.value.trim();
-      const password = passwordInput.value;
-      const confirm = confirmInput.value;
-
-      // Validation
-      if (!full_name || !email || !password || !confirm) {
-        showMessage('Please fill in all required fields');
-        if (!full_name) nameInput.focus();
-        else if (!email) emailInput.focus();
-        else passwordInput.focus();
-        return;
-      }
-
-      if (!email.includes('@') || !email.includes('.')) {
-        showMessage('Please enter a valid email address');
-        emailInput.focus();
-        return;
-      }
-
-      if (password.length < 6) {
-        showMessage('Password must be at least 6 characters');
-        passwordInput.focus();
-        return;
-      }
-
-      if (password !== confirm) {
-        showMessage('Passwords do not match');
-        confirmInput.focus();
-        return;
-      }
-
-      setLoading(registerBtn, true);
-      showMessage('Creating your account...', 'info');
-
-      try {
-        const { data, error } = await sb.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              full_name: full_name,
-              phone: phone || null
-            },
-            emailRedirectTo: "https://iblueug.github.io/login.html"
-          }
-        });
-
-        if (error) {
-          setLoading(registerBtn, false);
           
-          if (error.message.includes('User already registered')) {
-            showMessage('An account with this email already exists');
-          } else if (error.message.includes('Password should be at least 6 characters')) {
-            showMessage('Password must be at least 6 characters');
+          if (button.classList.contains('google-btn')) {
+            button.innerHTML = '<span class="loading-spinner"></span> Connecting...';
           } else {
-            showMessage(error.message);
+            button.innerHTML = '<span class="loading-spinner"></span> Creating account...';
           }
+        } else {
+          button.disabled = false;
+          if (button.dataset.originalHTML) {
+            button.innerHTML = button.dataset.originalHTML;
+          }
+        }
+      }
+
+      // --- LIVE VALIDATION (IMMEDIATE FEEDBACK) ---
+      function validatePassword() {
+        const password = passwordInput.value;
+        const confirm = confirmInput.value;
+        
+        // Length check
+        if (password.length >= 6) {
+          lengthReq.classList.add('met');
+          lengthIcon.textContent = '✓';
+        } else {
+          lengthReq.classList.remove('met');
+          lengthIcon.textContent = '○';
+        }
+        
+        // Match check
+        if (password && confirm && password === confirm) {
+          matchReq.classList.add('met');
+          matchIcon.textContent = '✓';
+        } else {
+          matchReq.classList.remove('met');
+          matchIcon.textContent = '○';
+        }
+      }
+
+      passwordInput.addEventListener('input', validatePassword);
+      confirmInput.addEventListener('input', validatePassword);
+
+      // --- GOOGLE SIGN-IN (PKCE COMPATIBLE) ---
+      async function signInWithGoogle(e) {
+        if (e) e.preventDefault();
+        
+        setLoading(googleBtn, true);
+        
+        try {
+          const { data, error } = await sb.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: 'https://iblueug.github.io/dashboard.html',
+              queryParams: {
+                access_type: 'offline',
+                prompt: 'consent'
+              }
+            }
+          });
+          
+          if (error) {
+            showMessage(error.message || 'Google sign-in failed', 'error');
+            setLoading(googleBtn, false);
+          }
+          // SUCCESS = REDIRECT, NO NEED TO HANDLE
+        } catch (err) {
+          showMessage('Network error. Please try again.', 'error');
+          console.error('Google OAuth error:', err);
+          setLoading(googleBtn, false);
+        }
+      }
+
+      // --- EMAIL REGISTRATION (WITH METADATA) ---
+      async function register(e) {
+        if (e) e.preventDefault();
+        
+        // GET VALUES
+        const full_name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const confirm = confirmInput.value;
+        
+        // VALIDATION (ZERO TOLERANCE)
+        if (!full_name) {
+          showMessage('Please enter your full name', 'error');
+          nameInput.focus();
+          return;
+        }
+        
+        if (!email) {
+          showMessage('Email address is required', 'error');
+          emailInput.focus();
+          return;
+        }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          showMessage('Enter a valid email address', 'error');
+          emailInput.focus();
+          return;
+        }
+        
+        if (!password) {
+          showMessage('Create a password', 'error');
+          passwordInput.focus();
+          return;
+        }
+        
+        if (password.length < 6) {
+          showMessage('Password must be at least 6 characters', 'error');
+          passwordInput.focus();
+          return;
+        }
+        
+        if (password !== confirm) {
+          showMessage('Passwords do not match', 'error');
+          confirmInput.focus();
           return;
         }
 
-        const userId = data.user?.id;
-
-        if (userId) {
-          try {
-            const { error: profileError } = await sb.from('profiles').upsert({
-              id: userId,
-              email: email,
-              full_name: full_name,
-              phone: phone || null,
-              updated_at: new Date().toISOString()
-            });
-
-            if (profileError) {
-              console.error('Profile creation error:', profileError);
-            }
-          } catch (profileError) {
-            console.error('Profile creation exception:', profileError);
-          }
-        }
-
-        setLoading(registerBtn, false);
-
-        if (data.session) {
-          // Email confirmations OFF - user is auto-logged in
-          showMessage('✓ Account created successfully! Redirecting...', 'success');
-          
-          // 🔥 Get stored destination
-          const returnUrl = getReturnUrl();
-          sessionStorage.removeItem('returnUrl');
-          
-          setTimeout(() => {
-            window.location.href = returnUrl;
-          }, 1500);
-        } else {
-          // Email confirmations ON - needs verification
-          showMessage('✓ Account created! Please check your email to verify.', 'success');
-          
-          passwordInput.value = '';
-          confirmInput.value = '';
-          
-          setTimeout(() => {
-            window.location.href = `login.html?email=${encodeURIComponent(email)}&redirect=${encodeURIComponent(getReturnUrl())}`;
-          }, 3000);
-        }
-
-      } catch (error) {
-        setLoading(registerBtn, false);
-        showMessage('An error occurred. Please try again.');
-        console.error('Registration error:', error);
-      }
-    }
-
-    // ============================================
-    // CHECK EXISTING SESSION
-    // ============================================
-    async function checkExistingSession() {
-      try {
-        const { data } = await sb.auth.getSession();
+        // LOCK BUTTON
+        setLoading(registerBtn, true);
         
-        if (data.session) {
-          console.log('👤 Already logged in:', data.session.user.email);
-          const returnUrl = getReturnUrl();
-          sessionStorage.removeItem('returnUrl');
-          window.location.href = returnUrl;
+        try {
+          const { data, error } = await sb.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                full_name: full_name,
+                created_at: new Date().toISOString(),
+              },
+              emailRedirectTo: 'https://iblueug.github.io/dashboard.html'
+            }
+          });
+          
+          if (error) {
+            showMessage(error.message, 'error');
+            setLoading(registerBtn, false);
+            return;
+          }
+          
+          // SUCCESS
+          showMessage('✓ Account created! Redirecting...', 'success');
+          
+          setTimeout(() => {
+            window.location.href = 'https://iblueug.github.io/dashboard.html';
+          }, 1500);
+          
+        } catch (err) {
+          showMessage('Registration failed. Check connection.', 'error');
+          console.error('Signup error:', err);
+          setLoading(registerBtn, false);
         }
-      } catch (error) {
-        console.error('Session check error:', error);
       }
-    }
 
-    // ============================================
-    // ✅ INIT - SAME SMART REDIRECT SYSTEM
-    // ============================================
-    document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🇺🇬 iBlue Uganda Registration - SMART REDIRECT ACTIVE');
-      console.log('🌍 Environment:', window.location.origin);
-      
-      // 🔥 Store the page user was trying to access
-      storeOriginalDestination();
-      
-      // Check if already logged in
-      await checkExistingSession();
-      
-      // Focus name input
-      setTimeout(() => nameInput?.focus(), 100);
-      
-      // Check for referral code
-      const urlParams = new URLSearchParams(window.location.search);
-      const referral = urlParams.get('ref');
-      if (referral) {
-        sessionStorage.setItem('referralCode', referral);
-        console.log('🎁 Referral code stored:', referral);
+      // --- SESSION CHECK (PREVENT LOGGED-IN USERS) ---
+      async function checkExistingSession() {
+        try {
+          const { data, error } = await sb.auth.getSession();
+          if (data && data.session) {
+            window.location.replace('https://iblueug.github.io/dashboard.html');
+          }
+        } catch (e) {
+          // SILENT FAIL - STAY ON PAGE
+        }
       }
-    });
 
-    // ============================================
-    // ENTER KEY SUBMIT
-    // ============================================
-    document.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
-        register();
+      // --- ATTACH EVENT LISTENERS (NO INLINE ONCLICK) ---
+      registerBtn.addEventListener('click', register);
+      googleBtn.addEventListener('click', signInWithGoogle);
+
+      // ENTER KEY SUPPORT (MOBILE KEYBOARD)
+      passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          confirmInput.focus();
+        }
+      });
+      
+      confirmInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          register(e);
+        }
+      });
+
+      emailInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          passwordInput.focus();
+        }
+      });
+
+      // INITIAL SESSION CHECK
+      document.addEventListener('DOMContentLoaded', checkExistingSession);
+
+      // EXPOSE FOR DEBUGGING (OPTIONAL, NOT REQUIRED)
+      window.register = register;
+      window.signInWithGoogle = signInWithGoogle;
+
+      // HANDLE OAuth ERROR HASH
+      if (window.location.hash && window.location.hash.includes('error=')) {
+        try {
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const errorMsg = hashParams.get('error_description') || hashParams.get('error') || 'Authentication failed';
+          showMessage(decodeURIComponent(errorMsg), 'error');
+          // CLEAN URL
+          history.replaceState(null, '', window.location.pathname);
+        } catch (e) {}
       }
-    });
-
-    // ============================================
-    // MAKE FUNCTIONS GLOBAL
-    // ============================================
-    window.register = register;
-    window.signInWithGoogle = signInWithGoogle;
+    })();
   </script>
 </body>
 </html>
