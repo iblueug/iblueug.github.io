@@ -2,12 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Ultra-responsive viewport – works on all mobile screens -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
   <title>iBlue Uganda • sign in</title>
-  <!-- modern, system-font stack for crisp mobile typography -->
   <style>
-    /* reset & safe area support */
     * {
       margin: 0;
       padding: 0;
@@ -21,14 +18,12 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      min-height: 100dvh; /* dynamic viewport, perfect for mobile */
+      min-height: 100dvh;
       margin: 0;
       padding: 16px;
-      /* ensure background covers even on notch devices */
       background-attachment: fixed;
     }
 
-    /* ultra‑optimised card – truly mobile-first, 99% width on small, never overflows */
     .card {
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(12px);
@@ -39,10 +34,8 @@
       max-width: 440px;
       box-shadow: 0 20px 40px -12px rgba(0, 35, 45, 0.25), 0 4px 18px rgba(0,0,0,0.05);
       border: 1px solid rgba(255,255,255,0.5);
-      transition: all 0.2s ease;
     }
 
-    /* mobile-optimised spacing */
     h1 {
       font-size: 2.1rem;
       font-weight: 600;
@@ -52,10 +45,8 @@
       margin-bottom: 0.5rem;
       margin-top: 0.25rem;
       line-height: 1.1;
-      word-break: break-word;
     }
 
-    /* subtle tagline – professional, friendly */
     .brand-tag {
       text-align: center;
       font-size: 0.9rem;
@@ -67,7 +58,6 @@
       letter-spacing: 0.3px;
     }
 
-    /* input fields – perfect tap size 48px, thumb-friendly */
     input {
       width: 100%;
       padding: 15px 18px;
@@ -77,7 +67,6 @@
       background: #ffffff;
       font-size: 1rem;
       line-height: 1.4;
-      font-weight: 450;
       color: #0a2e3a;
       transition: border 0.15s, box-shadow 0.2s;
       appearance: none;
@@ -88,21 +77,43 @@
       border-color: #0B4F6C;
       outline: 0;
       box-shadow: 0 0 0 4px rgba(11, 79, 108, 0.12);
-      background: white;
     }
 
-    /* hide autofill background flash (mobile) */
     input:-webkit-autofill {
       -webkit-box-shadow: 0 0 0 50px white inset;
       -webkit-text-fill-color: #0a2e3a;
     }
 
-    /* primary button – big, clear, tactile */
+    /* Remember me checkbox container */
+    .remember-me {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding: 0 5px;
+    }
+
+    .remember-me input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      margin-bottom: 0;
+      accent-color: #0B4F6C;
+      cursor: pointer;
+    }
+
+    .remember-me label {
+      font-size: 0.95rem;
+      color: #2c3e50;
+      cursor: pointer;
+      font-weight: 500;
+      user-select: none;
+    }
+
     button {
       width: 100%;
       padding: 15px 18px;
       border: none;
-      border-radius: 30px; /* pill shape, modern */
+      border-radius: 30px;
       font-size: 1.06rem;
       font-weight: 600;
       cursor: pointer;
@@ -126,9 +137,9 @@
     button:disabled {
       opacity: 0.7;
       cursor: not-allowed;
+      transform: none;
     }
 
-    /* google button – elegant, clean, mobile contrast */
     .google-btn {
       background: white;
       color: #1f2e3a;
@@ -137,7 +148,6 @@
       margin-top: 0.4rem;
       gap: 12px;
       font-weight: 500;
-      backdrop-filter: blur(4px);
     }
 
     .google-btn:active {
@@ -145,7 +155,6 @@
       border-color: #0B4F6C;
     }
 
-    /* google icon – pure SVG, crisp on retina */
     .google-icon {
       width: 20px;
       height: 20px;
@@ -154,7 +163,6 @@
       background-size: contain;
     }
 
-    /* message container – fluid, non‑jittery */
     .msg {
       margin-top: 1.5rem;
       padding: 1rem;
@@ -166,7 +174,6 @@
       opacity: 0;
       transition: opacity 0.2s;
       line-height: 1.4;
-      word-break: break-word;
     }
 
     .msg.show {
@@ -186,18 +193,17 @@
       border-left: 6px solid #c74a4a;
     }
 
-    /* tiny spacer for breathing */
-    .spacer {
-      height: 0.25rem;
+    .msg.info {
+      background: #e1f0fa;
+      color: #0b4f6c;
+      border-left: 6px solid #0B4F6C;
     }
 
-    /* extra mobile fine-tuning for very small screens */
     @media (max-width: 400px) {
       .card { padding: 1.75rem 1.2rem; }
       h1 { font-size: 1.9rem; }
     }
 
-    /* landscape mode – still compact */
     @media (max-height: 600px) and (orientation: landscape) {
       body { padding: 12px; }
       .card { padding: 1.25rem; }
@@ -205,12 +211,10 @@
       input { padding: 12px 16px; margin-bottom: 0.6rem; }
     }
 
-    /* improve tap highlight on mobile */
     button, input {
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* focus-visible accessibility */
     button:focus-visible, input:focus-visible {
       outline: 3px solid #0B4F6C;
       outline-offset: 2px;
@@ -219,45 +223,46 @@
 </head>
 <body>
   <div class="card">
-    <!-- clean branding, mobile legible -->
     <h1>iBlue</h1>
     <div class="brand-tag">Uganda • smart access</div>
     
-    <!-- mobile-optimised inputs with proper semantic -->
     <input id="email" type="email" placeholder="Email address" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" />
     <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
     
-    <!-- primary CTA – easy thumb target -->
+    <!-- Remember Me Checkbox -->
+    <div class="remember-me">
+      <input type="checkbox" id="rememberMe" checked>
+      <label for="rememberMe">Remember me on this device</label>
+    </div>
+    
     <button id="loginBtn">Sign in →</button>
     
-    <!-- secondary provider with embedded icon (SVG, no extra request) -->
     <button id="googleBtn" class="google-btn">
       <span class="google-icon" aria-hidden="true"></span>
       <span>Continue with Google</span>
     </button>
     
-    <!-- unified status message – dynamic classes -->
     <div id="msg" class="msg" role="status"></div>
   </div>
 
-  <!-- supabase sdk (lightweight, modern) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     (function() {
       "use strict";
 
-      // --- Supabase professional configuration (PKCE for mobile security) ---
+      // Supabase configuration
       const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
       const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
       const sb = supabase.createClient(supabaseUrl, supabaseKey, { 
         auth: { 
           flowType: 'pkce',
           autoRefreshToken: true,
-          detectSessionInUrl: true // essential for OAuth redirect on mobile
+          detectSessionInUrl: true,
+          persistSession: true // Important for remember me
         } 
       });
 
-      // --- All allowed redirect URLs (matching Supabase configured URLs) ---
+      // Allowed redirects
       const ALLOWED_REDIRECTS = [
         'https://iblueug.github.io/dashboard.html',
         'https://iblueug.github.io/messages.html',
@@ -268,70 +273,103 @@
         'https://iblueug.github.io/saved-ads.html'
       ];
 
-      // --- Default redirect after login (dashboard) ---
       const DEFAULT_REDIRECT = 'https://iblueug.github.io/dashboard.html';
 
-      // --- FIXED: Helper to validate and get safe redirect URL ---
-      function getSafeRedirect(redirectTo) {
-        // First priority: if a redirect URL was passed directly
-        if (redirectTo && ALLOWED_REDIRECTS.includes(redirectTo)) {
-          sessionStorage.removeItem('postLoginRedirect'); // Clean up
-          return redirectTo;
-        }
-        
-        // Second priority: check sessionStorage for stored redirect
-        const storedRedirect = sessionStorage.getItem('postLoginRedirect');
-        if (storedRedirect && ALLOWED_REDIRECTS.includes(storedRedirect)) {
-          sessionStorage.removeItem('postLoginRedirect'); // Clean up after reading
-          return storedRedirect;
-        }
-        
-        // Finally: fallback to dashboard
-        return DEFAULT_REDIRECT;
-      }
-
-      // --- DOM references ---
+      // DOM elements
       const msgEl = document.getElementById('msg');
       const loginBtn = document.getElementById('loginBtn');
       const googleBtn = document.getElementById('googleBtn');
       const emailInput = document.getElementById('email');
       const passwordInput = document.getElementById('password');
+      const rememberMeCheckbox = document.getElementById('rememberMe');
 
-      // --- professional message handler (mobile-friendly, clear) ---
+      // --- Message handler ---
       function showMessage(text, type = 'error') {
         if (!msgEl) return;
         msgEl.textContent = text;
-        // reset class and set show + type
         msgEl.className = 'msg show ' + type;
         
-        // auto-hide only success messages, keep errors persistent
         if (type === 'success') {
           setTimeout(() => {
             msgEl.classList.remove('show');
-            // optional: clear text after hide
           }, 4000);
         }
       }
 
-      // --- Check for redirect parameter in URL (e.g., from protected route) ---
+      // --- Safe redirect function (FIXED) ---
+      function getSafeRedirect(redirectTo) {
+        // Check direct parameter
+        if (redirectTo && ALLOWED_REDIRECTS.includes(redirectTo)) {
+          sessionStorage.removeItem('postLoginRedirect');
+          return redirectTo;
+        }
+        
+        // Check sessionStorage
+        const storedRedirect = sessionStorage.getItem('postLoginRedirect');
+        if (storedRedirect && ALLOWED_REDIRECTS.includes(storedRedirect)) {
+          sessionStorage.removeItem('postLoginRedirect');
+          return storedRedirect;
+        }
+        
+        // Check localStorage (for remember me persistence)
+        const savedRedirect = localStorage.getItem('postLoginRedirect');
+        if (savedRedirect && ALLOWED_REDIRECTS.includes(savedRedirect)) {
+          localStorage.removeItem('postLoginRedirect');
+          return savedRedirect;
+        }
+        
+        return DEFAULT_REDIRECT;
+      }
+
+      // --- Check for redirect parameter in URL ---
       function checkForRedirectParam() {
         const urlParams = new URLSearchParams(window.location.search);
         const redirect = urlParams.get('redirect');
         if (redirect && ALLOWED_REDIRECTS.includes(redirect)) {
-          sessionStorage.setItem('postLoginRedirect', redirect);
-          // Clean URL without refreshing the page
+          // Store based on remember me preference
+          if (rememberMeCheckbox.checked) {
+            localStorage.setItem('postLoginRedirect', redirect);
+          } else {
+            sessionStorage.setItem('postLoginRedirect', redirect);
+          }
+          // Clean URL
           const cleanUrl = window.location.pathname;
           history.replaceState({}, document.title, cleanUrl);
         }
       }
 
-      // --- FIXED: Email/Password login with validation & mobile UX ---
+      // --- Load saved email if "Remember Me" was checked ---
+      function loadSavedCredentials() {
+        const savedEmail = localStorage.getItem('savedEmail');
+        const rememberMe = localStorage.getItem('rememberMe') === 'true';
+        
+        if (savedEmail && rememberMe) {
+          emailInput.value = savedEmail;
+          rememberMeCheckbox.checked = true;
+        } else {
+          rememberMeCheckbox.checked = false;
+        }
+      }
+
+      // --- Save credentials based on "Remember Me" ---
+      function saveCredentials(email) {
+        if (rememberMeCheckbox.checked) {
+          localStorage.setItem('savedEmail', email);
+          localStorage.setItem('rememberMe', 'true');
+        } else {
+          localStorage.removeItem('savedEmail');
+          localStorage.setItem('rememberMe', 'false');
+        }
+      }
+
+      // --- Email/Password login with Remember Me ---
       async function loginHandler(e) {
-        e.preventDefault(); // avoid any form-like behaviour
+        e.preventDefault();
         
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
         
+        // Validation
         if (!email) {
           showMessage('📧 Email is required', 'error');
           emailInput.focus();
@@ -342,16 +380,17 @@
           passwordInput.focus();
           return;
         }
-        // simple email regex – instant feedback
         if (!/^\S+@\S+\.\S+$/.test(email)) {
           showMessage('Please enter a valid email address', 'error');
           emailInput.focus();
           return;
         }
 
-        // disable button to prevent double tap, show loading state
+        // Save credentials if remember me is checked
+        saveCredentials(email);
+
+        // Disable button
         loginBtn.disabled = true;
-        loginBtn.style.opacity = '0.8';
         loginBtn.textContent = 'Signing in...';
 
         try {
@@ -363,47 +402,56 @@
           if (error) {
             showMessage(error.message || 'Authentication failed', 'error');
             loginBtn.disabled = false;
-            loginBtn.style.opacity = '1';
             loginBtn.textContent = 'Sign in →';
             return;
           }
 
-          // success
+          // Success
           showMessage('✓ Success! Redirecting...', 'success');
           
-          // FIXED: Get the redirect URL (will check sessionStorage automatically)
+          // Get redirect URL and navigate
           const redirectUrl = getSafeRedirect();
           
           setTimeout(() => {
             window.location.href = redirectUrl;
           }, 1000);
+          
         } catch (err) {
           showMessage('Network error. Try again.', 'error');
           loginBtn.disabled = false;
-          loginBtn.style.opacity = '1';
           loginBtn.textContent = 'Sign in →';
         }
       }
 
-      // --- Google OAuth (PKCE ready, mobile redirect) ---
+      // --- FIXED: Google OAuth with proper redirect handling ---
       async function googleSignInHandler(e) {
         e.preventDefault();
         
-        // prevent double click
         googleBtn.disabled = true;
         googleBtn.style.opacity = '0.7';
         
         try {
-          // FIXED: Get the intended redirect destination from sessionStorage
+          // Get the intended redirect
           const redirectTo = getSafeRedirect();
           
+          // Store it in BOTH storages to ensure it survives OAuth
+          if (rememberMeCheckbox.checked) {
+            localStorage.setItem('postLoginRedirect', redirectTo);
+            localStorage.setItem('googleOAuthPending', 'true');
+          } else {
+            sessionStorage.setItem('postLoginRedirect', redirectTo);
+            sessionStorage.setItem('googleOAuthPending', 'true');
+          }
+          
+          // IMPORTANT: Set the redirectTo to your login page
+          // This ensures we come back to handle the final redirect
           const { data, error } = await sb.auth.signInWithOAuth({
             provider: 'google',
             options: {
-              redirectTo: redirectTo, // Dynamic redirect based on context
+              redirectTo: window.location.href, // Return to this page
               queryParams: {
                 access_type: 'offline',
-                prompt: 'consent', // helps mobile to refresh token
+                prompt: 'consent',
               }
             }
           });
@@ -412,50 +460,136 @@
             showMessage(error.message, 'error');
             googleBtn.disabled = false;
             googleBtn.style.opacity = '1';
+            sessionStorage.removeItem('googleOAuthPending');
+            localStorage.removeItem('googleOAuthPending');
           }
-          // If success, supabase redirects automatically; no further action
+          // If success, Supabase redirects automatically
+          
         } catch (err) {
           showMessage('Google sign‑in failed', 'error');
           googleBtn.disabled = false;
           googleBtn.style.opacity = '1';
+          sessionStorage.removeItem('googleOAuthPending');
+          localStorage.removeItem('googleOAuthPending');
         }
       }
 
-      // --- Session check: avoid flicker, immediate redirect if already logged in ---
+      // --- Handle OAuth return (FIXED for Google) ---
+      async function handleOAuthReturn() {
+        // Check if we're returning from OAuth
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const hasAuth = window.location.hash && 
+                       (window.location.hash.includes('access_token') || 
+                        window.location.hash.includes('error'));
+        
+        if (hasAuth) {
+          showMessage('Completing Google sign-in...', 'info');
+          
+          try {
+            // Let Supabase process the OAuth callback
+            const { data, error } = await sb.auth.getSession();
+            
+            if (error) {
+              showMessage(error.message, 'error');
+              return;
+            }
+            
+            if (data && data.session) {
+              // Check for stored redirect
+              let redirectUrl = sessionStorage.getItem('postLoginRedirect') || 
+                               localStorage.getItem('postLoginRedirect') ||
+                               DEFAULT_REDIRECT;
+              
+              // Validate redirect
+              if (!ALLOWED_REDIRECTS.includes(redirectUrl)) {
+                redirectUrl = DEFAULT_REDIRECT;
+              }
+              
+              // Clean up
+              sessionStorage.removeItem('postLoginRedirect');
+              sessionStorage.removeItem('googleOAuthPending');
+              localStorage.removeItem('postLoginRedirect');
+              localStorage.removeItem('googleOAuthPending');
+              
+              // Save email from Google if remember me is checked
+              if (rememberMeCheckbox.checked && data.session.user.email) {
+                localStorage.setItem('savedEmail', data.session.user.email);
+              }
+              
+              showMessage('✓ Google sign-in successful! Redirecting...', 'success');
+              
+              // Redirect
+              setTimeout(() => {
+                window.location.href = redirectUrl;
+              }, 1000);
+            }
+          } catch (e) {
+            console.error('OAuth handling error:', e);
+            showMessage('Error completing Google sign-in', 'error');
+          }
+        }
+      }
+
+      // --- Session check with Remember Me support ---
       async function checkActiveSession() {
         try {
           const { data, error } = await sb.auth.getSession();
+          
+          if (error) {
+            console.error('Session check error:', error);
+            return;
+          }
+          
           if (data && data.session) {
-            // user already signed in – redirect to appropriate page
+            // Check if this was from Google OAuth
+            const isGoogleOAuth = sessionStorage.getItem('googleOAuthPending') || 
+                                 localStorage.getItem('googleOAuthPending');
+            
+            if (isGoogleOAuth) {
+              // Let handleOAuthReturn deal with it
+              return;
+            }
+            
+            // Normal session - redirect to intended page
             const redirectUrl = getSafeRedirect();
-            window.location.replace(redirectUrl);
+            
+            // Only redirect if we're not already on the redirect page
+            if (!window.location.pathname.includes('login')) {
+              window.location.replace(redirectUrl);
+            }
           }
         } catch (e) {
-          // silent fail – no session, stay on login
+          console.error('Session check error:', e);
         }
       }
 
-      // --- Attach listeners (mobile: also handle touch/click) ---
+      // --- Initialize ---
+      document.addEventListener('DOMContentLoaded', () => {
+        loadSavedCredentials();
+        checkForRedirectParam();
+        
+        // Check if returning from OAuth
+        if (window.location.hash && 
+            (window.location.hash.includes('access_token') || 
+             window.location.hash.includes('error'))) {
+          handleOAuthReturn();
+        } else {
+          checkActiveSession();
+        }
+      });
+
+      // Event listeners
       loginBtn.addEventListener('click', loginHandler);
       googleBtn.addEventListener('click', googleSignInHandler);
 
-      // check session on load, also after OAuth redirect (pkce)
-      document.addEventListener('DOMContentLoaded', () => {
-        checkForRedirectParam();
-        checkActiveSession();
-        
-        // set input padding consistency for android
-        // subtle: ensure that autofilled inputs look fine
-      });
-
-      // optional: password manager hint - just UX
-      // handle enter key on inputs (natural mobile form)
+      // Enter key handlers
       emailInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           passwordInput.focus();
         }
       });
+      
       passwordInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -463,24 +597,13 @@
         }
       });
 
-      // Re-enable buttons if page gets focus (for recovery)
+      // Re-enable buttons on page show
       window.addEventListener('pageshow', function() {
         loginBtn.disabled = false;
-        loginBtn.style.opacity = '1';
         loginBtn.textContent = 'Sign in →';
         googleBtn.disabled = false;
         googleBtn.style.opacity = '1';
       });
-
-      // Handle the case when there's an error from OAuth redirect (fragment)
-      // show user-friendly message if error present in URL (Supabase adds #error)
-      if (window.location.hash && window.location.hash.includes('error=')) {
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const errorDesc = hashParams.get('error_description') || hashParams.get('error') || 'Authentication error';
-        showMessage('Google sign‑in: ' + decodeURIComponent(errorDesc), 'error');
-        // clean hash to avoid duplicate messages
-        history.replaceState(null, '', window.location.pathname);
-      }
 
     })();
   </script>
