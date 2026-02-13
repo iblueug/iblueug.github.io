@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wholesalers & Sellers - iBlue Uganda B2B</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Copy the same base styles from your index.html */
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1D4ED8;
+            --primary-light: #3B82F6;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --dark: #1F2937;
+            --dark-gray: #4B5563;
+            --gray: #6B7280;
+            --light-gray: #9CA3AF;
+            --lighter-gray: #E5E7EB;
+            --lightest-gray: #F3F4F6;
+            --white: #FFFFFF;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 12px rgba(0,0,0,0.15);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --touch-target: 48px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.4;
+            color: var(--dark);
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            padding-bottom: 70px;
+        }
+        
+        button, a, .seller-card, .filter-chip {
+            min-height: var(--touch-target);
+            min-width: var(--touch-target);
+        }
+        
+        button:active, a:active, .seller-card:active {
+            opacity: 0.7;
+            transform: scale(0.98);
+            transition: all 0.1s;
+        }
+        
+        /* Header - similar to your index */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+            padding: 12px 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            margin-bottom: 12px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .back-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--lightest-gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        /* Search Bar */
+        .search-section {
+            background: var(--white);
+            padding: 16px;
+            margin-top: 120px;
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .search-container {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 16px 48px;
+            border: 2px solid var(--lighter-gray);
+            border-radius: var(--radius);
+            font-size: 16px;
+            background: var(--white);
+            transition: border-color 0.2s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 18px;
+        }
+        
+        .clear-search {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+            padding: 8px;
+        }
+        
+        .clear-search.visible {
+            display: block;
+        }
+        
+        /* Filter Chips */
+        .filter-section {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 4px 0 8px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .filter-section::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .filter-chip {
+            padding: 10px 20px;
+            background: var(--lightest-gray);
+            border: 1px solid var(--lighter-gray);
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-gray);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-chip i {
+            margin-right: 6px;
+            font-size: 12px;
+        }
+        
+        /* Stats Bar */
+        .stats-bar {
+            padding: 16px;
+            background: var(--lightest-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--dark-gray);
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .sellers-count {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .sort-select {
+            padding: 8px 12px;
+            border: 1px solid var(--lighter-gray);
+            border-radius: 8px;
+            background: var(--white);
+            font-size: 14px;
+            color: var(--dark);
+            cursor: pointer;
+        }
+        
+        /* Sellers Grid */
+        .sellers-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            padding: 16px;
+        }
+        
+        .seller-card {
+            background: var(--white);
+            border: 1px solid var(--lighter-gray);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+        
+        .seller-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .seller-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .seller-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .verified-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--secondary);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            border: 2px solid var(--white);
+        }
+        
+        .seller-info {
+            flex: 1;
+        }
+        
+        .seller-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .seller-badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: var(--lightest-gray);
+            color: var(--dark-gray);
+        }
+        
+        .seller-badge.wholesale {
+            background: var(--primary-light);
+            color: white;
+        }
+        
+        .seller-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .seller-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .seller-stats {
+            display: flex;
+            gap: 16px;
+            padding-top: 10px;
+            border-top: 1px solid var(--lighter-gray);
+            font-size: 13px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .stat-label {
+            color: var(--gray);
+        }
+        
+        .contact-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            color: var(--light-gray);
+            margin-bottom: 16px;
+        }
+        
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        /* Loading Skeleton */
+        .skeleton-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            gap: 16px;
+            border: 1px solid var(--lighter-gray);
+        }
+        
+        .skeleton-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, var(--lightest-gray) 25%, var(--lighter-gray) 50%, var(--lightest-gray) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            flex-shrink: 0;
+        }
+        
+        .skeleton-info {
+            flex: 1;
+        }
+        
+        .skeleton-line {
+            height: 16px;
+            background: linear-gradient(90deg, var(--lightest-gray) 25%, var(--lighter-gray) 50%, var(--lightest-gray) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .skeleton-line.short {
+            width: 60%;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 1px solid var(--lighter-gray);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray);
+            font-size: 12px;
+            flex: 1;
+            padding: 8px 4px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 16px;
+            right: 16px;
+            background: var(--dark);
+            color: white;
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            z-index: 2000;
+            text-align: center;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        /* Responsive */
+        @media (min-width: 768px) {
+            .sellers-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .sellers-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <a href="/index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <a href="/index.html" class="logo">
+                <div class="logo-icon">iB</div>
+                <span>iBlue B2B</span>
+            </a>
+            <a href="/profile.html" class="back-btn">
+                <i class="far fa-user"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <div class="search-section">
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search sellers by name, location or product..." autocomplete="off">
+            <button class="clear-search" id="clearSearch">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-section" id="filterChips">
+            <button class="filter-chip active" data-filter="all">
+                <i class="fas fa-store"></i> All Sellers
+            </button>
+            <button class="filter-chip" data-filter="verified">
+                <i class="fas fa-check-circle"></i> Verified Only
+            </button>
+            <button class="filter-chip" data-filter="wholesale">
+                <i class="fas fa-warehouse"></i> Wholesalers
+            </button>
+            <button class="filter-chip" data-filter="retail">
+                <i class="fas fa-shopping-bag"></i> Retailers
+            </button>
+            <button class="filter-chip" data-filter="active">
+                <i class="fas fa-bolt"></i> Most Active
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <span><span class="sellers-count" id="sellersCount">0</span> sellers found</span>
+        <select class="sort-select" id="sortSelect">
+            <option value="name_asc">Name (A-Z)</option>
+            <option value="name_desc">Name (Z-A)</option>
+            <option value="ads_desc">Most Ads</option>
+            <option value="ads_asc">Least Ads</option>
+            <option value="recent">Recently Active</option>
+        </select>
+    </div>
+
+    <!-- Sellers Grid -->
+    <div class="sellers-grid" id="sellersGrid">
+        <!-- Skeleton loading -->
+        <div class="skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-info">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+            </div>
+        </div>
+        <div class="skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-info">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/index.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="/categories.html" class="nav-item">
+            <i class="fas fa-th-large nav-icon"></i>
+            <span>Shop</span>
+        </a>
+        <a href="/wholesalers.html" class="nav-item active">
+            <i class="fas fa-warehouse nav-icon"></i>
+            <span>Wholesale</span>
+        </a>
+        <a href="/saved.html" class="nav-item">
+            <i class="far fa-heart nav-icon"></i>
+            <span>Saved</span>
+        </a>
+        <a href="/account.html" class="nav-item">
+            <i class="far fa-user nav-icon"></i>
+            <span>Account</span>
+        </a>
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Supabase config
+        const SUPABASE_URL = 'https://uufhvmmgwzkxvvdbqemz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc';
+        
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // State
+        let allSellers = [];
+        let filteredSellers = [];
+        let currentFilter = 'all';
+        let searchQuery = '';
+        let currentSort = 'name_asc';
+        let currentUser = null;
+
+        // DOM Elements
+        const sellersGrid = document.getElementById('sellersGrid');
+        const sellersCount = document.getElementById('sellersCount');
+        const searchInput = document.getElementById('searchInput');
+        const clearSearch = document.getElementById('clearSearch');
+        const sortSelect = document.getElementById('sortSelect');
+        const filterChips = document.querySelectorAll('.filter-chip');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            await loadSellers();
+            setupEventListeners();
+        });
+
+        // Check authentication
+        async function checkAuth() {
+            try {
+                const { data: { session } } = await sb.auth.getSession();
+                if (session) {
+                    const { data: profile } = await sb
+                        .from('profiles')
+                        .select('id, full_name')
+                        .eq('id', session.user.id)
+                        .single();
+                    
+                    if (profile) {
+                        currentUser = {
+                            id: profile.id,
+                            name: profile.full_name || 'User'
+                        };
+                    }
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
+        }
+
+        // Load sellers from database
+        async function loadSellers() {
+            try {
+                // Get all profiles with their ad counts and latest activity
+                const { data: profiles, error } = await sb
+                    .from('profiles')
+                    .select(`
+                        id,
+                        full_name,
+                        email,
+                        phone,
+                        avatar_url,
+                        location,
+                        district,
+                        is_verified,
+                        total_ads,
+                        last_active,
+                        created_at,
+                        admin_role
+                    `)
+                    .order('total_ads', { ascending: false })
+                    .limit(100);
+
+                if (error) throw error;
+
+                if (profiles) {
+                    // For each profile, get their active ads count and categories
+                    const sellersWithDetails = await Promise.all(
+                        profiles.map(async (profile) => {
+                            // Get active ads count
+                            const { count: activeAds } = await sb
+                                .from('ads')
+                                .select('*', { count: 'exact', head: true })
+                                .eq('seller_id', profile.id)
+                                .eq('status', 'active');
+
+                            // Get distinct categories they sell in
+                            const { data: categories } = await sb
+                                .from('ads')
+                                .select('categories!inner(name)')
+                                .eq('seller_id', profile.id)
+                                .eq('status', 'active')
+                                .limit(3);
+
+                            const sellerCategories = categories?.map(c => c.categories?.name).filter(Boolean) || [];
+
+                            return {
+                                ...profile,
+                                active_ads: activeAds || 0,
+                                categories: sellerCategories.slice(0, 3),
+                                is_wholesaler: profile.admin_role === 'wholesaler' || (activeAds > 10) // heuristic
+                            };
+                        })
+                    );
+
+                    allSellers = sellersWithDetails;
+                    applyFilters();
+                }
+            } catch (error) {
+                console.error('Error loading sellers:', error);
+                showToast('Failed to load sellers');
+                // Load sample data for demo
+                loadSampleSellers();
+            }
+        }
+
+        // Sample data for demo/fallback
+        function loadSampleSellers() {
+            allSellers = [
+                {
+                    id: 1,
+                    full_name: "Kampala Electronics Wholesale",
+                    email: "sales@kampalaelectronics.com",
+                    phone: "+256 700 123456",
+                    location: "Kampala",
+                    district: "Central",
+                    is_verified: true,
+                    total_ads: 156,
+                    active_ads: 89,
+                    last_active: new Date().toISOString(),
+                    avatar_url: null,
+                    categories: ["Electronics", "Phones", "Computers"],
+                    is_wholesaler: true
+                },
+                {
+                    id: 2,
+                    full_name: "Jinja General Merchants",
+                    email: "info@jingamerchants.com",
+                    phone: "+256 712 345678",
+                    location: "Jinja",
+                    district: "Eastern",
+                    is_verified: false,
+                    total_ads: 45,
+                    active_ads: 32,
+                    last_active: new Date(Date.now() - 2*24*60*60*1000).toISOString(),
+                    avatar_url: null,
+                    categories: ["Household", "Furniture"],
+                    is_wholesaler: false
+                },
+                {
+                    id: 3,
+                    full_name: "Mbarara Agro Supplies",
+                    email: "agro@mbarara.co.ug",
+                    phone: "+256 756 987654",
+                    location: "Mbarara",
+                    district: "Western",
+                    is_verified: true,
+                    total_ads: 78,
+                    active_ads: 45,
+                    last_active: new Date().toISOString(),
+                    avatar_url: null,
+                    categories: ["Farming", "Equipment"],
+                    is_wholesaler: true
+                },
+                {
+                    id: 4,
+                    full_name: "Gulu Hardware & Tools",
+                    email: "hardware@gulu.com",
+                    phone: "+256 789 123456",
+                    location: "Gulu",
+                    district: "Northern",
+                    is_verified: false,
+                    total_ads: 23,
+                    active_ads: 15,
+                    last_active: new Date(Date.now() - 5*24*60*60*1000).toISOString(),
+                    avatar_url: null,
+                    categories: ["Hardware", "Construction"],
+                    is_wholesaler: false
+                },
+                {
+                    id: 5,
+                    full_name: "Uganda Textile Manufacturers",
+                    email: "textiles@uganda.co.ug",
+                    phone: "+256 701 234567",
+                    location: "Kampala",
+                    district: "Central",
+                    is_verified: true,
+                    total_ads: 234,
+                    active_ads: 156,
+                    last_active: new Date().toISOString(),
+                    avatar_url: null,
+                    categories: ["Fashion", "Fabrics", "Clothing"],
+                    is_wholesaler: true
+                }
+            ];
+            applyFilters();
+        }
+
+        // Apply all filters and search
+        function applyFilters() {
+            let filtered = [...allSellers];
+
+            // Apply search
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase();
+                filtered = filtered.filter(seller => 
+                    seller.full_name?.toLowerCase().includes(query) ||
+                    seller.location?.toLowerCase().includes(query) ||
+                    seller.district?.toLowerCase().includes(query) ||
+                    seller.phone?.includes(query) ||
+                    seller.categories?.some(cat => cat.toLowerCase().includes(query))
+                );
+            }
+
+            // Apply filter chips
+            switch(currentFilter) {
+                case 'verified':
+                    filtered = filtered.filter(s => s.is_verified);
+                    break;
+                case 'wholesale':
+                    filtered = filtered.filter(s => s.is_wholesaler);
+                    break;
+                case 'retail':
+                    filtered = filtered.filter(s => !s.is_wholesaler);
+                    break;
+                case 'active':
+                    filtered = filtered.filter(s => s.active_ads > 10);
+                    break;
+                // 'all' shows everything
+            }
+
+            // Apply sorting
+            filtered.sort((a, b) => {
+                switch(currentSort) {
+                    case 'name_asc':
+                        return (a.full_name || '').localeCompare(b.full_name || '');
+                    case 'name_desc':
+                        return (b.full_name || '').localeCompare(a.full_name || '');
+                    case 'ads_desc':
+                        return (b.active_ads || 0) - (a.active_ads || 0);
+                    case 'ads_asc':
+                        return (a.active_ads || 0) - (b.active_ads || 0);
+                    case 'recent':
+                        return new Date(b.last_active || 0) - new Date(a.last_active || 0);
+                    default:
+                        return 0;
+                }
+            });
+
+            filteredSellers = filtered;
+            renderSellers();
+            updateStats();
+        }
+
+        // Render sellers to grid
+        function renderSellers() {
+            if (filteredSellers.length === 0) {
+                sellersGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-store-alt"></i>
+                        <h3>No sellers found</h3>
+                        <p>Try adjusting your search or filters</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filteredSellers.forEach(seller => {
+                const initials = seller.full_name
+                    ?.split(' ')
+                    .map(n => n[0])
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2) || 'BS';
+
+                const lastActive = new Date(seller.last_active);
+                const now = new Date();
+                const daysSinceActive = Math.floor((now - lastActive) / (1000 * 60 * 60 * 24));
+                
+                let activeStatus = '';
+                if (daysSinceActive === 0) activeStatus = '🟢 Active now';
+                else if (daysSinceActive < 2) activeStatus = '🟡 Active today';
+                else if (daysSinceActive < 7) activeStatus = `⚫ Active ${daysSinceActive} days ago`;
+                else activeStatus = '⚪ Inactive';
+
+                html += `
+                    <a href="/seller-profile.html?id=${seller.id}" class="seller-card">
+                        <div class="seller-avatar">
+                            ${seller.avatar_url ? 
+                                `<img src="${seller.avatar_url}" alt="${seller.full_name}">` : 
+                                initials
+                            }
+                            ${seller.is_verified ? 
+                                '<span class="verified-badge"><i class="fas fa-check"></i></span>' : 
+                                ''}
+                        </div>
+                        <div class="seller-info">
+                            <div class="seller-name">
+                                ${escapeHtml(seller.full_name || 'Business')}
+                                ${seller.is_wholesaler ? 
+                                    '<span class="seller-badge wholesale">B2B</span>' : 
+                                    ''}
+                            </div>
+                            
+                            <div class="seller-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(seller.district || seller.location || 'Uganda')}</span>
+                                <span><i class="fas fa-tag"></i> ${seller.categories?.join(', ') || 'General'}</span>
+                            </div>
+                            
+                            <div class="seller-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-box"></i>
+                                    <span class="stat-value">${seller.active_ads || 0}</span>
+                                    <span class="stat-label">active</span>
+                                </span>
+                                <span class="stat-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span class="stat-value">${seller.total_ads || 0}</span>
+                                    <span class="stat-label">total</span>
+                                </span>
+                                <span class="stat-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span class="stat-value">${activeStatus}</span>
+                                </span>
+                            </div>
+
+                            ${seller.phone ? `
+                                <button class="contact-btn" onclick="event.preventDefault(); contactSeller('${seller.phone}', '${escapeHtml(seller.full_name)}')">
+                                    <i class="fas fa-phone-alt"></i> Contact
+                                </button>
+                            ` : ''}
+                        </div>
+                    </a>
+                `;
+            });
+
+            sellersGrid.innerHTML = html;
+        }
+
+        // Update stats
+        function updateStats() {
+            sellersCount.textContent = filteredSellers.length;
+        }
+
+        // Event listeners
+        function setupEventListeners() {
+            // Search input
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                clearSearch.classList.toggle('visible', searchQuery.length > 0);
+                applyFilters();
+            });
+
+            // Clear search
+            clearSearch.addEventListener('click', () => {
+                searchInput.value = '';
+                searchQuery = '';
+                clearSearch.classList.remove('visible');
+                applyFilters();
+                searchInput.focus();
+            });
+
+            // Sort select
+            sortSelect.addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                applyFilters();
+            });
+
+            // Filter chips
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    currentFilter = chip.dataset.filter;
+                    applyFilters();
+                });
+            });
+
+            // Debounced search for performance
+            let timeout;
+            searchInput.addEventListener('input', () => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    searchQuery = searchInput.value;
+                    applyFilters();
+                }, 300);
+            });
+        }
+
+        // Contact seller
+        function contactSeller(phone, name) {
+            if (!currentUser) {
+                window.location.href = `/login.html?redirect=/wholesalers.html`;
+                return;
+            }
+            
+            // Show contact options
+            const message = `Contact ${name} at ${phone}`;
+            if (confirm(`Call ${name}?\nPhone: ${phone}\n\nCancel to copy number`)) {
+                window.location.href = `tel:${phone}`;
+            } else {
+                navigator.clipboard?.writeText(phone);
+                showToast('Phone number copied!');
+            }
+        }
+
+        // Toast message
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Export functions for global use
+        window.contactSeller = contactSeller;
+    </script>
+</body>
+</html>

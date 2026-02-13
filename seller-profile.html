@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Seller Profile - iBlue Uganda B2B</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Same styles as before - keeping them compact for brevity */
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1D4ED8;
+            --primary-light: #3B82F6;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --dark: #1F2937;
+            --dark-gray: #4B5563;
+            --gray: #6B7280;
+            --light-gray: #9CA3AF;
+            --lighter-gray: #E5E7EB;
+            --lightest-gray: #F3F4F6;
+            --white: #FFFFFF;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 12px rgba(0,0,0,0.15);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --touch-target: 48px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.4;
+            color: var(--dark);
+            background: var(--lightest-gray);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+        
+        button, a, .product-card, .cart-item, .chat-btn {
+            min-height: var(--touch-target);
+            min-width: var(--touch-target);
+        }
+        
+        button:active, a:active, .product-card:active {
+            opacity: 0.7;
+            transform: scale(0.98);
+            transition: all 0.1s;
+        }
+        
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .back-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--lightest-gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        
+        .header-title {
+            flex: 1;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .share-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--lightest-gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 18px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .cart-icon {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 20px;
+            text-decoration: none;
+            background: var(--lightest-gray);
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--danger);
+            color: white;
+            font-size: 10px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            border: 2px solid var(--white);
+        }
+        
+        /* Share Modal */
+        .share-modal {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            padding: 20px;
+            z-index: 2000;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .share-modal.active {
+            transform: translateY(0);
+        }
+        
+        .share-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .share-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .share-close {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--lightest-gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .share-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .share-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 8px;
+            background: var(--lightest-gray);
+            border-radius: var(--radius);
+            cursor: pointer;
+        }
+        
+        .share-option i {
+            font-size: 24px;
+        }
+        
+        .share-option span {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .share-link {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: var(--lightest-gray);
+            border-radius: var(--radius);
+            margin-top: 8px;
+        }
+        
+        .share-link input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: var(--dark);
+        }
+        
+        .share-link button {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Seller Profile */
+        .seller-cover {
+            height: 120px;
+            background: linear-gradient(145deg, var(--primary), var(--primary-light));
+            position: relative;
+        }
+        
+        .seller-profile-section {
+            padding: 0 16px;
+            position: relative;
+            margin-top: -40px;
+            z-index: 10;
+        }
+        
+        .seller-profile-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .seller-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            border: 4px solid var(--white);
+            box-shadow: var(--shadow);
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .seller-avatar-large img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .verified-badge-large {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: var(--secondary);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            border: 2px solid var(--white);
+        }
+        
+        .seller-info-large {
+            flex: 1;
+        }
+        
+        .seller-name-large {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .seller-badge-large {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: var(--primary-light);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .seller-meta-large {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 8px 0;
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .seller-meta-large span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .seller-stats-large {
+            display: flex;
+            gap: 20px;
+            margin-top: 12px;
+        }
+        
+        .stat-large {
+            text-align: center;
+        }
+        
+        .stat-value-large {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .stat-label-large {
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        
+        .action-btn.chat {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Search Bar */
+        .search-container {
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+            padding: 12px 16px;
+        }
+        
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-input {
+            flex: 1;
+            height: 44px;
+            padding: 0 16px 0 44px;
+            background: var(--lightest-gray);
+            border: 1px solid var(--lighter-gray);
+            border-radius: var(--radius);
+            font-size: 15px;
+            color: var(--dark);
+            transition: all 0.2s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            color: var(--gray);
+            font-size: 16px;
+            pointer-events: none;
+        }
+        
+        .clear-search {
+            position: absolute;
+            right: 60px;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            font-size: 14px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .clear-search:hover {
+            background: var(--lightest-gray);
+        }
+        
+        .search-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .search-btn:active {
+            background: var(--primary-dark);
+            transform: scale(0.95);
+        }
+        
+        /* Filter Chips */
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .filter-chip {
+            padding: 6px 12px;
+            background: var(--lightest-gray);
+            border: 1px solid var(--lighter-gray);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--dark-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-chip .count {
+            font-size: 11px;
+            margin-left: 4px;
+            opacity: 0.7;
+        }
+        
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            background: var(--white);
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 8px 16px;
+            gap: 8px;
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category-tab {
+            padding: 10px 20px;
+            background: var(--lightest-gray);
+            border: 1px solid var(--lighter-gray);
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-gray);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Products Grid */
+        .products-section {
+            padding: 16px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .product-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--lighter-gray);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 140px;
+            background: var(--lightest-gray);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--light-gray);
+            font-size: 32px;
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--warning);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 6px;
+            border-radius: 4px;
+            z-index: 2;
+        }
+        
+        .add-to-cart-btn {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 36px;
+            height: 36px;
+            background: var(--white);
+            border: 1px solid var(--lighter-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+        
+        .add-to-cart-btn.added {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .product-content {
+            padding: 12px;
+        }
+        
+        .product-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 36px;
+        }
+        
+        .product-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 4px;
+        }
+        
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 6px;
+        }
+        
+        /* Search Results Info */
+        .search-results-info {
+            padding: 8px 16px;
+            background: var(--lightest-gray);
+            font-size: 13px;
+            color: var(--gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .clear-search-btn {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        
+        /* Cart Sidebar */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .cart-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: var(--white);
+            z-index: 1001;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .cart-sidebar.active {
+            right: 0;
+        }
+        
+        .cart-header {
+            padding: 20px 16px;
+            border-bottom: 1px solid var(--lighter-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+        }
+        
+        .cart-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .close-cart {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--lightest-gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--lightest-gray);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            padding-right: 24px;
+        }
+        
+        .cart-item-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--danger);
+        }
+        
+        .cart-item-remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--gray);
+        }
+        
+        .cart-footer {
+            padding: 16px;
+            border-top: 1px solid var(--lighter-gray);
+            background: var(--white);
+        }
+        
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .cart-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .cart-action-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .cart-action-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        
+        .cart-action-btn.chat {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .cart-action-btn.clear {
+            background: var(--lightest-gray);
+            color: var(--dark-gray);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 16px;
+            right: 16px;
+            background: var(--dark);
+            color: white;
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            z-index: 2000;
+            text-align: center;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .skeleton-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .skeleton-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            padding: 12px;
+        }
+        
+        .skeleton-image {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(90deg, var(--lightest-gray) 25%, var(--lighter-gray) 50%, var(--lightest-gray) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        @media (min-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Share Button -->
+    <header class="header">
+        <a href="/wholesalers.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="header-title" id="sellerNameHeader">Seller Profile</div>
+        <div class="header-actions">
+            <button class="share-btn" id="shareSellerBtn">
+                <i class="fas fa-share-alt"></i>
+            </button>
+            <a href="#" class="cart-icon" id="cartToggle">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge" id="cartCount">0</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Seller Cover -->
+    <div class="seller-cover"></div>
+
+    <!-- Seller Profile Section -->
+    <div class="seller-profile-section">
+        <div class="seller-profile-card" id="sellerProfile">
+            <!-- Dynamic content -->
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons" id="actionButtons">
+        <button class="action-btn whatsapp" id="whatsappSeller">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+        </button>
+        <button class="action-btn chat" id="chatSeller">
+            <i class="far fa-comment"></i> Chat
+        </button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input 
+                type="text" 
+                class="search-input" 
+                id="searchInput" 
+                placeholder="Search products..."
+                autocomplete="off"
+            >
+            <button class="clear-search" id="clearSearchBtn" onclick="clearSearch()">
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="search-btn" id="searchBtn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Search Results Info (hidden by default) -->
+    <div class="search-results-info" id="searchResultsInfo" style="display: none;">
+        <span id="searchResultsText"></span>
+        <span class="clear-search-btn" onclick="clearSearch()">Clear Search</span>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="category-tabs" id="categoryTabs">
+        <!-- Dynamic categories -->
+    </div>
+
+    <!-- Products Section -->
+    <div class="products-section">
+        <div class="section-header">
+            <h2 class="section-title">Products</h2>
+            <span class="products-count" id="productsCount">0 items</span>
+        </div>
+        <div class="products-grid" id="productsGrid">
+            <!-- Skeleton loading -->
+            <div class="skeleton-grid">
+                <div class="skeleton-card">
+                    <div class="skeleton-image"></div>
+                    <div class="skeleton-text"></div>
+                    <div class="skeleton-text"></div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-image"></div>
+                    <div class="skeleton-text"></div>
+                    <div class="skeleton-text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="share-modal" id="shareModal">
+        <div class="share-header">
+            <h3 class="share-title">Share this seller</h3>
+            <button class="share-close" id="closeShareModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="share-options">
+            <div class="share-option" id="shareWhatsapp">
+                <i class="fab fa-whatsapp" style="color: #25D366;"></i>
+                <span>WhatsApp</span>
+            </div>
+            <div class="share-option" id="shareFacebook">
+                <i class="fab fa-facebook" style="color: #1877F2;"></i>
+                <span>Facebook</span>
+            </div>
+            <div class="share-option" id="shareTwitter">
+                <i class="fab fa-twitter" style="color: #1DA1F2;"></i>
+                <span>Twitter</span>
+            </div>
+            <div class="share-option" id="shareCopy">
+                <i class="fas fa-link"></i>
+                <span>Copy Link</span>
+            </div>
+        </div>
+        
+        <div class="share-link">
+            <input type="text" id="shareLink" readonly value="">
+            <button id="copyLinkBtn">Copy</button>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <div class="cart-title">
+                <i class="fas fa-shopping-cart"></i>
+                Your Cart
+            </div>
+            <button class="close-cart" id="closeCart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="cart-items" id="cartItems">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-basket"></i>
+                <h3>Your cart is empty</h3>
+                <p>Add items from this seller to start</p>
+            </div>
+        </div>
+        
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">UGX 0</span>
+            </div>
+            <div class="cart-actions">
+                <button class="cart-action-btn whatsapp" id="cartWhatsapp">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button class="cart-action-btn chat" id="cartChat">
+                    <i class="far fa-comment"></i> Chat
+                </button>
+                <button class="cart-action-btn clear" id="clearCart">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Supabase config
+        const SUPABASE_URL = 'https://uufhvmmgwzkxvvdbqemz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc';
+        
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ========== State ==========
+        let currentUser = null;
+        let sellerId = null;
+        let seller = null;
+        let products = [];
+        let filteredProducts = [];
+        let categories = [];
+        let currentCategory = 'all';
+        let searchQuery = '';
+        
+        // Cart state (localStorage)
+        let cart = {
+            sellerId: null,
+            sellerName: '',
+            sellerPhone: '',
+            items: []
+        };
+
+        // ========== DOM Elements ==========
+        const sellerProfile = document.getElementById('sellerProfile');
+        const sellerNameHeader = document.getElementById('sellerNameHeader');
+        const productsGrid = document.getElementById('productsGrid');
+        const productsCount = document.getElementById('productsCount');
+        const categoryTabs = document.getElementById('categoryTabs');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        const searchResultsInfo = document.getElementById('searchResultsInfo');
+        const searchResultsText = document.getElementById('searchResultsText');
+        const cartCount = document.getElementById('cartCount');
+        const cartItems = document.getElementById('cartItems');
+        const cartFooter = document.getElementById('cartFooter');
+        const cartTotal = document.getElementById('cartTotal');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const cartToggle = document.getElementById('cartToggle');
+        const closeCart = document.getElementById('closeCart');
+        const clearCart = document.getElementById('clearCart');
+        const cartWhatsapp = document.getElementById('cartWhatsapp');
+        const cartChat = document.getElementById('cartChat');
+        const whatsappSeller = document.getElementById('whatsappSeller');
+        const chatSeller = document.getElementById('chatSeller');
+        const toast = document.getElementById('toast');
+        
+        // Share modal elements
+        const shareModal = document.getElementById('shareModal');
+        const shareSellerBtn = document.getElementById('shareSellerBtn');
+        const closeShareModal = document.getElementById('closeShareModal');
+        const shareLink = document.getElementById('shareLink');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        const shareWhatsapp = document.getElementById('shareWhatsapp');
+        const shareFacebook = document.getElementById('shareFacebook');
+        const shareTwitter = document.getElementById('shareTwitter');
+        const shareCopy = document.getElementById('shareCopy');
+
+        // ========== Initialize ==========
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get seller ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            sellerId = urlParams.get('id');
+            
+            if (!sellerId) {
+                showToast('No seller specified');
+                setTimeout(() => window.history.back(), 1500);
+                return;
+            }
+
+            await checkAuth();
+            loadCartFromStorage();
+            await loadSellerData();
+            await loadSellerProducts();
+            setupEventListeners();
+            updateCartUI();
+            
+            // Set share link
+            shareLink.value = window.location.href;
+        });
+
+        // ========== Authentication ==========
+        async function checkAuth() {
+            try {
+                const { data: { session } } = await sb.auth.getSession();
+                if (session) {
+                    const { data: profile } = await sb
+                        .from('profiles')
+                        .select('id, full_name, phone')
+                        .eq('id', session.user.id)
+                        .single();
+                    
+                    if (profile) {
+                        currentUser = {
+                            id: profile.id,
+                            name: profile.full_name || 'User',
+                            phone: profile.phone
+                        };
+                    }
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
+        }
+
+        // ========== Load Seller Data ==========
+        async function loadSellerData() {
+            try {
+                const { data: profile, error } = await sb
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', sellerId)
+                    .single();
+
+                if (error) throw error;
+
+                if (profile) {
+                    seller = profile;
+                    
+                    // Get active ads count
+                    const { count: activeAds } = await sb
+                        .from('ads')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('seller_id', sellerId)
+                        .eq('status', 'active');
+
+                    seller.active_ads = activeAds || 0;
+                    
+                    renderSellerProfile();
+                    
+                    // Check if cart belongs to this seller or is empty
+                    if (cart.sellerId && cart.sellerId !== sellerId) {
+                        cart = { sellerId: null, sellerName: '', sellerPhone: '', items: [] };
+                        saveCartToStorage();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading seller:', error);
+                showToast('Failed to load seller data');
+                
+                // Create minimal seller object
+                seller = {
+                    id: sellerId,
+                    full_name: "Business Profile",
+                    phone: "",
+                    email: "",
+                    location: "Uganda",
+                    district: "Central",
+                    is_verified: false,
+                    total_ads: 0,
+                    active_ads: 0
+                };
+                renderSellerProfile();
+            }
+        }
+
+        // ========== Load Seller Products ==========
+        async function loadSellerProducts() {
+            try {
+                const { data: ads, error } = await sb
+                    .from('ads')
+                    .select(`
+                        id,
+                        title,
+                        price,
+                        currency,
+                        is_negotiable,
+                        condition,
+                        image_urls,
+                        view_count,
+                        created_at,
+                        category_id,
+                        subcategory_id,
+                        categories!ads_category_id_fkey (
+                            id,
+                            name
+                        ),
+                        subcategories:categories!ads_subcategory_id_fkey (
+                            id,
+                            name
+                        )
+                    `)
+                    .eq('seller_id', sellerId)
+                    .eq('status', 'active')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (ads && ads.length > 0) {
+                    products = ads.map(ad => ({
+                        ...ad,
+                        category_name: ad.categories?.name || 'Uncategorized'
+                    }));
+                } else {
+                    products = [];
+                }
+                
+                // Extract unique categories
+                const categoryMap = new Map();
+                products.forEach(p => {
+                    if (p.category_name && !categoryMap.has(p.category_name)) {
+                        categoryMap.set(p.category_name, {
+                            name: p.category_name,
+                            count: products.filter(x => x.category_name === p.category_name).length
+                        });
+                    }
+                });
+                
+                categories = Array.from(categoryMap.values());
+                
+                if (categories.length === 0 && products.length > 0) {
+                    categories = [{ name: 'Products', count: products.length }];
+                }
+                
+                renderCategoryTabs();
+                filterProducts('all');
+                
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showToast('Failed to load products');
+                products = [];
+                categories = [];
+                renderCategoryTabs();
+                filterProducts('all');
+            }
+        }
+
+        // ========== Render Functions ==========
+        function renderSellerProfile() {
+            const initials = seller.full_name
+                ?.split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase()
+                .substring(0, 2) || 'BS';
+
+            const memberSince = seller.created_at ? new Date(seller.created_at).toLocaleDateString('en-UG', {
+                year: 'numeric',
+                month: 'long'
+            }) : 'Recent';
+
+            sellerProfile.innerHTML = `
+                <div class="seller-avatar-large">
+                    ${seller.avatar_url ? 
+                        `<img src="${seller.avatar_url}" alt="${seller.full_name}">` : 
+                        initials
+                    }
+                    ${seller.is_verified ? 
+                        '<span class="verified-badge-large"><i class="fas fa-check"></i></span>' : 
+                        ''}
+                </div>
+                <div class="seller-info-large">
+                    <div class="seller-name-large">
+                        ${escapeHtml(seller.full_name || 'Business Name')}
+                        <span class="seller-badge-large">B2B Seller</span>
+                    </div>
+                    
+                    <div class="seller-meta-large">
+                        <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(seller.district || seller.location || 'Uganda')}</span>
+                        ${seller.phone ? `<span><i class="fas fa-phone"></i> ${escapeHtml(seller.phone)}</span>` : ''}
+                        ${seller.email ? `<span><i class="fas fa-envelope"></i> ${escapeHtml(seller.email)}</span>` : ''}
+                    </div>
+                    
+                    <div class="seller-stats-large">
+                        <div class="stat-large">
+                            <div class="stat-value-large">${seller.active_ads || 0}</div>
+                            <div class="stat-label-large">Active</div>
+                        </div>
+                        <div class="stat-large">
+                            <div class="stat-value-large">${seller.total_ads || 0}</div>
+                            <div class="stat-label-large">Total</div>
+                        </div>
+                        <div class="stat-large">
+                            <div class="stat-value-large">${memberSince}</div>
+                            <div class="stat-label-large">Joined</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            sellerNameHeader.textContent = seller.full_name || 'Seller Profile';
+        }
+
+        function renderCategoryTabs() {
+            if (categories.length === 0) {
+                categoryTabs.innerHTML = `
+                    <button class="category-tab active" data-category="all">
+                        All Products (${products.length})
+                    </button>
+                `;
+                return;
+            }
+
+            let html = `
+                <button class="category-tab active" data-category="all">
+                    All (${products.length})
+                </button>
+            `;
+            
+            categories.forEach(cat => {
+                html += `
+                    <button class="category-tab" data-category="${escapeHtml(cat.name)}">
+                        ${escapeHtml(cat.name)} (${cat.count})
+                    </button>
+                `;
+            });
+            
+            categoryTabs.innerHTML = html;
+            
+            // Add click handlers
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    filterProducts(tab.dataset.category);
+                });
+            });
+        }
+
+        // ========== Search Functions ==========
+        function performSearch() {
+            searchQuery = searchInput.value.trim().toLowerCase();
+            
+            // Show/hide clear button
+            if (searchQuery.length > 0) {
+                clearSearchBtn.style.display = 'flex';
+            } else {
+                clearSearchBtn.style.display = 'none';
+            }
+            
+            filterProducts(currentCategory);
+        }
+
+        function clearSearch() {
+            searchInput.value = '';
+            searchQuery = '';
+            clearSearchBtn.style.display = 'none';
+            searchResultsInfo.style.display = 'none';
+            filterProducts(currentCategory);
+            
+            // Refocus on search input
+            searchInput.focus();
+        }
+
+        function filterProducts(category) {
+            currentCategory = category;
+            
+            // Start with all products
+            let filtered = [...products];
+            
+            // Apply category filter
+            if (category !== 'all') {
+                filtered = filtered.filter(p => p.category_name === category);
+            }
+            
+            // Apply search filter if query exists
+            if (searchQuery) {
+                filtered = filtered.filter(p => 
+                    p.title.toLowerCase().includes(searchQuery) || 
+                    (p.description && p.description.toLowerCase().includes(searchQuery))
+                );
+                
+                // Show search results info
+                searchResultsInfo.style.display = 'flex';
+                searchResultsText.innerHTML = `Found <strong>${filtered.length}</strong> ${filtered.length === 1 ? 'product' : 'products'} matching "<strong>${escapeHtml(searchQuery)}</strong>"`;
+            } else {
+                searchResultsInfo.style.display = 'none';
+            }
+            
+            filteredProducts = filtered;
+            renderProducts();
+        }
+
+        function renderProducts() {
+            if (filteredProducts.length === 0) {
+                if (searchQuery) {
+                    productsGrid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 48px; color: var(--gray);">
+                            <i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                            <h3 style="margin-bottom: 8px;">No products found</h3>
+                            <p>No products matching "${escapeHtml(searchQuery)}"</p>
+                            <button onclick="clearSearch()" style="margin-top: 16px; padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer;">Clear Search</button>
+                        </div>
+                    `;
+                } else {
+                    productsGrid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 48px; color: var(--gray);">
+                            <i class="fas fa-box-open" style="font-size: 48px; margin-bottom: 16px;"></i>
+                            <p>No products available</p>
+                        </div>
+                    `;
+                }
+                productsCount.textContent = '0 items';
+                return;
+            }
+
+            let html = '';
+            filteredProducts.forEach(product => {
+                const isInCart = cart.items.some(item => item.id === product.id);
+                const imageUrl = product.image_urls?.[0] || '';
+                const price = product.price ? `UGX ${parseInt(product.price).toLocaleString()}` : 'Price on request';
+                
+                // Highlight matching text if search query exists
+                let titleHtml = escapeHtml(product.title);
+                if (searchQuery) {
+                    const regex = new RegExp(`(${searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                    titleHtml = titleHtml.replace(regex, '<mark style="background: #fef9c3; color: #854d0e;">$1</mark>');
+                }
+                
+                html += `
+                    <div class="product-card" data-product-id="${product.id}" onclick="window.location.href='B2B-ad-detail.html?id=${product.id}'">
+                        ${product.condition === 'new' ? '<span class="product-badge">NEW</span>' : ''}
+                        <button class="add-to-cart-btn ${isInCart ? 'added' : ''}" onclick="event.stopPropagation(); window.toggleCart(${product.id})">
+                            <i class="fas ${isInCart ? 'fa-check' : 'fa-plus'}"></i>
+                        </button>
+                        <div class="product-image">
+                            ${imageUrl ? 
+                                `<img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy">` : 
+                                `<div class="image-placeholder"><i class="fas fa-image"></i></div>`
+                            }
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-title">${titleHtml}</h3>
+                            <div class="product-price">
+                                ${price} ${product.is_negotiable ? '(Neg.)' : ''}
+                            </div>
+                            <div class="product-meta">
+                                <span><i class="far fa-eye"></i> ${product.view_count || 0}</span>
+                                <span><i class="far fa-clock"></i> ${timeAgo(product.created_at)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            productsGrid.innerHTML = html;
+            productsCount.textContent = `${filteredProducts.length} items`;
+        }
+
+        // ========== Cart Functions ==========
+        function loadCartFromStorage() {
+            try {
+                const savedCart = localStorage.getItem('b2bCart');
+                if (savedCart) {
+                    cart = JSON.parse(savedCart);
+                }
+            } catch (error) {
+                console.error('Error loading cart:', error);
+            }
+        }
+
+        function saveCartToStorage() {
+            localStorage.setItem('b2bCart', JSON.stringify(cart));
+            updateCartUI();
+        }
+
+        function toggleCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            // Check if cart belongs to this seller or is empty
+            if (cart.sellerId && cart.sellerId !== sellerId) {
+                if (!confirm('Starting a new cart will clear items from other sellers. Continue?')) {
+                    return;
+                }
+                cart = { sellerId: null, sellerName: '', sellerPhone: '', items: [] };
+            }
+
+            // Set seller info if cart is empty
+            if (!cart.sellerId) {
+                cart.sellerId = sellerId;
+                cart.sellerName = seller.full_name;
+                cart.sellerPhone = seller.phone || '';
+            }
+
+            const existingIndex = cart.items.findIndex(item => item.id === productId);
+            
+            if (existingIndex >= 0) {
+                // Remove from cart
+                cart.items.splice(existingIndex, 1);
+                showToast('Removed from cart');
+            } else {
+                // Add to cart
+                cart.items.push({
+                    id: product.id,
+                    title: product.title,
+                    price: product.price,
+                    currency: product.currency,
+                    image: product.image_urls?.[0],
+                    quantity: 1
+                });
+                showToast('Added to cart');
+            }
+
+            // If cart becomes empty, reset seller
+            if (cart.items.length === 0) {
+                cart.sellerId = null;
+                cart.sellerName = '';
+                cart.sellerPhone = '';
+            }
+
+            saveCartToStorage();
+            renderProducts(); // Re-render to update button states
+        }
+
+        function updateCartUI() {
+            // Update cart count badge
+            const totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            cartCount.textContent = totalItems;
+            cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+            
+            // Render cart items
+            if (cart.items.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-basket"></i>
+                        <h3>Your cart is empty</h3>
+                        <p>Add items from this seller to start</p>
+                    </div>
+                `;
+                cartFooter.style.display = 'none';
+                return;
+            }
+
+            cartFooter.style.display = 'block';
+            
+            let itemsHtml = '';
+            let total = 0;
+            
+            cart.items.forEach(item => {
+                total += (item.price || 0) * (item.quantity || 1);
+                itemsHtml += `
+                    <div class="cart-item">
+                        <div class="cart-item-image">
+                            ${item.image ? 
+                                `<img src="${item.image}" alt="${escapeHtml(item.title)}">` : 
+                                `<i class="fas fa-box"></i>`
+                            }
+                        </div>
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${escapeHtml(item.title)}</div>
+                            <div class="cart-item-price">UGX ${((item.price || 0) * (item.quantity || 1)).toLocaleString()}</div>
+                            <div class="cart-item-quantity">Quantity: ${item.quantity || 1}</div>
+                        </div>
+                        <button class="cart-item-remove" onclick="window.removeFromCart(${item.id})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            
+            cartItems.innerHTML = itemsHtml;
+            cartTotal.textContent = `UGX ${total.toLocaleString()}`;
+        }
+
+        function removeFromCart(productId) {
+            cart.items = cart.items.filter(item => item.id !== productId);
+            
+            if (cart.items.length === 0) {
+                cart.sellerId = null;
+                cart.sellerName = '';
+                cart.sellerPhone = '';
+            }
+            
+            saveCartToStorage();
+            renderProducts(); // Re-render products to update button states
+            showToast('Item removed');
+        }
+
+        function clearCartItems() {
+            cart = { sellerId: null, sellerName: '', sellerPhone: '', items: [] };
+            saveCartToStorage();
+            renderProducts();
+            showToast('Cart cleared');
+        }
+
+        // ========== Chat Functions ==========
+        async function startChat() {
+            if (!currentUser) {
+                window.location.href = `/login.html?redirect=/seller-profile.html?id=${sellerId}`;
+                return;
+            }
+
+            if (!seller) {
+                showToast('Seller information not available');
+                return;
+            }
+
+            if (currentUser.id === seller.id) {
+                showToast('You cannot chat with yourself');
+                return;
+            }
+
+            try {
+                showToast('Opening chat...', 'info');
+                
+                const { data: existingMessages, error: searchError } = await sb
+                    .from('messages')
+                    .select('id')
+                    .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${seller.id}),and(sender_id.eq.${seller.id},receiver_id.eq.${currentUser.id})`)
+                    .order('created_at', { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+
+                let messageId;
+                
+                if (existingMessages) {
+                    messageId = existingMessages.id;
+                } else {
+                    const { data: newMessage, error: createError } = await sb
+                        .from('messages')
+                        .insert({
+                            sender_id: currentUser.id,
+                            receiver_id: seller.id,
+                            content: `Hello ${seller.full_name}, I'm interested in your products.`
+                        })
+                        .select()
+                        .single();
+
+                    if (createError) throw createError;
+                    messageId = newMessage.id;
+
+                    try {
+                        await sb
+                            .from('ad_engagement')
+                            .insert({
+                                ad_id: null,
+                                user_id: currentUser.id,
+                                action: 'chat',
+                                ip_address: await getClientIP(),
+                                user_agent: navigator.userAgent
+                            });
+                    } catch (trackError) {
+                        console.warn('Failed to track chat engagement:', trackError);
+                    }
+                }
+
+                window.location.href = `/messages.html?id=${messageId}`;
+
+            } catch (error) {
+                console.error('Error starting chat:', error);
+                showToast('Failed to start chat. Please try again.', 'error');
+            }
+        }
+
+        async function startCartChat() {
+            if (!currentUser) {
+                window.location.href = `/login.html?redirect=/seller-profile.html?id=${sellerId}`;
+                return;
+            }
+
+            if (cart.items.length === 0) {
+                showToast('Cart is empty', 'warning');
+                return;
+            }
+
+            if (!seller) {
+                showToast('Seller information not available', 'error');
+                return;
+            }
+
+            try {
+                showToast('Opening chat with cart items...', 'info');
+                
+                let cartMessage = `Hello ${seller.full_name}, I'm interested in the following items:\n\n`;
+                
+                cart.items.forEach((item, index) => {
+                    cartMessage += `${index + 1}. ${item.title} - UGX ${(item.price || 0).toLocaleString()} x ${item.quantity || 1}\n`;
+                });
+                
+                const total = cart.items.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0);
+                cartMessage += `\nTotal: UGX ${total.toLocaleString()}`;
+                cartMessage += `\n\nCan we discuss pricing and availability?`;
+
+                const { data: newMessage, error: createError } = await sb
+                    .from('messages')
+                    .insert({
+                        sender_id: currentUser.id,
+                        receiver_id: seller.id,
+                        content: cartMessage
+                    })
+                    .select()
+                    .single();
+
+                if (createError) throw createError;
+
+                try {
+                    await sb
+                        .from('ad_engagement')
+                        .insert({
+                            ad_id: null,
+                            user_id: currentUser.id,
+                            action: 'chat',
+                            ip_address: await getClientIP(),
+                            user_agent: navigator.userAgent
+                        });
+                } catch (trackError) {
+                    console.warn('Failed to track chat engagement:', trackError);
+                }
+
+                window.location.href = `/messages.html?id=${newMessage.id}`;
+
+            } catch (error) {
+                console.error('Error starting cart chat:', error);
+                showToast('Failed to start chat. Please try again.', 'error');
+            }
+        }
+
+        async function getClientIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.ip;
+                }
+            } catch (error) {
+                console.warn('Could not fetch IP:', error);
+            }
+            return 'unknown';
+        }
+
+        // ========== Share Functions ==========
+        function shareSeller() {
+            shareModal.classList.add('active');
+        }
+
+        function closeShareModalFunc() {
+            shareModal.classList.remove('active');
+        }
+
+        function shareViaWhatsapp() {
+            const text = `Check out ${seller.full_name} on iBlue Uganda B2B: ${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+            trackEngagement('share');
+            closeShareModalFunc();
+        }
+
+        function shareViaFacebook() {
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+            window.open(url, '_blank');
+            trackEngagement('share');
+            closeShareModalFunc();
+        }
+
+        function shareViaTwitter() {
+            const text = `Check out ${seller.full_name} on iBlue Uganda B2B`;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+            window.open(url, '_blank');
+            trackEngagement('share');
+            closeShareModalFunc();
+        }
+
+        function copyShareLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showToast('Link copied to clipboard!');
+                trackEngagement('share');
+                closeShareModalFunc();
+            }).catch(() => {
+                showToast('Failed to copy link');
+            });
+        }
+
+        async function trackEngagement(action) {
+            if (!currentUser || !seller) return;
+            
+            try {
+                await sb
+                    .from('ad_engagement')
+                    .insert({
+                        ad_id: null,
+                        user_id: currentUser.id,
+                        action: action,
+                        ip_address: await getClientIP(),
+                        user_agent: navigator.userAgent
+                    });
+            } catch (error) {
+                console.warn('Failed to track engagement:', error);
+            }
+        }
+
+        // ========== WhatsApp Functions ==========
+        function shareCartViaWhatsapp() {
+            if (cart.items.length === 0) {
+                showToast('Cart is empty');
+                return;
+            }
+
+            const phone = cart.sellerPhone?.replace(/\s+/g, '') || '';
+            
+            if (!phone) {
+                showToast('Seller phone number not available');
+                return;
+            }
+
+            let message = `Hello *${cart.sellerName}*, I'm interested in the following items:\n\n`;
+            
+            cart.items.forEach((item, index) => {
+                message += `${index + 1}. *${item.title}* - UGX ${(item.price || 0).toLocaleString()}\n`;
+            });
+            
+            const total = cart.items.reduce((sum, item) => sum + (item.price || 0), 0);
+            message += `\n*Total: UGX ${total.toLocaleString()}*`;
+            message += `\n\nCan we discuss pricing and availability?`;
+
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            trackEngagement('whatsapp');
+        }
+
+        function shareSellerViaWhatsapp() {
+            if (!seller) return;
+            
+            const phone = seller.phone?.replace(/\s+/g, '') || '';
+            
+            if (!phone) {
+                showToast('Seller phone number not available');
+                return;
+            }
+            
+            let message = `Hello *${seller.full_name}*, I'm interested in your products on iBlue Uganda.\n\n`;
+            message += `I'm looking to buy in bulk. Can you share your catalog and wholesale prices?`;
+            
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            trackEngagement('whatsapp');
+        }
+
+        // ========== Utility Functions ==========
+        function timeAgo(dateString) {
+            if (!dateString) return 'recent';
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            if (seconds < 60) return 'just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+            return `${Math.floor(seconds / 86400)}d ago`;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showToast(message, type = 'info') {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            if (type === 'error') {
+                toast.style.background = '#EF4444';
+            } else if (type === 'success') {
+                toast.style.background = '#10B981';
+            } else if (type === 'warning') {
+                toast.style.background = '#F59E0B';
+            } else {
+                toast.style.background = '#1F2937';
+            }
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.style.background = '#1F2937';
+                }, 300);
+            }, 3000);
+        }
+
+        // ========== Event Listeners ==========
+        function setupEventListeners() {
+            // Search functionality
+            searchBtn.addEventListener('click', performSearch);
+            
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            searchInput.addEventListener('input', () => {
+                if (searchInput.value.trim().length === 0) {
+                    clearSearch();
+                }
+            });
+
+            // Cart toggle
+            cartToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                cartOverlay.classList.add('active');
+                cartSidebar.classList.add('active');
+            });
+
+            closeCart.addEventListener('click', () => {
+                cartOverlay.classList.remove('active');
+                cartSidebar.classList.remove('active');
+            });
+
+            cartOverlay.addEventListener('click', () => {
+                cartOverlay.classList.remove('active');
+                cartSidebar.classList.remove('active');
+            });
+
+            // Clear cart
+            clearCart.addEventListener('click', clearCartItems);
+
+            // WhatsApp cart
+            cartWhatsapp.addEventListener('click', shareCartViaWhatsapp);
+
+            // Chat cart
+            cartChat.addEventListener('click', startCartChat);
+
+            // WhatsApp seller
+            whatsappSeller.addEventListener('click', shareSellerViaWhatsapp);
+
+            // Chat seller
+            chatSeller.addEventListener('click', startChat);
+            
+            // Share button
+            shareSellerBtn.addEventListener('click', shareSeller);
+            closeShareModal.addEventListener('click', closeShareModalFunc);
+            
+            // Share options
+            shareWhatsapp.addEventListener('click', shareViaWhatsapp);
+            shareFacebook.addEventListener('click', shareViaFacebook);
+            shareTwitter.addEventListener('click', shareViaTwitter);
+            shareCopy.addEventListener('click', copyShareLink);
+            
+            // Copy link button
+            copyLinkBtn.addEventListener('click', copyShareLink);
+            
+            // Close modal when clicking outside
+            shareModal.addEventListener('click', (e) => {
+                if (e.target === shareModal) {
+                    closeShareModalFunc();
+                }
+            });
+        }
+
+        // Make functions globally accessible
+        window.toggleCart = toggleCart;
+        window.removeFromCart = removeFromCart;
+        window.clearSearch = clearSearch;
+    </script>
+</body>
+</html>

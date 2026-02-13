@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Product Details - iBlue Uganda B2B</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.css">
+    <style>
+        /* ===== Mobile-First Base Styles ===== */
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1D4ED8;
+            --primary-light: #3B82F6;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --dark: #1F2937;
+            --dark-gray: #4B5563;
+            --gray: #6B7280;
+            --light-gray: #9CA3AF;
+            --lighter-gray: #E5E7EB;
+            --lightest-gray: #F3F4F6;
+            --white: #FFFFFF;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 12px rgba(0,0,0,0.15);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --touch-target: 48px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.4;
+            color: var(--dark);
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            padding-bottom: 90px;
+        }
+        
+        button, a, .seller-info-card, .action-btn {
+            min-height: var(--touch-target);
+            min-width: var(--touch-target);
+        }
+        
+        button:active, a:active {
+            opacity: 0.7;
+            transform: scale(0.98);
+            transition: all 0.1s;
+        }
+        
+        /* ===== Header ===== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .back-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--lightest-gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        
+        .header-title {
+            flex: 1;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .share-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--lightest-gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .cart-icon {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 20px;
+            text-decoration: none;
+            background: var(--lightest-gray);
+            border-radius: 10px;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--danger);
+            color: white;
+            font-size: 10px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            border: 2px solid var(--white);
+        }
+        
+        /* ===== Image Slider ===== */
+        .image-slider {
+            width: 100%;
+            height: 300px;
+            background: var(--lightest-gray);
+            position: relative;
+        }
+        
+        .swiper {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--lightest-gray);
+        }
+        
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-gray);
+            font-size: 48px;
+            height: 100%;
+        }
+        
+        .image-placeholder span {
+            font-size: 14px;
+            margin-top: 12px;
+        }
+        
+        .swiper-pagination-bullet {
+            width: 8px;
+            height: 8px;
+            background: rgba(255,255,255,0.7);
+        }
+        
+        .swiper-pagination-bullet-active {
+            background: var(--primary);
+        }
+        
+        /* ===== Product Info ===== */
+        .product-info {
+            padding: 20px 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .product-badges {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .product-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--lightest-gray);
+            color: var(--dark-gray);
+        }
+        
+        .product-badge.verified {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .product-badge.wholesale {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .product-badge.urgent {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .product-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        
+        .product-price-section {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .product-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--danger);
+        }
+        
+        .product-price.wholesale {
+            color: var(--primary);
+        }
+        
+        .product-negotiable {
+            font-size: 14px;
+            color: var(--secondary);
+            background: rgba(16, 185, 129, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .product-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--lighter-gray);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--dark-gray);
+        }
+        
+        .meta-item i {
+            width: 20px;
+            color: var(--primary);
+            font-size: 16px;
+        }
+        
+        /* ===== Bulk Pricing ===== */
+        .bulk-pricing {
+            padding: 20px 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title i {
+            color: var(--primary);
+        }
+        
+        .pricing-table {
+            background: var(--lightest-gray);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        
+        .pricing-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .pricing-row:last-child {
+            border-bottom: none;
+        }
+        
+        .pricing-row.highlight {
+            background: rgba(37, 99, 235, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .pricing-quantity {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .pricing-price {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .pricing-save {
+            font-size: 12px;
+            color: var(--secondary);
+            margin-left: 8px;
+        }
+        
+        /* ===== Quantity Selector ===== */
+        .quantity-section {
+            padding: 20px 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .quantity-btn {
+            width: 48px;
+            height: 48px;
+            border: 1px solid var(--lighter-gray);
+            background: var(--white);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quantity-btn:active {
+            background: var(--lightest-gray);
+        }
+        
+        .quantity-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .quantity-input {
+            flex: 1;
+            height: 48px;
+            border: 1px solid var(--lighter-gray);
+            border-radius: var(--radius);
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            -moz-appearance: textfield;
+        }
+        
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .quantity-total {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--lightest-gray);
+            border-radius: var(--radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .total-label {
+            font-size: 16px;
+            color: var(--dark-gray);
+        }
+        
+        .total-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .price-per-unit {
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 4px;
+            text-align: right;
+        }
+        
+        /* ===== Seller Info ===== */
+        .seller-info-section {
+            padding: 20px 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .seller-info-card {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            padding: 12px;
+            background: var(--lightest-gray);
+            border-radius: var(--radius);
+        }
+        
+        .seller-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .seller-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .verified-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--secondary);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            border: 2px solid var(--white);
+        }
+        
+        .seller-details {
+            flex: 1;
+        }
+        
+        .seller-name {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .seller-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--primary);
+            color: white;
+        }
+        
+        .seller-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 4px;
+        }
+        
+        .seller-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--warning);
+            font-size: 12px;
+        }
+        
+        /* ===== Product Description ===== */
+        .description-section {
+            padding: 20px 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .product-description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--dark);
+            white-space: pre-line;
+        }
+        
+        /* ===== Product Attributes ===== */
+        .attributes-section {
+            padding: 20px 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .attributes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .attribute-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .attribute-label {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .attribute-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        /* ===== Location ===== */
+        .location-section {
+            padding: 20px 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--lighter-gray);
+        }
+        
+        .location-map {
+            width: 100%;
+            height: 150px;
+            background: var(--lightest-gray);
+            border-radius: var(--radius);
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        /* ===== Bottom Action Bar ===== */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 1px solid var(--lighter-gray);
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .bottom-action-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .bottom-action-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        
+        .bottom-action-btn.chat {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .bottom-action-btn.cart {
+            background: var(--dark);
+            color: white;
+        }
+        
+        .bottom-action-btn:active {
+            transform: scale(0.97);
+        }
+        
+        /* ===== Share Modal ===== */
+        .share-modal {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            padding: 20px;
+            z-index: 2000;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .share-modal.active {
+            transform: translateY(0);
+        }
+        
+        .share-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .share-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .share-close {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--lightest-gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .share-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .share-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 8px;
+            background: var(--lightest-gray);
+            border-radius: var(--radius);
+            cursor: pointer;
+        }
+        
+        .share-option i {
+            font-size: 24px;
+        }
+        
+        .share-option span {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .share-link {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: var(--lightest-gray);
+            border-radius: var(--radius);
+        }
+        
+        .share-link input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: var(--dark);
+        }
+        
+        .share-link button {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* ===== Cart Sidebar ===== */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .cart-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: var(--white);
+            z-index: 1001;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .cart-sidebar.active {
+            right: 0;
+        }
+        
+        .cart-header {
+            padding: 20px 16px;
+            border-bottom: 1px solid var(--lighter-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+        }
+        
+        .cart-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .close-cart {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--lightest-gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--lightest-gray);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            padding-right: 24px;
+        }
+        
+        .cart-item-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .cart-item-quantity {
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+        
+        .cart-item-remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--gray);
+        }
+        
+        .cart-footer {
+            padding: 16px;
+            border-top: 1px solid var(--lighter-gray);
+            background: var(--white);
+        }
+        
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .cart-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .cart-action-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .cart-action-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        
+        .cart-action-btn.chat {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .cart-action-btn.clear {
+            background: var(--lightest-gray);
+            color: var(--dark-gray);
+        }
+        
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 16px;
+            right: 16px;
+            background: var(--dark);
+            color: white;
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            z-index: 2000;
+            text-align: center;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        /* ===== Loading Skeleton ===== */
+        .skeleton {
+            padding: 20px;
+        }
+        
+        .skeleton-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(90deg, var(--lightest-gray) 25%, var(--lighter-gray) 50%, var(--lightest-gray) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .skeleton-text {
+            height: 20px;
+            background: linear-gradient(90deg, var(--lightest-gray) 25%, var(--lighter-gray) 50%, var(--lightest-gray) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        /* ===== Responsive ===== */
+        @media (min-width: 768px) {
+            .image-slider {
+                height: 400px;
+            }
+            
+            .attributes-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="javascript:history.back()" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="header-title" id="productTitle">Product Details</div>
+        <div class="header-actions">
+            <button class="share-btn" id="shareBtn">
+                <i class="fas fa-share-alt"></i>
+            </button>
+            <a href="#" class="cart-icon" id="cartToggle">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge" id="cartCount">0</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="mainContent">
+        <!-- Image Slider -->
+        <div class="image-slider">
+            <div class="swiper" id="productSwiper">
+                <div class="swiper-wrapper" id="sliderWrapper">
+                    <!-- Images will be inserted here -->
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info" id="productInfo">
+            <!-- Will be populated by JS -->
+        </div>
+
+        <!-- Bulk Pricing -->
+        <div class="bulk-pricing" id="bulkPricing" style="display: none;">
+            <h3 class="section-title">
+                <i class="fas fa-tags"></i> Bulk Pricing
+            </h3>
+            <div class="pricing-table" id="pricingTable">
+                <!-- Will be populated by JS -->
+            </div>
+        </div>
+
+        <!-- Quantity Selector -->
+        <div class="quantity-section">
+            <h3 class="section-title">
+                <i class="fas fa-cubes"></i> Order Quantity
+            </h3>
+            <div class="quantity-selector">
+                <button class="quantity-btn" id="decrementQty">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <input type="number" class="quantity-input" id="quantity" value="1" min="1" max="999">
+                <button class="quantity-btn" id="incrementQty">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="quantity-total">
+                <span class="total-label">Total (B2B Price):</span>
+                <div>
+                    <div class="total-price" id="totalPrice">UGX 0</div>
+                    <div class="price-per-unit" id="pricePerUnit"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seller Info -->
+        <div class="seller-info-section">
+            <h3 class="section-title">
+                <i class="fas fa-store"></i> Seller Information
+            </h3>
+            <a href="#" class="seller-info-card" id="sellerLink">
+                <!-- Will be populated by JS -->
+            </a>
+        </div>
+
+        <!-- Description -->
+        <div class="description-section">
+            <h3 class="section-title">
+                <i class="fas fa-align-left"></i> Product Description
+            </h3>
+            <div class="product-description" id="productDescription">
+                <!-- Will be populated by JS -->
+            </div>
+        </div>
+
+        <!-- Attributes -->
+        <div class="attributes-section" id="attributesSection" style="display: none;">
+            <h3 class="section-title">
+                <i class="fas fa-clipboard-list"></i> Specifications
+            </h3>
+            <div class="attributes-grid" id="attributesGrid">
+                <!-- Will be populated by JS -->
+            </div>
+        </div>
+
+        <!-- Location -->
+        <div class="location-section">
+            <h3 class="section-title">
+                <i class="fas fa-map-marker-alt"></i> Location
+            </h3>
+            <div id="locationDisplay">Loading location...</div>
+            <div class="location-map" id="locationMap">
+                <i class="fas fa-map"></i> Map view coming soon
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Action Bar -->
+    <div class="bottom-bar">
+        <button class="bottom-action-btn whatsapp" id="whatsappBtn">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+        </button>
+        <button class="bottom-action-btn chat" id="chatBtn">
+            <i class="far fa-comment"></i> Chat
+        </button>
+        <button class="bottom-action-btn cart" id="addToCartBtn">
+            <i class="fas fa-cart-plus"></i> Add
+        </button>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="share-modal" id="shareModal">
+        <div class="share-header">
+            <h3 class="share-title">Share this product</h3>
+            <button class="share-close" id="closeShareModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="share-options">
+            <div class="share-option" id="shareWhatsapp">
+                <i class="fab fa-whatsapp" style="color: #25D366;"></i>
+                <span>WhatsApp</span>
+            </div>
+            <div class="share-option" id="shareFacebook">
+                <i class="fab fa-facebook" style="color: #1877F2;"></i>
+                <span>Facebook</span>
+            </div>
+            <div class="share-option" id="shareTwitter">
+                <i class="fab fa-twitter" style="color: #1DA1F2;"></i>
+                <span>Twitter</span>
+            </div>
+            <div class="share-option" id="shareCopy">
+                <i class="fas fa-link"></i>
+                <span>Copy Link</span>
+            </div>
+        </div>
+        
+        <div class="share-link">
+            <input type="text" id="shareLink" readonly value="">
+            <button id="copyLinkBtn">Copy</button>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <div class="cart-title">
+                <i class="fas fa-shopping-cart"></i>
+                Your B2B Cart
+            </div>
+            <button class="close-cart" id="closeCart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="cart-items" id="cartItems">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-basket"></i>
+                <h3>Your cart is empty</h3>
+                <p>Add wholesale items to get started</p>
+            </div>
+        </div>
+        
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">UGX 0</span>
+            </div>
+            <div class="cart-actions">
+                <button class="cart-action-btn whatsapp" id="cartWhatsapp">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button class="cart-action-btn chat" id="cartChat">
+                    <i class="far fa-comment"></i> Chat
+                </button>
+                <button class="cart-action-btn clear" id="clearCart">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Supabase config
+        const SUPABASE_URL = 'https://uufhvmmgwzkxvvdbqemz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc';
+        
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ========== State ==========
+        let currentUser = null;
+        let adId = null;
+        let ad = null;
+        let seller = null;
+        let quantity = 1;
+        
+        // Bulk pricing tiers (example - you can fetch these from database)
+        const bulkTiers = [
+            { min: 1, max: 9, discount: 0 },
+            { min: 10, max: 49, discount: 5 },
+            { min: 50, max: 99, discount: 10 },
+            { min: 100, max: 999, discount: 15 }
+        ];
+        
+        // Cart state
+        let cart = {
+            sellerId: null,
+            sellerName: '',
+            sellerPhone: '',
+            items: []
+        };
+
+        // ========== DOM Elements ==========
+        const productTitle = document.getElementById('productTitle');
+        const productInfo = document.getElementById('productInfo');
+        const productDescription = document.getElementById('productDescription');
+        const sliderWrapper = document.getElementById('sliderWrapper');
+        const sellerLink = document.getElementById('sellerLink');
+        const locationDisplay = document.getElementById('locationDisplay');
+        const bulkPricing = document.getElementById('bulkPricing');
+        const pricingTable = document.getElementById('pricingTable');
+        const attributesSection = document.getElementById('attributesSection');
+        const attributesGrid = document.getElementById('attributesGrid');
+        const quantityInput = document.getElementById('quantity');
+        const decrementBtn = document.getElementById('decrementQty');
+        const incrementBtn = document.getElementById('incrementQty');
+        const totalPrice = document.getElementById('totalPrice');
+        const pricePerUnit = document.getElementById('pricePerUnit');
+        const addToCartBtn = document.getElementById('addToCartBtn');
+        const whatsappBtn = document.getElementById('whatsappBtn');
+        const chatBtn = document.getElementById('chatBtn');
+        
+        // Cart elements
+        const cartCount = document.getElementById('cartCount');
+        const cartItems = document.getElementById('cartItems');
+        const cartFooter = document.getElementById('cartFooter');
+        const cartTotal = document.getElementById('cartTotal');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const cartToggle = document.getElementById('cartToggle');
+        const closeCart = document.getElementById('closeCart');
+        const clearCart = document.getElementById('clearCart');
+        const cartWhatsapp = document.getElementById('cartWhatsapp');
+        const cartChat = document.getElementById('cartChat');
+        
+        // Share modal
+        const shareModal = document.getElementById('shareModal');
+        const shareBtn = document.getElementById('shareBtn');
+        const closeShareModal = document.getElementById('closeShareModal');
+        const shareLink = document.getElementById('shareLink');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        const shareWhatsapp = document.getElementById('shareWhatsapp');
+        const shareFacebook = document.getElementById('shareFacebook');
+        const shareTwitter = document.getElementById('shareTwitter');
+        const shareCopy = document.getElementById('shareCopy');
+        
+        // Toast
+        const toast = document.getElementById('toast');
+
+        // ========== Initialize ==========
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get ad ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            adId = urlParams.get('id');
+            
+            if (!adId) {
+                showToast('No product specified', 'error');
+                setTimeout(() => window.history.back(), 1500);
+                return;
+            }
+
+            await checkAuth();
+            loadCartFromStorage();
+            await loadAdData();
+            setupEventListeners();
+            updateCartUI();
+            
+            // Set share link
+            shareLink.value = window.location.href;
+            
+            // Track view
+            trackAdView(adId);
+        });
+
+        // ========== Authentication ==========
+        async function checkAuth() {
+            try {
+                const { data: { session } } = await sb.auth.getSession();
+                if (session) {
+                    const { data: profile } = await sb
+                        .from('profiles')
+                        .select('id, full_name, phone')
+                        .eq('id', session.user.id)
+                        .single();
+                    
+                    if (profile) {
+                        currentUser = {
+                            id: profile.id,
+                            name: profile.full_name || 'User',
+                            phone: profile.phone
+                        };
+                    }
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
+        }
+
+        // ========== Load Ad Data ==========
+        async function loadAdData() {
+            try {
+                const { data: adData, error } = await sb
+                    .from('ads')
+                    .select(`
+                        *,
+                        categories!ads_category_id_fkey (
+                            id,
+                            name
+                        ),
+                        profiles!ads_seller_id_fkey (
+                            id,
+                            full_name,
+                            phone,
+                            email,
+                            avatar_url,
+                            location,
+                            district,
+                            is_verified,
+                            total_ads,
+                            created_at
+                        )
+                    `)
+                    .eq('id', adId)
+                    .single();
+
+                if (error) throw error;
+
+                if (adData) {
+                    ad = adData;
+                    seller = adData.profiles;
+                    
+                    // Increment view count
+                    await incrementViewCount(adId);
+                    
+                    renderProduct();
+                }
+            } catch (error) {
+                console.error('Error loading ad:', error);
+                showToast('Failed to load product', 'error');
+                loadSampleData();
+            }
+        }
+
+        // ========== Sample Data (for demo) ==========
+        function loadSampleData() {
+            ad = {
+                id: adId,
+                title: "Samsung Galaxy S22 Ultra - Wholesale Lot (10 units)",
+                price: 4500000,
+                currency: "UGX",
+                is_negotiable: true,
+                condition: "new",
+                description: "Bulk wholesale lot of Samsung Galaxy S22 Ultra.\n\n✅ 10 units available\n✅ Brand new sealed boxes\n✅ Original accessories included\n✅ 1 year warranty\n\nPerfect for retailers and phone shops. Minimum order: 1 unit.\n\nBulk discounts available for orders above 5 units.",
+                image_urls: [],
+                view_count: 234,
+                region: "Central",
+                district: "Kampala",
+                specific_location: "Nakawa Business Park",
+                created_at: new Date().toISOString()
+            };
+            
+            seller = {
+                id: "seller123",
+                full_name: "Kampala Electronics Wholesale",
+                phone: "+256700123456",
+                email: "sales@kampalaelectronics.com",
+                location: "Kampala",
+                district: "Central",
+                is_verified: true,
+                total_ads: 156,
+                created_at: new Date().toISOString()
+            };
+            
+            renderProduct();
+        }
+
+        // ========== Render Product ==========
+        function renderProduct() {
+            // Update title
+            productTitle.textContent = ad.title;
+            
+            // Render images
+            renderImages();
+            
+            // Render product info
+            renderProductInfo();
+            
+            // Render description
+            productDescription.textContent = ad.description || 'No description provided.';
+            
+            // Render seller info
+            renderSellerInfo();
+            
+            // Render location
+            renderLocation();
+            
+            // Render bulk pricing
+            renderBulkPricing();
+            
+            // Render attributes
+            renderAttributes();
+            
+            // Update quantity total
+            updateTotalPrice();
+            
+            // Initialize Swiper after images are loaded
+            initSwiper();
+        }
+
+        function renderImages() {
+            const images = ad.image_urls || [];
+            
+            if (images.length === 0) {
+                sliderWrapper.innerHTML = `
+                    <div class="swiper-slide">
+                        <div class="image-placeholder">
+                            <i class="fas fa-box-open"></i>
+                            <span>No image available</span>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            images.forEach(url => {
+                html += `
+                    <div class="swiper-slide">
+                        <img src="${url}" alt="${escapeHtml(ad.title)}" loading="lazy">
+                    </div>
+                `;
+            });
+            
+            sliderWrapper.innerHTML = html;
+        }
+
+        function renderProductInfo() {
+            const badges = [];
+            if (ad.condition === 'new') badges.push('<span class="product-badge">New</span>');
+            if (seller?.is_verified) badges.push('<span class="product-badge verified"><i class="fas fa-check-circle"></i> Verified Seller</span>');
+            if (ad.is_negotiable) badges.push('<span class="product-badge wholesale">B2B</span>');
+            
+            productInfo.innerHTML = `
+                <div class="product-badges">
+                    ${badges.join('')}
+                </div>
+                <h1 class="product-title">${escapeHtml(ad.title)}</h1>
+                <div class="product-price-section">
+                    <div class="product-price wholesale">
+                        UGX ${parseInt(ad.price).toLocaleString()}
+                    </div>
+                    ${ad.is_negotiable ? '<span class="product-negotiable"><i class="fas fa-tag"></i> Negotiable</span>' : ''}
+                </div>
+                <div class="product-meta">
+                    <div class="meta-item">
+                        <i class="far fa-eye"></i>
+                        <span>${ad.view_count || 0} views</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="far fa-clock"></i>
+                        <span>${timeAgo(ad.created_at)}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-box"></i>
+                        <span>${ad.condition || 'N/A'}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSellerInfo() {
+            if (!seller) return;
+            
+            const initials = seller.full_name
+                ?.split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase()
+                .substring(0, 2) || 'BS';
+            
+            const memberSince = seller.created_at ? new Date(seller.created_at).getFullYear() : 'N/A';
+            
+            sellerLink.innerHTML = `
+                <div class="seller-avatar">
+                    ${seller.avatar_url ? 
+                        `<img src="${seller.avatar_url}" alt="${seller.full_name}">` : 
+                        initials
+                    }
+                    ${seller.is_verified ? 
+                        '<span class="verified-badge"><i class="fas fa-check"></i></span>' : 
+                        ''}
+                </div>
+                <div class="seller-details">
+                    <div class="seller-name">
+                        ${escapeHtml(seller.full_name || 'Business Name')}
+                        <span class="seller-badge">B2B</span>
+                    </div>
+                    <div class="seller-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(seller.district || seller.location || 'Uganda')}</span>
+                        <span><i class="fas fa-box"></i> ${seller.total_ads || 0} items</span>
+                    </div>
+                    <div class="seller-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        <span style="color: var(--gray); margin-left: 4px;">(4.5)</span>
+                    </div>
+                </div>
+            `;
+            
+            sellerLink.href = `/seller-profile.html?id=${seller.id}`;
+        }
+
+        function renderLocation() {
+            const location = [
+                ad.district,
+                ad.region,
+                ad.specific_location
+            ].filter(Boolean).join(', ');
+            
+            locationDisplay.textContent = location || 'Location not specified';
+        }
+
+        function renderBulkPricing() {
+            if (!ad.price) return;
+            
+            bulkPricing.style.display = 'block';
+            
+            let html = '';
+            bulkTiers.forEach(tier => {
+                const discountedPrice = ad.price * (1 - tier.discount / 100);
+                const savings = ad.price - discountedPrice;
+                const isHighlighted = quantity >= tier.min && quantity <= tier.max;
+                
+                html += `
+                    <div class="pricing-row ${isHighlighted ? 'highlight' : ''}">
+                        <span class="pricing-quantity">${tier.min}-${tier.max} units</span>
+                        <span>
+                            <span class="pricing-price">UGX ${discountedPrice.toLocaleString()}</span>
+                            ${tier.discount > 0 ? `<span class="pricing-save">Save ${tier.discount}%</span>` : ''}
+                        </span>
+                    </div>
+                `;
+            });
+            
+            pricingTable.innerHTML = html;
+        }
+
+        function renderAttributes() {
+            const attributes = [];
+            
+            if (ad.condition) {
+                attributes.push({ label: 'Condition', value: ad.condition });
+            }
+            if (ad.categories?.name) {
+                attributes.push({ label: 'Category', value: ad.categories.name });
+            }
+            
+            // Add more attributes as needed
+            
+            if (attributes.length === 0) {
+                attributesSection.style.display = 'none';
+                return;
+            }
+            
+            attributesSection.style.display = 'block';
+            
+            let html = '';
+            attributes.forEach(attr => {
+                html += `
+                    <div class="attribute-item">
+                        <span class="attribute-label">${attr.label}</span>
+                        <span class="attribute-value">${attr.value}</span>
+                    </div>
+                `;
+            });
+            
+            attributesGrid.innerHTML = html;
+        }
+
+        // ========== Quantity Functions ==========
+        function updateTotalPrice() {
+            if (!ad || !ad.price) return;
+            
+            const basePrice = ad.price;
+            const discount = getBulkDiscount(quantity);
+            const discountedPrice = basePrice * (1 - discount / 100);
+            const total = discountedPrice * quantity;
+            
+            totalPrice.textContent = `UGX ${total.toLocaleString()}`;
+            pricePerUnit.textContent = `UGX ${discountedPrice.toLocaleString()} per unit`;
+        }
+
+        function getBulkDiscount(qty) {
+            const tier = bulkTiers.find(t => qty >= t.min && qty <= t.max);
+            return tier ? tier.discount : 0;
+        }
+
+        // ========== Cart Functions ==========
+        function loadCartFromStorage() {
+            try {
+                const savedCart = localStorage.getItem('b2bCart');
+                if (savedCart) {
+                    cart = JSON.parse(savedCart);
+                }
+            } catch (error) {
+                console.error('Error loading cart:', error);
+            }
+        }
+
+        function saveCartToStorage() {
+            localStorage.setItem('b2bCart', JSON.stringify(cart));
+            updateCartUI();
+        }
+
+        function addToCart() {
+            if (!ad || !seller) return;
+            
+            // Check if cart belongs to this seller or is empty
+            if (cart.sellerId && cart.sellerId !== seller.id) {
+                if (!confirm('Starting a new cart will clear items from other sellers. Continue?')) {
+                    return;
+                }
+                cart = { sellerId: null, sellerName: '', sellerPhone: '', items: [] };
+            }
+
+            // Set seller info if cart is empty
+            if (!cart.sellerId) {
+                cart.sellerId = seller.id;
+                cart.sellerName = seller.full_name;
+                cart.sellerPhone = seller.phone || '';
+            }
+
+            // Check if item already in cart
+            const existingItem = cart.items.find(item => item.id === ad.id);
+            
+            const discount = getBulkDiscount(quantity);
+            const discountedPrice = ad.price * (1 - discount / 100);
+            const totalPrice = discountedPrice * quantity;
+            
+            if (existingItem) {
+                // Update quantity
+                existingItem.quantity = quantity;
+                existingItem.totalPrice = totalPrice;
+                showToast('Cart updated', 'success');
+            } else {
+                // Add new item
+                cart.items.push({
+                    id: ad.id,
+                    title: ad.title,
+                    price: ad.price,
+                    discountedPrice: discountedPrice,
+                    quantity: quantity,
+                    totalPrice: totalPrice,
+                    image: ad.image_urls?.[0]
+                });
+                showToast('Added to cart', 'success');
+            }
+
+            saveCartToStorage();
+            
+            // Show cart after adding
+            cartOverlay.classList.add('active');
+            cartSidebar.classList.add('active');
+            
+            // Track add to cart engagement
+            trackEngagement('cart');
+        }
+
+        function updateCartUI() {
+            // Update cart count badge
+            const totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            cartCount.textContent = totalItems;
+            cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+            
+            // Render cart items
+            if (cart.items.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-basket"></i>
+                        <h3>Your cart is empty</h3>
+                        <p>Add wholesale items to get started</p>
+                    </div>
+                `;
+                cartFooter.style.display = 'none';
+                return;
+            }
+
+            cartFooter.style.display = 'block';
+            
+            let itemsHtml = '';
+            let total = 0;
+            
+            cart.items.forEach(item => {
+                const itemTotal = item.totalPrice || (item.price * (item.quantity || 1));
+                total += itemTotal;
+                itemsHtml += `
+                    <div class="cart-item">
+                        <div class="cart-item-image">
+                            ${item.image ? 
+                                `<img src="${item.image}" alt="${escapeHtml(item.title)}">` : 
+                                `<i class="fas fa-box"></i>`
+                            }
+                        </div>
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${escapeHtml(item.title)}</div>
+                            <div class="cart-item-price">UGX ${itemTotal.toLocaleString()}</div>
+                            <div class="cart-item-quantity">Quantity: ${item.quantity || 1}</div>
+                        </div>
+                        <button class="cart-item-remove" onclick="removeFromCart(${item.id})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            
+            cartItems.innerHTML = itemsHtml;
+            cartTotal.textContent = `UGX ${total.toLocaleString()}`;
+        }
+
+        function removeFromCart(productId) {
+            cart.items = cart.items.filter(item => item.id !== productId);
+            
+            if (cart.items.length === 0) {
+                cart.sellerId = null;
+                cart.sellerName = '';
+                cart.sellerPhone = '';
+            }
+            
+            saveCartToStorage();
+            showToast('Item removed', 'info');
+        }
+
+        function clearCartItems() {
+            cart = { sellerId: null, sellerName: '', sellerPhone: '', items: [] };
+            saveCartToStorage();
+            showToast('Cart cleared', 'info');
+        }
+
+        // ========== Chat Functions - Integrated with Messages System ==========
+        async function startChat() {
+            if (!currentUser) {
+                // Redirect to login with return URL
+                window.location.href = `/login.html?redirect=/B2B-ad-detail.html?id=${adId}`;
+                return;
+            }
+
+            if (!seller) {
+                showToast('Seller information not available', 'error');
+                return;
+            }
+
+            // Don't allow chatting with yourself
+            if (currentUser.id === seller.id) {
+                showToast('You cannot chat with yourself', 'warning');
+                return;
+            }
+
+            try {
+                showToast('Opening chat...', 'info');
+                
+                // Check if there's already a conversation about this ad
+                const { data: existingMessages, error: searchError } = await sb
+                    .from('messages')
+                    .select('id')
+                    .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${seller.id}),and(sender_id.eq.${seller.id},receiver_id.eq.${currentUser.id})`)
+                    .eq('ad_id', adId)
+                    .order('created_at', { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+
+                if (searchError && searchError.code !== 'PGRST116') {
+                    console.error('Error checking existing messages:', searchError);
+                }
+
+                let messageId;
+                
+                if (existingMessages) {
+                    // Existing conversation found
+                    messageId = existingMessages.id;
+                } else {
+                    // Create first message to start conversation about this ad
+                    const message = `Hello ${seller.full_name}, I'm interested in your product:\n\n*${ad.title}*\nPrice: UGX ${parseInt(ad.price).toLocaleString()}\n\nI'd like to order ${quantity} unit(s). Can you confirm availability and final price?`;
+                    
+                    const { data: newMessage, error: createError } = await sb
+                        .from('messages')
+                        .insert({
+                            sender_id: currentUser.id,
+                            receiver_id: seller.id,
+                            ad_id: adId,
+                            content: message
+                        })
+                        .select()
+                        .single();
+
+                    if (createError) throw createError;
+                    
+                    messageId = newMessage.id;
+
+                    // Track this as a chat engagement
+                    await trackEngagement('chat');
+                }
+
+                // Navigate to messages page with the conversation ID
+                window.location.href = `/messages.html?id=${messageId}`;
+
+            } catch (error) {
+                console.error('Error starting chat:', error);
+                showToast('Failed to start chat. Please try again.', 'error');
+            }
+        }
+
+        async function startCartChat() {
+            if (!currentUser) {
+                window.location.href = `/login.html?redirect=/B2B-ad-detail.html?id=${adId}`;
+                return;
+            }
+
+            if (cart.items.length === 0) {
+                showToast('Cart is empty', 'warning');
+                return;
+            }
+
+            if (!seller) {
+                showToast('Seller information not available', 'error');
+                return;
+            }
+
+            try {
+                showToast('Opening chat with cart items...', 'info');
+                
+                // Create a message with cart contents
+                let cartMessage = `Hello ${seller.full_name}, I'm interested in the following items:\n\n`;
+                
+                cart.items.forEach((item, index) => {
+                    cartMessage += `${index + 1}. ${item.title} - UGX ${(item.price || 0).toLocaleString()} x ${item.quantity || 1}\n`;
+                });
+                
+                const total = cart.items.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0);
+                cartMessage += `\nTotal: UGX ${total.toLocaleString()}`;
+                cartMessage += `\n\nCan we discuss pricing and availability?`;
+
+                // Create a new message (without ad_id since it's multiple items)
+                const { data: newMessage, error: createError } = await sb
+                    .from('messages')
+                    .insert({
+                        sender_id: currentUser.id,
+                        receiver_id: seller.id,
+                        content: cartMessage
+                    })
+                    .select()
+                    .single();
+
+                if (createError) throw createError;
+
+                // Track engagement
+                await trackEngagement('chat');
+
+                // Navigate to messages
+                window.location.href = `/messages.html?id=${newMessage.id}`;
+
+            } catch (error) {
+                console.error('Error starting cart chat:', error);
+                showToast('Failed to start chat. Please try again.', 'error');
+            }
+        }
+
+        // ========== WhatsApp Functions ==========
+        function contactSellerViaWhatsapp() {
+            if (!seller || !seller.phone) {
+                showToast('Seller phone not available', 'error');
+                return;
+            }
+            
+            const phone = seller.phone.replace(/\s+/g, '');
+            const text = `Hello *${seller.full_name}*, I'm interested in your product:\n\n*${ad.title}*\nPrice: UGX ${parseInt(ad.price).toLocaleString()}\n\nI'd like to order ${quantity} unit(s). Can you confirm availability and final price?`;
+            
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+            
+            // Track WhatsApp engagement
+            trackEngagement('whatsapp');
+        }
+
+        function shareCartViaWhatsapp() {
+            if (cart.items.length === 0) {
+                showToast('Cart is empty', 'warning');
+                return;
+            }
+
+            const phone = cart.sellerPhone?.replace(/\s+/g, '') || '';
+            
+            if (!phone) {
+                showToast('Seller phone not available', 'error');
+                return;
+            }
+
+            let message = `Hello *${cart.sellerName}*, I'm interested in the following items:\n\n`;
+            
+            cart.items.forEach((item, index) => {
+                message += `${index + 1}. *${item.title}* - UGX ${(item.price || 0).toLocaleString()} x ${item.quantity || 1}\n`;
+            });
+            
+            const total = cart.items.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0);
+            message += `\n*Total: UGX ${total.toLocaleString()}*`;
+            message += `\n\nCan we discuss pricing and availability?`;
+
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            // Track WhatsApp engagement
+            trackEngagement('whatsapp');
+        }
+
+        // ========== View Tracking ==========
+        async function trackAdView(adId) {
+            try {
+                let userIp = 'unknown';
+                try {
+                    const ipResponse = await fetch('https://api.ipify.org?format=json');
+                    if (ipResponse.ok) {
+                        const ipData = await ipResponse.json();
+                        userIp = ipData.ip || 'unknown';
+                    }
+                } catch (ipError) {}
+                
+                const userAgent = navigator.userAgent || 'unknown';
+                const viewerId = currentUser?.id || null;
+                
+                await sb
+                    .from('ad_views')
+                    .insert({
+                        ad_id: parseInt(adId),
+                        viewer_id: viewerId,
+                        ip_address: userIp,
+                        user_agent: userAgent,
+                        viewed_at: new Date().toISOString()
+                    });
+                
+            } catch (error) {
+                console.error('View tracking failed:', error);
+            }
+        }
+
+        async function incrementViewCount(adId) {
+            try {
+                await sb.rpc('increment_ad_view_count', {
+                    ad_id_param: parseInt(adId)
+                });
+            } catch (error) {
+                console.error('Error incrementing view count:', error);
+            }
+        }
+
+        // Track engagement
+        async function trackEngagement(action) {
+            if (!currentUser || !ad) return;
+            
+            try {
+                await sb
+                    .from('ad_engagement')
+                    .insert({
+                        ad_id: parseInt(adId),
+                        user_id: currentUser.id,
+                        action: action,
+                        ip_address: await getClientIP(),
+                        user_agent: navigator.userAgent
+                    });
+            } catch (error) {
+                console.warn('Failed to track engagement:', error);
+            }
+        }
+
+        // Helper function to get client IP
+        async function getClientIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.ip;
+                }
+            } catch (error) {
+                console.warn('Could not fetch IP:', error);
+            }
+            return 'unknown';
+        }
+
+        // ========== Share Functions ==========
+        function openShareModal() {
+            shareModal.classList.add('active');
+        }
+
+        function closeShareModalFunc() {
+            shareModal.classList.remove('active');
+        }
+
+        function shareViaWhatsapp() {
+            const text = `Check out this product on iBlue Uganda B2B:\n\n*${ad.title}*\nPrice: UGX ${parseInt(ad.price).toLocaleString()}\n\n${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+            trackEngagement('share');
+            closeShareModalFunc();
+        }
+
+        function shareViaFacebook() {
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+            window.open(url, '_blank');
+            trackEngagement('share');
+            closeShareModalFunc();
+        }
+
+        function shareViaTwitter() {
+            const text = `Check out ${ad.title} on iBlue Uganda B2B`;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+            window.open(url, '_blank');
+            trackEngagement('share');
+            closeShareModalFunc();
+        }
+
+        function copyShareLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showToast('Link copied to clipboard!', 'success');
+                trackEngagement('share');
+                closeShareModalFunc();
+            }).catch(() => {
+                showToast('Failed to copy link', 'error');
+            });
+        }
+
+        // ========== Utility Functions ==========
+        function timeAgo(dateString) {
+            if (!dateString) return 'recent';
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            if (seconds < 60) return 'just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+            return `${Math.floor(seconds / 86400)}d ago`;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showToast(message, type = 'info') {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            // Set color based on type
+            if (type === 'error') {
+                toast.style.background = '#EF4444';
+            } else if (type === 'success') {
+                toast.style.background = '#10B981';
+            } else if (type === 'warning') {
+                toast.style.background = '#F59E0B';
+            } else {
+                toast.style.background = '#1F2937';
+            }
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                // Reset color after hiding
+                setTimeout(() => {
+                    toast.style.background = '#1F2937';
+                }, 300);
+            }, 3000);
+        }
+
+        function initSwiper() {
+            new Swiper('#productSwiper', {
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true
+                },
+                loop: true,
+                speed: 500
+            });
+        }
+
+        // ========== Event Listeners ==========
+        function setupEventListeners() {
+            // Quantity buttons
+            decrementBtn.addEventListener('click', () => {
+                const newVal = parseInt(quantityInput.value) - 1;
+                if (newVal >= 1) {
+                    quantityInput.value = newVal;
+                    quantity = newVal;
+                    updateTotalPrice();
+                    renderBulkPricing();
+                }
+            });
+
+            incrementBtn.addEventListener('click', () => {
+                const newVal = parseInt(quantityInput.value) + 1;
+                if (newVal <= 999) {
+                    quantityInput.value = newVal;
+                    quantity = newVal;
+                    updateTotalPrice();
+                    renderBulkPricing();
+                }
+            });
+
+            quantityInput.addEventListener('change', () => {
+                let val = parseInt(quantityInput.value);
+                if (isNaN(val) || val < 1) val = 1;
+                if (val > 999) val = 999;
+                quantityInput.value = val;
+                quantity = val;
+                updateTotalPrice();
+                renderBulkPricing();
+            });
+
+            // Cart buttons
+            addToCartBtn.addEventListener('click', addToCart);
+            
+            cartToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                cartOverlay.classList.add('active');
+                cartSidebar.classList.add('active');
+            });
+
+            closeCart.addEventListener('click', () => {
+                cartOverlay.classList.remove('active');
+                cartSidebar.classList.remove('active');
+            });
+
+            cartOverlay.addEventListener('click', () => {
+                cartOverlay.classList.remove('active');
+                cartSidebar.classList.remove('active');
+            });
+
+            clearCart.addEventListener('click', clearCartItems);
+            cartWhatsapp.addEventListener('click', shareCartViaWhatsapp);
+            cartChat.addEventListener('click', () => {
+                if (cart.items.length === 0) {
+                    showToast('Cart is empty', 'warning');
+                    return;
+                }
+                startCartChat();
+            });
+
+            // Contact buttons
+            whatsappBtn.addEventListener('click', contactSellerViaWhatsapp);
+            chatBtn.addEventListener('click', startChat);
+
+            // Share button
+            shareBtn.addEventListener('click', openShareModal);
+            closeShareModal.addEventListener('click', closeShareModalFunc);
+            
+            shareWhatsapp.addEventListener('click', shareViaWhatsapp);
+            shareFacebook.addEventListener('click', shareViaFacebook);
+            shareTwitter.addEventListener('click', shareViaTwitter);
+            shareCopy.addEventListener('click', copyShareLink);
+            
+            copyLinkBtn.addEventListener('click', copyShareLink);
+            
+            shareModal.addEventListener('click', (e) => {
+                if (e.target === shareModal) {
+                    closeShareModalFunc();
+                }
+            });
+        }
+
+        // Make functions global
+        window.removeFromCart = removeFromCart;
+    </script>
+</body>
+</html>
