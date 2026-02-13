@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2788760068612820"
-     crossorigin="anonymous"></script>
   <meta charset="UTF-8" />
   <!-- Ultra-responsive viewport – works on all mobile screens -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
@@ -123,6 +121,11 @@
     button:active {
       transform: scale(0.98);
       box-shadow: 0 5px 12px -6px rgba(11, 79, 108, 0.5);
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
     }
 
     /* google button – elegant, clean, mobile contrast */
@@ -268,17 +271,22 @@
       // --- Default redirect after login (dashboard) ---
       const DEFAULT_REDIRECT = 'https://iblueug.github.io/dashboard.html';
 
-      // --- Helper to validate and get safe redirect URL ---
+      // --- FIXED: Helper to validate and get safe redirect URL ---
       function getSafeRedirect(redirectTo) {
+        // First priority: if a redirect URL was passed directly
         if (redirectTo && ALLOWED_REDIRECTS.includes(redirectTo)) {
+          sessionStorage.removeItem('postLoginRedirect'); // Clean up
           return redirectTo;
         }
-        // Check if there's a stored redirect from before login
+        
+        // Second priority: check sessionStorage for stored redirect
         const storedRedirect = sessionStorage.getItem('postLoginRedirect');
         if (storedRedirect && ALLOWED_REDIRECTS.includes(storedRedirect)) {
-          sessionStorage.removeItem('postLoginRedirect');
+          sessionStorage.removeItem('postLoginRedirect'); // Clean up after reading
           return storedRedirect;
         }
+        
+        // Finally: fallback to dashboard
         return DEFAULT_REDIRECT;
       }
 
@@ -317,7 +325,7 @@
         }
       }
 
-      // --- Email/Password login with validation & mobile UX ---
+      // --- FIXED: Email/Password login with validation & mobile UX ---
       async function loginHandler(e) {
         e.preventDefault(); // avoid any form-like behaviour
         
@@ -363,8 +371,9 @@
           // success
           showMessage('✓ Success! Redirecting...', 'success');
           
-          // Get safe redirect URL and navigate
+          // FIXED: Get the redirect URL (will check sessionStorage automatically)
           const redirectUrl = getSafeRedirect();
+          
           setTimeout(() => {
             window.location.href = redirectUrl;
           }, 1000);
@@ -385,7 +394,7 @@
         googleBtn.style.opacity = '0.7';
         
         try {
-          // Get the intended redirect destination
+          // FIXED: Get the intended redirect destination from sessionStorage
           const redirectTo = getSafeRedirect();
           
           const { data, error } = await sb.auth.signInWithOAuth({
