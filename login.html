@@ -84,7 +84,6 @@
       -webkit-text-fill-color: #0a2e3a;
     }
 
-    /* Remember me checkbox container */
     .remember-me {
       display: flex;
       align-items: center;
@@ -140,27 +139,65 @@
       transform: none;
     }
 
-    .google-btn {
-      background: white;
-      color: #1f2e3a;
-      border: 1.5px solid #d4dee6;
-      box-shadow: none;
-      margin-top: 0.4rem;
-      gap: 12px;
-      font-weight: 500;
+    /* Links section */
+    .auth-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.2rem;
+      font-size: 0.95rem;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .google-btn:active {
-      background: #f4f8fc;
-      border-color: #0B4F6C;
+    .auth-links a {
+      color: #0B4F6C;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 0;
+      transition: color 0.2s;
+      border-bottom: 2px solid transparent;
     }
 
-    .google-icon {
-      width: 20px;
-      height: 20px;
-      display: inline-block;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="%23FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="%2323A1F1" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="%2334A853" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="%23EA4335" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>') no-repeat center;
-      background-size: contain;
+    .auth-links a:hover {
+      color: #052a38;
+      border-bottom-color: #0B4F6C;
+    }
+
+    .auth-links .register-link {
+      background: rgba(11, 79, 108, 0.08);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-weight: 600;
+    }
+
+    .auth-links .register-link:hover {
+      background: rgba(11, 79, 108, 0.15);
+      border-bottom: none;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 1.5rem 0 0.5rem;
+      color: #7a8e9e;
+      font-size: 0.85rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .divider::before {
+      margin-right: 0.5rem;
+    }
+
+    .divider::after {
+      margin-left: 0.5rem;
     }
 
     .msg {
@@ -215,7 +252,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    button:focus-visible, input:focus-visible {
+    button:focus-visible, input:focus-visible, a:focus-visible {
       outline: 3px solid #0B4F6C;
       outline-offset: 2px;
     }
@@ -229,7 +266,6 @@
     <input id="email" type="email" placeholder="Email address" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" />
     <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
     
-    <!-- Remember Me Checkbox -->
     <div class="remember-me">
       <input type="checkbox" id="rememberMe" checked>
       <label for="rememberMe">Remember me on this device</label>
@@ -237,10 +273,13 @@
     
     <button id="loginBtn">Sign in →</button>
     
-    <button id="googleBtn" class="google-btn">
-      <span class="google-icon" aria-hidden="true"></span>
-      <span>Continue with Google</span>
-    </button>
+    <!-- Auth Links: Register and Forgot Password -->
+    <div class="auth-links">
+      <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+      <a href="register.html" class="register-link">Create account →</a>
+    </div>
+    
+    <div class="divider">secure login</div>
     
     <div id="msg" class="msg" role="status"></div>
   </div>
@@ -258,11 +297,11 @@
           flowType: 'pkce',
           autoRefreshToken: true,
           detectSessionInUrl: true,
-          persistSession: true // Important for remember me
+          persistSession: true
         } 
       });
 
-      // Allowed redirects
+      // Allowed redirect URLs
       const ALLOWED_REDIRECTS = [
         'https://iblueug.github.io/dashboard.html',
         'https://iblueug.github.io/messages.html',
@@ -278,7 +317,6 @@
       // DOM elements
       const msgEl = document.getElementById('msg');
       const loginBtn = document.getElementById('loginBtn');
-      const googleBtn = document.getElementById('googleBtn');
       const emailInput = document.getElementById('email');
       const passwordInput = document.getElementById('password');
       const rememberMeCheckbox = document.getElementById('rememberMe');
@@ -296,62 +334,34 @@
         }
       }
 
-      // --- Safe redirect function (FIXED) ---
-      function getSafeRedirect(redirectTo) {
-        // Check direct parameter
-        if (redirectTo && ALLOWED_REDIRECTS.includes(redirectTo)) {
-          sessionStorage.removeItem('postLoginRedirect');
-          return redirectTo;
+      // --- Get intended redirect ---
+      function getIntendedRedirect() {
+        // Priority 1: URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlRedirect = urlParams.get('redirect');
+        
+        if (urlRedirect && ALLOWED_REDIRECTS.includes(urlRedirect)) {
+          return urlRedirect;
         }
         
-        // Check sessionStorage
-        const storedRedirect = sessionStorage.getItem('postLoginRedirect');
-        if (storedRedirect && ALLOWED_REDIRECTS.includes(storedRedirect)) {
-          sessionStorage.removeItem('postLoginRedirect');
-          return storedRedirect;
+        // Priority 2: sessionStorage
+        const sessionRedirect = sessionStorage.getItem('intendedPage');
+        if (sessionRedirect && ALLOWED_REDIRECTS.includes(sessionRedirect)) {
+          sessionStorage.removeItem('intendedPage');
+          return sessionRedirect;
         }
         
-        // Check localStorage (for remember me persistence)
-        const savedRedirect = localStorage.getItem('postLoginRedirect');
-        if (savedRedirect && ALLOWED_REDIRECTS.includes(savedRedirect)) {
-          localStorage.removeItem('postLoginRedirect');
-          return savedRedirect;
+        // Priority 3: localStorage
+        const localRedirect = localStorage.getItem('intendedPage');
+        if (localRedirect && ALLOWED_REDIRECTS.includes(localRedirect)) {
+          localStorage.removeItem('intendedPage');
+          return localRedirect;
         }
         
         return DEFAULT_REDIRECT;
       }
 
-      // --- Check for redirect parameter in URL ---
-      function checkForRedirectParam() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirect = urlParams.get('redirect');
-        if (redirect && ALLOWED_REDIRECTS.includes(redirect)) {
-          // Store based on remember me preference
-          if (rememberMeCheckbox.checked) {
-            localStorage.setItem('postLoginRedirect', redirect);
-          } else {
-            sessionStorage.setItem('postLoginRedirect', redirect);
-          }
-          // Clean URL
-          const cleanUrl = window.location.pathname;
-          history.replaceState({}, document.title, cleanUrl);
-        }
-      }
-
-      // --- Load saved email if "Remember Me" was checked ---
-      function loadSavedCredentials() {
-        const savedEmail = localStorage.getItem('savedEmail');
-        const rememberMe = localStorage.getItem('rememberMe') === 'true';
-        
-        if (savedEmail && rememberMe) {
-          emailInput.value = savedEmail;
-          rememberMeCheckbox.checked = true;
-        } else {
-          rememberMeCheckbox.checked = false;
-        }
-      }
-
-      // --- Save credentials based on "Remember Me" ---
+      // --- Save credentials ---
       function saveCredentials(email) {
         if (rememberMeCheckbox.checked) {
           localStorage.setItem('savedEmail', email);
@@ -362,14 +372,41 @@
         }
       }
 
-      // --- Email/Password login with Remember Me ---
+      // --- Load saved email ---
+      function loadSavedCredentials() {
+        const savedEmail = localStorage.getItem('savedEmail');
+        const rememberMe = localStorage.getItem('rememberMe') === 'true';
+        
+        if (savedEmail && rememberMe) {
+          emailInput.value = savedEmail;
+          rememberMeCheckbox.checked = true;
+        }
+      }
+
+      // --- Process redirect parameter ---
+      function processUrlRedirect() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get('redirect');
+        
+        if (redirect && ALLOWED_REDIRECTS.includes(redirect)) {
+          if (rememberMeCheckbox.checked) {
+            localStorage.setItem('intendedPage', redirect);
+          } else {
+            sessionStorage.setItem('intendedPage', redirect);
+          }
+          
+          const cleanUrl = window.location.pathname;
+          history.replaceState({}, document.title, cleanUrl);
+        }
+      }
+
+      // --- Login handler ---
       async function loginHandler(e) {
         e.preventDefault();
         
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
         
-        // Validation
         if (!email) {
           showMessage('📧 Email is required', 'error');
           emailInput.focus();
@@ -386,10 +423,8 @@
           return;
         }
 
-        // Save credentials if remember me is checked
         saveCredentials(email);
 
-        // Disable button
         loginBtn.disabled = true;
         loginBtn.textContent = 'Signing in...';
 
@@ -406,11 +441,8 @@
             return;
           }
 
-          // Success
+          const redirectUrl = getIntendedRedirect();
           showMessage('✓ Success! Redirecting...', 'success');
-          
-          // Get redirect URL and navigate
-          const redirectUrl = getSafeRedirect();
           
           setTimeout(() => {
             window.location.href = redirectUrl;
@@ -423,115 +455,8 @@
         }
       }
 
-      // --- FIXED: Google OAuth with proper redirect handling ---
-      async function googleSignInHandler(e) {
-        e.preventDefault();
-        
-        googleBtn.disabled = true;
-        googleBtn.style.opacity = '0.7';
-        
-        try {
-          // Get the intended redirect
-          const redirectTo = getSafeRedirect();
-          
-          // Store it in BOTH storages to ensure it survives OAuth
-          if (rememberMeCheckbox.checked) {
-            localStorage.setItem('postLoginRedirect', redirectTo);
-            localStorage.setItem('googleOAuthPending', 'true');
-          } else {
-            sessionStorage.setItem('postLoginRedirect', redirectTo);
-            sessionStorage.setItem('googleOAuthPending', 'true');
-          }
-          
-          // IMPORTANT: Set the redirectTo to your login page
-          // This ensures we come back to handle the final redirect
-          const { data, error } = await sb.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-              redirectTo: window.location.href, // Return to this page
-              queryParams: {
-                access_type: 'offline',
-                prompt: 'consent',
-              }
-            }
-          });
-          
-          if (error) {
-            showMessage(error.message, 'error');
-            googleBtn.disabled = false;
-            googleBtn.style.opacity = '1';
-            sessionStorage.removeItem('googleOAuthPending');
-            localStorage.removeItem('googleOAuthPending');
-          }
-          // If success, Supabase redirects automatically
-          
-        } catch (err) {
-          showMessage('Google sign‑in failed', 'error');
-          googleBtn.disabled = false;
-          googleBtn.style.opacity = '1';
-          sessionStorage.removeItem('googleOAuthPending');
-          localStorage.removeItem('googleOAuthPending');
-        }
-      }
-
-      // --- Handle OAuth return (FIXED for Google) ---
-      async function handleOAuthReturn() {
-        // Check if we're returning from OAuth
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const hasAuth = window.location.hash && 
-                       (window.location.hash.includes('access_token') || 
-                        window.location.hash.includes('error'));
-        
-        if (hasAuth) {
-          showMessage('Completing Google sign-in...', 'info');
-          
-          try {
-            // Let Supabase process the OAuth callback
-            const { data, error } = await sb.auth.getSession();
-            
-            if (error) {
-              showMessage(error.message, 'error');
-              return;
-            }
-            
-            if (data && data.session) {
-              // Check for stored redirect
-              let redirectUrl = sessionStorage.getItem('postLoginRedirect') || 
-                               localStorage.getItem('postLoginRedirect') ||
-                               DEFAULT_REDIRECT;
-              
-              // Validate redirect
-              if (!ALLOWED_REDIRECTS.includes(redirectUrl)) {
-                redirectUrl = DEFAULT_REDIRECT;
-              }
-              
-              // Clean up
-              sessionStorage.removeItem('postLoginRedirect');
-              sessionStorage.removeItem('googleOAuthPending');
-              localStorage.removeItem('postLoginRedirect');
-              localStorage.removeItem('googleOAuthPending');
-              
-              // Save email from Google if remember me is checked
-              if (rememberMeCheckbox.checked && data.session.user.email) {
-                localStorage.setItem('savedEmail', data.session.user.email);
-              }
-              
-              showMessage('✓ Google sign-in successful! Redirecting...', 'success');
-              
-              // Redirect
-              setTimeout(() => {
-                window.location.href = redirectUrl;
-              }, 1000);
-            }
-          } catch (e) {
-            console.error('OAuth handling error:', e);
-            showMessage('Error completing Google sign-in', 'error');
-          }
-        }
-      }
-
-      // --- Session check with Remember Me support ---
-      async function checkActiveSession() {
+      // --- Check existing session ---
+      async function checkExistingSession() {
         try {
           const { data, error } = await sb.auth.getSession();
           
@@ -541,20 +466,8 @@
           }
           
           if (data && data.session) {
-            // Check if this was from Google OAuth
-            const isGoogleOAuth = sessionStorage.getItem('googleOAuthPending') || 
-                                 localStorage.getItem('googleOAuthPending');
-            
-            if (isGoogleOAuth) {
-              // Let handleOAuthReturn deal with it
-              return;
-            }
-            
-            // Normal session - redirect to intended page
-            const redirectUrl = getSafeRedirect();
-            
-            // Only redirect if we're not already on the redirect page
-            if (!window.location.pathname.includes('login')) {
+            const redirectUrl = getIntendedRedirect();
+            if (!window.location.hash) {
               window.location.replace(redirectUrl);
             }
           }
@@ -566,23 +479,13 @@
       // --- Initialize ---
       document.addEventListener('DOMContentLoaded', () => {
         loadSavedCredentials();
-        checkForRedirectParam();
-        
-        // Check if returning from OAuth
-        if (window.location.hash && 
-            (window.location.hash.includes('access_token') || 
-             window.location.hash.includes('error'))) {
-          handleOAuthReturn();
-        } else {
-          checkActiveSession();
-        }
+        processUrlRedirect();
+        checkExistingSession();
       });
 
       // Event listeners
       loginBtn.addEventListener('click', loginHandler);
-      googleBtn.addEventListener('click', googleSignInHandler);
 
-      // Enter key handlers
       emailInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -597,12 +500,9 @@
         }
       });
 
-      // Re-enable buttons on page show
       window.addEventListener('pageshow', function() {
         loginBtn.disabled = false;
         loginBtn.textContent = 'Sign in →';
-        googleBtn.disabled = false;
-        googleBtn.style.opacity = '1';
       });
 
     })();
