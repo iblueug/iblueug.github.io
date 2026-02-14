@@ -702,201 +702,6 @@
             padding: 4px 8px;
         }
         
-        /* Cart Sidebar */
-        .cart-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            visibility: hidden;
-            opacity: 0;
-            transition: all 0.3s;
-        }
-        
-        .cart-overlay.active {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        .cart-sidebar {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: var(--white);
-            z-index: 1001;
-            transition: right 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .cart-sidebar.active {
-            right: 0;
-        }
-        
-        .cart-header {
-            padding: 20px 16px;
-            border-bottom: 1px solid var(--lighter-gray);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--white);
-        }
-        
-        .cart-title {
-            font-size: 20px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .close-cart {
-            width: 44px;
-            height: 44px;
-            border: none;
-            background: var(--lightest-gray);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gray);
-            font-size: 20px;
-            cursor: pointer;
-        }
-        
-        .cart-items {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-        }
-        
-        .cart-item {
-            display: flex;
-            gap: 12px;
-            padding: 16px;
-            background: var(--lightest-gray);
-            border-radius: var(--radius);
-            margin-bottom: 12px;
-            position: relative;
-        }
-        
-        .cart-item-image {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            background: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gray);
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-        
-        .cart-item-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        
-        .cart-item-info {
-            flex: 1;
-        }
-        
-        .cart-item-title {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            padding-right: 24px;
-        }
-        
-        .cart-item-price {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--danger);
-        }
-        
-        .cart-item-remove {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 32px;
-            height: 32px;
-            border: none;
-            background: var(--white);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gray);
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-        }
-        
-        .empty-cart {
-            text-align: center;
-            padding: 48px 20px;
-            color: var(--gray);
-        }
-        
-        .cart-footer {
-            padding: 16px;
-            border-top: 1px solid var(--lighter-gray);
-            background: var(--white);
-        }
-        
-        .cart-total {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            font-size: 18px;
-            font-weight: 700;
-        }
-        
-        .cart-actions {
-            display: flex;
-            gap: 12px;
-        }
-        
-        .cart-action-btn {
-            flex: 1;
-            padding: 16px;
-            border: none;
-            border-radius: var(--radius);
-            font-weight: 600;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-        
-        .cart-action-btn.whatsapp {
-            background: #25D366;
-            color: white;
-        }
-        
-        .cart-action-btn.chat {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .cart-action-btn.clear {
-            background: var(--lightest-gray);
-            color: var(--dark-gray);
-        }
-        
         .toast {
             position: fixed;
             bottom: 100px;
@@ -972,7 +777,7 @@
             <button class="share-btn" id="shareSellerBtn">
                 <i class="fas fa-share-alt"></i>
             </button>
-            <a href="#" class="cart-icon" id="cartToggle">
+            <a href="/cart.html" class="cart-icon" id="cartLink">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="cart-badge" id="cartCount">0</span>
             </a>
@@ -1010,7 +815,7 @@
                 placeholder="Search products..."
                 autocomplete="off"
             >
-            <button class="clear-search" id="clearSearchBtn" onclick="clearSearch()">
+            <button class="clear-search" id="clearSearchBtn">
                 <i class="fas fa-times"></i>
             </button>
             <button class="search-btn" id="searchBtn">
@@ -1087,50 +892,11 @@
         </div>
     </div>
 
-    <!-- Cart Sidebar -->
-    <div class="cart-overlay" id="cartOverlay"></div>
-    <div class="cart-sidebar" id="cartSidebar">
-        <div class="cart-header">
-            <div class="cart-title">
-                <i class="fas fa-shopping-cart"></i>
-                Your Cart
-            </div>
-            <button class="close-cart" id="closeCart">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="cart-items" id="cartItems">
-            <div class="empty-cart">
-                <i class="fas fa-shopping-basket"></i>
-                <h3>Your cart is empty</h3>
-                <p>Add items from this seller to start</p>
-            </div>
-        </div>
-        
-        <div class="cart-footer" id="cartFooter" style="display: none;">
-            <div class="cart-total">
-                <span>Total:</span>
-                <span id="cartTotal">UGX 0</span>
-            </div>
-            <div class="cart-actions">
-                <button class="cart-action-btn whatsapp" id="cartWhatsapp">
-                    <i class="fab fa-whatsapp"></i> WhatsApp
-                </button>
-                <button class="cart-action-btn chat" id="cartChat">
-                    <i class="far fa-comment"></i> Chat
-                </button>
-                <button class="cart-action-btn clear" id="clearCart">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/cart-utils.js"></script>
     <script>
         // Supabase config
         const SUPABASE_URL = 'https://uufhvmmgwzkxvvdbqemz.supabase.co';
@@ -1147,14 +913,6 @@
         let categories = [];
         let currentCategory = 'all';
         let searchQuery = '';
-        
-        // Cart state (localStorage)
-        let cart = {
-            sellerId: null,
-            sellerName: '',
-            sellerPhone: '',
-            items: []
-        };
 
         // ========== DOM Elements ==========
         const sellerProfile = document.getElementById('sellerProfile');
@@ -1168,16 +926,7 @@
         const searchResultsInfo = document.getElementById('searchResultsInfo');
         const searchResultsText = document.getElementById('searchResultsText');
         const cartCount = document.getElementById('cartCount');
-        const cartItems = document.getElementById('cartItems');
-        const cartFooter = document.getElementById('cartFooter');
-        const cartTotal = document.getElementById('cartTotal');
-        const cartOverlay = document.getElementById('cartOverlay');
-        const cartSidebar = document.getElementById('cartSidebar');
-        const cartToggle = document.getElementById('cartToggle');
-        const closeCart = document.getElementById('closeCart');
-        const clearCart = document.getElementById('clearCart');
-        const cartWhatsapp = document.getElementById('cartWhatsapp');
-        const cartChat = document.getElementById('cartChat');
+        const cartLink = document.getElementById('cartLink');
         const whatsappSeller = document.getElementById('whatsappSeller');
         const chatSeller = document.getElementById('chatSeller');
         const toast = document.getElementById('toast');
@@ -1206,14 +955,21 @@
             }
 
             await checkAuth();
-            loadCartFromStorage();
+            updateCartCount();
             await loadSellerData();
             await loadSellerProducts();
             setupEventListeners();
-            updateCartUI();
             
             // Set share link
             shareLink.value = window.location.href;
+            
+            // Listen for cart updates from other tabs
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'b2bCart') {
+                    updateCartCount();
+                    renderProducts(); // Re-render to update button states
+                }
+            });
         });
 
         // ========== Authentication ==========
@@ -1240,6 +996,14 @@
             }
         }
 
+        // ========== Cart Functions ==========
+        function updateCartCount() {
+            const cart = getCart();
+            const totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            cartCount.textContent = totalItems;
+            cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+        }
+
         // ========== Load Seller Data ==========
         async function loadSellerData() {
             try {
@@ -1264,12 +1028,6 @@
                     seller.active_ads = activeAds || 0;
                     
                     renderSellerProfile();
-                    
-                    // Check if cart belongs to this seller or is empty
-                    if (cart.sellerId && cart.sellerId !== sellerId) {
-                        cart = { sellerId: null, sellerName: '', sellerPhone: '', items: [] };
-                        saveCartToStorage();
-                    }
                 }
             } catch (error) {
                 console.error('Error loading seller:', error);
@@ -1509,6 +1267,8 @@
         }
 
         function renderProducts() {
+            const cart = getCart();
+            
             if (filteredProducts.length === 0) {
                 if (searchQuery) {
                     productsGrid.innerHTML = `
@@ -1547,7 +1307,7 @@
                 html += `
                     <div class="product-card" data-product-id="${product.id}" onclick="window.location.href='B2B-ad-detail.html?id=${product.id}'">
                         ${product.condition === 'new' ? '<span class="product-badge">NEW</span>' : ''}
-                        <button class="add-to-cart-btn ${isInCart ? 'added' : ''}" onclick="event.stopPropagation(); window.toggleCart(${product.id})">
+                        <button class="add-to-cart-btn ${isInCart ? 'added' : ''}" onclick="event.stopPropagation(); toggleCartItem(${product.id}, '${escapeHtml(product.title)}', ${product.price || 0}, '${escapeHtml(product.currency || 'UGX')}', '${escapeHtml(imageUrl)}')">
                             <i class="fas ${isInCart ? 'fa-check' : 'fa-plus'}"></i>
                         </button>
                         <div class="product-image">
@@ -1575,32 +1335,15 @@
         }
 
         // ========== Cart Functions ==========
-        function loadCartFromStorage() {
-            try {
-                const savedCart = localStorage.getItem('b2bCart');
-                if (savedCart) {
-                    cart = JSON.parse(savedCart);
-                }
-            } catch (error) {
-                console.error('Error loading cart:', error);
-            }
-        }
-
-        function saveCartToStorage() {
-            localStorage.setItem('b2bCart', JSON.stringify(cart));
-            updateCartUI();
-        }
-
-        function toggleCart(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-
+        function toggleCartItem(productId, title, price, currency, image) {
+            const cart = getCart();
+            
             // Check if cart belongs to this seller or is empty
             if (cart.sellerId && cart.sellerId !== sellerId) {
                 if (!confirm('Starting a new cart will clear items from other sellers. Continue?')) {
                     return;
                 }
-                cart = { sellerId: null, sellerName: '', sellerPhone: '', items: [] };
+                clearCart();
             }
 
             // Set seller info if cart is empty
@@ -1619,11 +1362,11 @@
             } else {
                 // Add to cart
                 cart.items.push({
-                    id: product.id,
-                    title: product.title,
-                    price: product.price,
-                    currency: product.currency,
-                    image: product.image_urls?.[0],
+                    id: productId,
+                    title: title,
+                    price: price,
+                    currency: currency,
+                    image: image,
                     quantity: 1
                 });
                 showToast('Added to cart');
@@ -1636,79 +1379,9 @@
                 cart.sellerPhone = '';
             }
 
-            saveCartToStorage();
+            saveCart(cart);
+            updateCartCount();
             renderProducts(); // Re-render to update button states
-        }
-
-        function updateCartUI() {
-            // Update cart count badge
-            const totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
-            cartCount.textContent = totalItems;
-            cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
-            
-            // Render cart items
-            if (cart.items.length === 0) {
-                cartItems.innerHTML = `
-                    <div class="empty-cart">
-                        <i class="fas fa-shopping-basket"></i>
-                        <h3>Your cart is empty</h3>
-                        <p>Add items from this seller to start</p>
-                    </div>
-                `;
-                cartFooter.style.display = 'none';
-                return;
-            }
-
-            cartFooter.style.display = 'block';
-            
-            let itemsHtml = '';
-            let total = 0;
-            
-            cart.items.forEach(item => {
-                total += (item.price || 0) * (item.quantity || 1);
-                itemsHtml += `
-                    <div class="cart-item">
-                        <div class="cart-item-image">
-                            ${item.image ? 
-                                `<img src="${item.image}" alt="${escapeHtml(item.title)}">` : 
-                                `<i class="fas fa-box"></i>`
-                            }
-                        </div>
-                        <div class="cart-item-info">
-                            <div class="cart-item-title">${escapeHtml(item.title)}</div>
-                            <div class="cart-item-price">UGX ${((item.price || 0) * (item.quantity || 1)).toLocaleString()}</div>
-                            <div class="cart-item-quantity">Quantity: ${item.quantity || 1}</div>
-                        </div>
-                        <button class="cart-item-remove" onclick="window.removeFromCart(${item.id})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `;
-            });
-            
-            cartItems.innerHTML = itemsHtml;
-            cartTotal.textContent = `UGX ${total.toLocaleString()}`;
-        }
-
-        function removeFromCart(productId) {
-            cart.items = cart.items.filter(item => item.id !== productId);
-            
-            if (cart.items.length === 0) {
-                cart.sellerId = null;
-                cart.sellerName = '';
-                cart.sellerPhone = '';
-            }
-            
-            saveCartToStorage();
-            renderProducts(); // Re-render products to update button states
-            showToast('Item removed');
-        }
-
-        function clearCartItems() {
-            cart = { sellerId: null, sellerName: '', sellerPhone: '', items: [] };
-            saveCartToStorage();
-            renderProducts();
-            showToast('Cart cleared');
         }
 
         // ========== Chat Functions ==========
@@ -1776,69 +1449,6 @@
 
             } catch (error) {
                 console.error('Error starting chat:', error);
-                showToast('Failed to start chat. Please try again.', 'error');
-            }
-        }
-
-        async function startCartChat() {
-            if (!currentUser) {
-                window.location.href = `/login.html?redirect=/seller-profile.html?id=${sellerId}`;
-                return;
-            }
-
-            if (cart.items.length === 0) {
-                showToast('Cart is empty', 'warning');
-                return;
-            }
-
-            if (!seller) {
-                showToast('Seller information not available', 'error');
-                return;
-            }
-
-            try {
-                showToast('Opening chat with cart items...', 'info');
-                
-                let cartMessage = `Hello ${seller.full_name}, I'm interested in the following items:\n\n`;
-                
-                cart.items.forEach((item, index) => {
-                    cartMessage += `${index + 1}. ${item.title} - UGX ${(item.price || 0).toLocaleString()} x ${item.quantity || 1}\n`;
-                });
-                
-                const total = cart.items.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0);
-                cartMessage += `\nTotal: UGX ${total.toLocaleString()}`;
-                cartMessage += `\n\nCan we discuss pricing and availability?`;
-
-                const { data: newMessage, error: createError } = await sb
-                    .from('messages')
-                    .insert({
-                        sender_id: currentUser.id,
-                        receiver_id: seller.id,
-                        content: cartMessage
-                    })
-                    .select()
-                    .single();
-
-                if (createError) throw createError;
-
-                try {
-                    await sb
-                        .from('ad_engagement')
-                        .insert({
-                            ad_id: null,
-                            user_id: currentUser.id,
-                            action: 'chat',
-                            ip_address: await getClientIP(),
-                            user_agent: navigator.userAgent
-                        });
-                } catch (trackError) {
-                    console.warn('Failed to track chat engagement:', trackError);
-                }
-
-                window.location.href = `/messages.html?id=${newMessage.id}`;
-
-            } catch (error) {
-                console.error('Error starting cart chat:', error);
                 showToast('Failed to start chat. Please try again.', 'error');
             }
         }
@@ -1916,35 +1526,6 @@
         }
 
         // ========== WhatsApp Functions ==========
-        function shareCartViaWhatsapp() {
-            if (cart.items.length === 0) {
-                showToast('Cart is empty');
-                return;
-            }
-
-            const phone = cart.sellerPhone?.replace(/\s+/g, '') || '';
-            
-            if (!phone) {
-                showToast('Seller phone number not available');
-                return;
-            }
-
-            let message = `Hello *${cart.sellerName}*, I'm interested in the following items:\n\n`;
-            
-            cart.items.forEach((item, index) => {
-                message += `${index + 1}. *${item.title}* - UGX ${(item.price || 0).toLocaleString()}\n`;
-            });
-            
-            const total = cart.items.reduce((sum, item) => sum + (item.price || 0), 0);
-            message += `\n*Total: UGX ${total.toLocaleString()}*`;
-            message += `\n\nCan we discuss pricing and availability?`;
-
-            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-            
-            trackEngagement('whatsapp');
-        }
-
         function shareSellerViaWhatsapp() {
             if (!seller) return;
             
@@ -2023,32 +1604,6 @@
                 }
             });
 
-            // Cart toggle
-            cartToggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                cartOverlay.classList.add('active');
-                cartSidebar.classList.add('active');
-            });
-
-            closeCart.addEventListener('click', () => {
-                cartOverlay.classList.remove('active');
-                cartSidebar.classList.remove('active');
-            });
-
-            cartOverlay.addEventListener('click', () => {
-                cartOverlay.classList.remove('active');
-                cartSidebar.classList.remove('active');
-            });
-
-            // Clear cart
-            clearCart.addEventListener('click', clearCartItems);
-
-            // WhatsApp cart
-            cartWhatsapp.addEventListener('click', shareCartViaWhatsapp);
-
-            // Chat cart
-            cartChat.addEventListener('click', startCartChat);
-
             // WhatsApp seller
             whatsappSeller.addEventListener('click', shareSellerViaWhatsapp);
 
@@ -2077,9 +1632,8 @@
         }
 
         // Make functions globally accessible
-        window.toggleCart = toggleCart;
-        window.removeFromCart = removeFromCart;
         window.clearSearch = clearSearch;
+        window.toggleCartItem = toggleCartItem;
     </script>
 </body>
 </html>
