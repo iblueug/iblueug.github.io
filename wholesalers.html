@@ -6,7 +6,7 @@
     <title>Wholesalers & Sellers - iBlue Uganda B2B</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Copy the same base styles from your index.html */
+        /* Same styles as before - keeping them identical */
         :root {
             --primary: #2563EB;
             --primary-dark: #1D4ED8;
@@ -631,7 +631,7 @@
         let filteredSellers = [];
         let currentFilter = 'all';
         let searchQuery = '';
-        let currentSort = 'name_asc';
+        let currentSort = 'ads_desc'; // Changed default to show most active first
         let currentUser = null;
 
         // DOM Elements
@@ -645,7 +645,7 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
             await checkAuth();
-            await loadSellers();
+            await loadSellersWithAds();
             setupEventListeners();
         });
 
@@ -672,11 +672,37 @@
             }
         }
 
-        // Load sellers from database
-        async function loadSellers() {
+        // Load only sellers who have active ads
+        async function loadSellersWithAds() {
             try {
-                // Get all profiles with their ad counts and latest activity
-                const { data: profiles, error } = await sb
+                // First, get all sellers who have active ads
+                const { data: adsData, error: adsError } = await sb
+                    .from('ads')
+                    .select(`
+                        seller_id,
+                        id,
+                        status,
+                        category_id,
+                        categories!ads_category_id_fkey (
+                            name
+                        )
+                    `)
+                    .eq('status', 'active');
+
+                if (adsError) throw adsError;
+
+                if (!adsData || adsData.length === 0) {
+                    // No sellers with active ads
+                    allSellers = [];
+                    applyFilters();
+                    return;
+                }
+
+                // Get unique seller IDs
+                const sellerIds = [...new Set(adsData.map(ad => ad.seller_id))];
+                
+                // Get seller profiles
+                const { data: profiles, error: profilesError } = await sb
                     .from('profiles')
                     .select(`
                         id,
@@ -692,53 +718,56 @@
                         created_at,
                         admin_role
                     `)
-                    .order('total_ads', { ascending: false })
-                    .limit(100);
+                    .in('id', sellerIds);
 
-                if (error) throw error;
+                if (profilesError) throw profilesError;
 
-                if (profiles) {
-                    // For each profile, get their active ads count and categories
-                    const sellersWithDetails = await Promise.all(
-                        profiles.map(async (profile) => {
-                            // Get active ads count
-                            const { count: activeAds } = await sb
-                                .from('ads')
-                                .select('*', { count: 'exact', head: true })
-                                .eq('seller_id', profile.id)
-                                .eq('status', 'active');
+                // For each seller, get their active ads count and categories
+                const sellersWithDetails = await Promise.all(
+                    profiles.map(async (profile) => {
+                        // Get their active ads
+                        const sellerAds = adsData.filter(ad => ad.seller_id === profile.id);
+                        
+                        // Count active ads
+                        const activeAds = sellerAds.length;
+                        
+                        // Get unique categories
+                        const categoryNames = sellerAds
+                            .map(ad => ad.categories?.name)
+                            .filter(name => name);
+                        const uniqueCategories = [...new Set(categoryNames)].slice(0, 3);
 
-                            // Get distinct categories they sell in
-                            const { data: categories } = await sb
-                                .from('ads')
-                                .select('categories!inner(name)')
-                                .eq('seller_id', profile.id)
-                                .eq('status', 'active')
-                                .limit(3);
+                        // Get total ads count (including non-active)
+                        const { count: totalAds } = await sb
+                            .from('ads')
+                            .select('*', { count: 'exact', head: true })
+                            .eq('seller_id', profile.id);
 
-                            const sellerCategories = categories?.map(c => c.categories?.name).filter(Boolean) || [];
+                        return {
+                            ...profile,
+                            active_ads: activeAds,
+                            total_ads: totalAds || 0,
+                            categories: uniqueCategories,
+                            is_wholesaler: profile.admin_role === 'wholesaler' || activeAds > 10
+                        };
+                    })
+                );
 
-                            return {
-                                ...profile,
-                                active_ads: activeAds || 0,
-                                categories: sellerCategories.slice(0, 3),
-                                is_wholesaler: profile.admin_role === 'wholesaler' || (activeAds > 10) // heuristic
-                            };
-                        })
-                    );
+                // Sort by active ads count (most first)
+                sellersWithDetails.sort((a, b) => b.active_ads - a.active_ads);
+                
+                allSellers = sellersWithDetails;
+                applyFilters();
 
-                    allSellers = sellersWithDetails;
-                    applyFilters();
-                }
             } catch (error) {
-                console.error('Error loading sellers:', error);
+                console.error('Error loading sellers with ads:', error);
                 showToast('Failed to load sellers');
                 // Load sample data for demo
                 loadSampleSellers();
             }
         }
 
-        // Sample data for demo/fallback
+        // Sample data for demo/fallback - only includes sellers with ads
         function loadSampleSellers() {
             allSellers = [
                 {
