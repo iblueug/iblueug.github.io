@@ -336,28 +336,52 @@
 
       // --- Get intended redirect ---
       function getIntendedRedirect() {
-        // Priority 1: URL parameter
+        // Priority 1: Check for redirect parameter in URL
         const urlParams = new URLSearchParams(window.location.search);
         const urlRedirect = urlParams.get('redirect');
         
-        if (urlRedirect && ALLOWED_REDIRECTS.includes(urlRedirect)) {
-          return urlRedirect;
+        if (urlRedirect) {
+          // If it's a relative path, make it absolute
+          if (urlRedirect.startsWith('/')) {
+            const baseUrl = 'https://iblueug.github.io';
+            const fullUrl = baseUrl + urlRedirect;
+            if (ALLOWED_REDIRECTS.includes(fullUrl)) {
+              return fullUrl;
+            }
+          }
+          // If it's a full URL
+          if (ALLOWED_REDIRECTS.includes(urlRedirect)) {
+            return urlRedirect;
+          }
         }
         
-        // Priority 2: sessionStorage
+        // Priority 2: Check sessionStorage for intended page
         const sessionRedirect = sessionStorage.getItem('intendedPage');
         if (sessionRedirect && ALLOWED_REDIRECTS.includes(sessionRedirect)) {
+          // Clear it after retrieving
           sessionStorage.removeItem('intendedPage');
           return sessionRedirect;
         }
         
-        // Priority 3: localStorage
+        // Priority 3: Check localStorage for intended page (for "remember me")
         const localRedirect = localStorage.getItem('intendedPage');
         if (localRedirect && ALLOWED_REDIRECTS.includes(localRedirect)) {
+          // Clear it after retrieving
           localStorage.removeItem('intendedPage');
           return localRedirect;
         }
         
+        // Priority 4: Check referrer to see if they came from another page
+        const referrer = document.referrer;
+        if (referrer) {
+          for (const allowedUrl of ALLOWED_REDIRECTS) {
+            if (referrer.startsWith(allowedUrl)) {
+              return allowedUrl;
+            }
+          }
+        }
+        
+        // Default to dashboard
         return DEFAULT_REDIRECT;
       }
 
@@ -383,18 +407,33 @@
         }
       }
 
-      // --- Process redirect parameter ---
-      function processUrlRedirect() {
+      // --- Process and store redirect parameter ---
+      function processRedirectParameter() {
         const urlParams = new URLSearchParams(window.location.search);
         const redirect = urlParams.get('redirect');
         
-        if (redirect && ALLOWED_REDIRECTS.includes(redirect)) {
-          if (rememberMeCheckbox.checked) {
-            localStorage.setItem('intendedPage', redirect);
-          } else {
-            sessionStorage.setItem('intendedPage', redirect);
+        if (redirect) {
+          let redirectUrl = redirect;
+          
+          // Handle relative paths
+          if (redirect.startsWith('/')) {
+            redirectUrl = 'https://iblueug.github.io' + redirect;
           }
           
+          // Store the intended page based on "remember me" preference
+          if (ALLOWED_REDIRECTS.includes(redirectUrl)) {
+            if (rememberMeCheckbox.checked) {
+              localStorage.setItem('intendedPage', redirectUrl);
+            } else {
+              sessionStorage.setItem('intendedPage', redirectUrl);
+            }
+            
+            // Show a message to the user
+            const pageName = redirectUrl.split('/').pop().replace('.html', '');
+            showMessage(`You'll be redirected to ${pageName} after login`, 'info');
+          }
+          
+          // Clean the URL by removing the redirect parameter
           const cleanUrl = window.location.pathname;
           history.replaceState({}, document.title, cleanUrl);
         }
@@ -441,9 +480,14 @@
             return;
           }
 
+          // Get the intended redirect URL
           const redirectUrl = getIntendedRedirect();
-          showMessage('✓ Success! Redirecting...', 'success');
           
+          // Show success message with destination
+          const destinationPage = redirectUrl.split('/').pop().replace('.html', '');
+          showMessage(`✓ Success! Redirecting to ${destinationPage}...`, 'success');
+          
+          // Redirect after a brief delay
           setTimeout(() => {
             window.location.href = redirectUrl;
           }, 1000);
@@ -466,9 +510,17 @@
           }
           
           if (data && data.session) {
+            // User is already logged in, redirect to intended page
             const redirectUrl = getIntendedRedirect();
-            if (!window.location.hash) {
-              window.location.replace(redirectUrl);
+            
+            // Only redirect if we're not already on the login page with a hash
+            if (!window.location.hash && window.location.pathname.includes('login')) {
+              const destinationPage = redirectUrl.split('/').pop().replace('.html', '');
+              showMessage(`Already logged in! Redirecting to ${destinationPage}...`, 'info');
+              
+              setTimeout(() => {
+                window.location.replace(redirectUrl);
+              }, 1000);
             }
           }
         } catch (e) {
@@ -479,7 +531,13 @@
       // --- Initialize ---
       document.addEventListener('DOMContentLoaded', () => {
         loadSavedCredentials();
-        processUrlRedirect();
+        
+        // Process redirect parameter after loading saved credentials
+        // to ensure "remember me" state is known
+        setTimeout(() => {
+          processRedirectParameter();
+        }, 100);
+        
         checkExistingSession();
       });
 
