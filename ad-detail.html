@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2788760068612820"
-     crossorigin="anonymous"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Ad Details – iBlue Uganda Marketplace</title>
@@ -332,13 +330,25 @@
       white-space: pre-line;
     }
 
-    /* Seller Info */
+    /* Seller Info - Updated for clickable card */
     .seller-card {
       background: white;
       border-radius: var(--radius);
       padding: 16px;
       box-shadow: var(--shadow);
       margin-bottom: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .seller-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .seller-card:active {
+      transform: translateY(0);
     }
 
     .seller-header {
@@ -359,11 +369,17 @@
       color: white;
       font-weight: 600;
       font-size: 1.2rem;
+      transition: transform 0.2s;
+    }
+
+    .seller-card:hover .seller-avatar {
+      transform: scale(1.05);
     }
 
     .seller-info h3 {
       font-size: 1.1rem;
       margin-bottom: 4px;
+      color: var(--dark);
     }
 
     .seller-info p {
@@ -870,10 +886,10 @@
         <div class="description" id="description"></div>
       </div>
 
-      <!-- Seller Information -->
+      <!-- Seller Information - Updated clickable card -->
       <div class="info-section">
         <h3 class="section-title"><i class="fas fa-user"></i> Seller Information</h3>
-        <div class="seller-card">
+        <div class="seller-card" id="sellerCard">
           <div class="seller-header">
             <div class="seller-avatar" id="sellerAvatar">S</div>
             <div class="seller-info">
@@ -1323,6 +1339,35 @@
     document.getElementById('sellerStatus').innerHTML = seller.is_verified 
       ? '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> Verified</span>'
       : '<span style="color: var(--gray);"><i class="fas fa-user"></i> Unverified</span>';
+
+    // ===== SELLER CARD CLICK HANDLER =====
+    // Make the seller card clickable to go to seller profile
+    const sellerCard = document.getElementById('sellerCard');
+    if (sellerCard && seller.id) {
+      // Remove any existing listeners to avoid duplicates
+      const newSellerCard = sellerCard.cloneNode(true);
+      sellerCard.parentNode.replaceChild(newSellerCard, sellerCard);
+      
+      // Add click handler to the new card
+      newSellerCard.addEventListener('click', function(e) {
+        // Don't trigger if clicking on interactive elements
+        if (e.target.closest('button') || 
+            e.target.closest('.btn-save') || 
+            e.target.closest('.btn-chat') || 
+            e.target.closest('.btn-call') ||
+            e.target.closest('a') ||
+            e.target.closest('i') ||
+            e.target.closest('.info-row')) {
+          return;
+        }
+        
+        // Navigate to seller profile
+        window.location.href = `seller-profile.html?id=${seller.id}`;
+      });
+      
+      // Add visual indicator that it's clickable (hand cursor)
+      newSellerCard.style.cursor = 'pointer';
+    }
   }
 
   // ============================================
