@@ -58,6 +58,26 @@
       letter-spacing: 0.3px;
     }
 
+    .redirect-message {
+      background: #e1f0fa;
+      color: #0b4f6c;
+      padding: 12px 16px;
+      border-radius: 40px;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      text-align: center;
+      border-left: 4px solid #0B4F6C;
+      display: none;
+    }
+
+    .redirect-message.show {
+      display: block;
+    }
+
+    .redirect-message i {
+      margin-right: 8px;
+    }
+
     input {
       width: 100%;
       padding: 15px 18px;
@@ -282,6 +302,12 @@
     <h1>iBlue</h1>
     <div class="brand-tag">Uganda • smart access</div>
     
+    <!-- Redirect Message (shown when user came from a protected page) -->
+    <div id="redirectMessage" class="redirect-message">
+      <i class="fas fa-info-circle"></i>
+      <span id="redirectMessageText">Please sign in to continue</span>
+    </div>
+    
     <input id="email" type="email" placeholder="Email address" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" />
     <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
     
@@ -308,6 +334,9 @@
     <div id="msg" class="msg" role="status"></div>
   </div>
 
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     (function() {
@@ -323,7 +352,6 @@
         REMEMBER_ME: 'iblue_remember_me',
         SESSION_EXPIRY: 'iblue_session_expiry',
         INTENDED_PAGE: 'iblue_intended_page',
-        PREVIOUS_PAGE: 'iblue_previous_page',
         AUTH_PERSISTENCE: 'iblue_auth_persistence'
       };
 
@@ -343,13 +371,22 @@
         'https://iblueug.github.io/ad-detail.html',
         'https://iblueug.github.io/seller-profile.html',
         'https://iblueug.github.io/notifications.html',
-        'https://iblueug.github.io/help-support.html'
+        'https://iblueug.github.io/help-support.html',
+        'https://iblueug.github.io/user-dashboard.html',
+        'https://iblueug.github.io/security-reviews.html',
+        'https://iblueug.github.io/terms-conditions.html',
+        'https://iblueug.github.io/B2B-ad-detail.html',
+        'https://iblueug.github.io/boost-ad.html',
+        'https://iblueug.github.io/edit-ad.html',
+        'https://iblueug.github.io/report.html'
       ];
 
       const DEFAULT_REDIRECT = 'https://iblueug.github.io/index.html';
 
       // DOM elements
       const msgEl = document.getElementById('msg');
+      const redirectMessageEl = document.getElementById('redirectMessage');
+      const redirectMessageText = document.getElementById('redirectMessageText');
       const loginBtn = document.getElementById('loginBtn');
       const googleBtn = document.getElementById('googleLoginBtn');
       const emailInput = document.getElementById('email');
@@ -388,83 +425,82 @@
         }
       }
 
-      // --- Get the previous page the user came from ---
-      function getPreviousPage() {
-        const referrer = document.referrer;
+      // --- Get the page name from URL for display ---
+      function getPageNameFromUrl(url) {
+        const fileName = url.split('/').pop().replace('.html', '');
+        // Convert kebab-case or snake_case to readable format
+        return fileName
+          .split('-')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      }
+
+      // --- Show redirect message with destination ---
+      function showRedirectMessage(redirectUrl) {
+        if (!redirectUrl || !redirectMessageEl || !redirectMessageText) return;
         
-        // Check if referrer is from our site
-        if (referrer && referrer.includes('iblueug.github.io')) {
-          // Store it for later use
-          sessionStorage.setItem(STORAGE_KEYS.PREVIOUS_PAGE, referrer);
-          return referrer;
+        const pageName = getPageNameFromUrl(redirectUrl);
+        redirectMessageText.innerHTML = `🔒 Please sign in to continue to <strong>${pageName}</strong>`;
+        redirectMessageEl.classList.add('show');
+      }
+
+      // --- Get intended redirect from URL parameter (Scenario 1) ---
+      function getIntendedRedirectFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get('redirect');
+        
+        if (!redirect) return null;
+        
+        // Handle relative paths
+        let fullUrl = redirect;
+        if (redirect.startsWith('/')) {
+          fullUrl = 'https://iblueug.github.io' + redirect;
         }
         
-        // Check if we stored it earlier
-        const storedPrevious = sessionStorage.getItem(STORAGE_KEYS.PREVIOUS_PAGE);
-        if (storedPrevious) {
-          return storedPrevious;
+        // Validate against allowed redirects
+        if (ALLOWED_REDIRECTS.includes(fullUrl)) {
+          return fullUrl;
         }
         
         return null;
       }
 
-      // --- Get intended redirect (prioritizes previous page, then redirect param, then default) ---
-      function getIntendedRedirect() {
-        // Priority 1: Check if we came from a page on our site
-        const previousPage = getPreviousPage();
-        if (previousPage && ALLOWED_REDIRECTS.some(url => previousPage.startsWith(url))) {
-          // Clear it after retrieving
-          sessionStorage.removeItem(STORAGE_KEYS.PREVIOUS_PAGE);
-          return previousPage;
-        }
+      // --- Store the intended page (for OAuth flow) ---
+      function storeIntendedPage(redirectUrl) {
+        if (!redirectUrl) return;
         
-        // Priority 2: Check for redirect parameter in URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlRedirect = urlParams.get('redirect');
-        
+        const rememberMe = rememberMeCheckbox.checked;
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem(STORAGE_KEYS.INTENDED_PAGE, redirectUrl);
+      }
+
+      // --- Get the final redirect URL (prioritizes URL parameter) ---
+      function getRedirectUrl() {
+        // Priority 1: Check URL parameter (Scenario 1)
+        const urlRedirect = getIntendedRedirectFromUrl();
         if (urlRedirect) {
-          // Handle relative paths
-          let fullUrl = urlRedirect;
-          if (urlRedirect.startsWith('/')) {
-            fullUrl = 'https://iblueug.github.io' + urlRedirect;
-          }
-          
-          if (ALLOWED_REDIRECTS.includes(fullUrl)) {
-            return fullUrl;
-          }
+          return urlRedirect;
         }
         
-        // Priority 3: Check storage for intended page
+        // Priority 2: Check storage (for OAuth callback)
         const rememberMe = localStorage.getItem(STORAGE_KEYS.REMEMBER_ME) === 'true';
         const storage = rememberMe ? localStorage : sessionStorage;
         const storedRedirect = storage.getItem(STORAGE_KEYS.INTENDED_PAGE);
         
         if (storedRedirect && ALLOWED_REDIRECTS.includes(storedRedirect)) {
-          storage.removeItem(STORAGE_KEYS.INTENDED_PAGE);
+          // Don't clear yet - will clear after successful login
           return storedRedirect;
         }
         
-        // Default to home page
+        // Default to home
         return DEFAULT_REDIRECT;
       }
 
-      // --- Store the intended page before redirecting to login ---
-      function storeIntendedPage() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirect = urlParams.get('redirect');
-        
-        if (redirect) {
-          let redirectUrl = redirect;
-          if (redirect.startsWith('/')) {
-            redirectUrl = 'https://iblueug.github.io' + redirect;
-          }
-          
-          if (ALLOWED_REDIRECTS.includes(redirectUrl)) {
-            const rememberMe = rememberMeCheckbox.checked;
-            const storage = rememberMe ? localStorage : sessionStorage;
-            storage.setItem(STORAGE_KEYS.INTENDED_PAGE, redirectUrl);
-          }
-        }
+      // --- Clear stored redirect after successful login ---
+      function clearStoredRedirect() {
+        const rememberMe = localStorage.getItem(STORAGE_KEYS.REMEMBER_ME) === 'true';
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.removeItem(STORAGE_KEYS.INTENDED_PAGE);
       }
 
       // --- Save preferences ---
@@ -532,13 +568,18 @@
         }
       }
 
-      // --- Handle successful login ---
+      // --- Handle successful login (Scenario 1 completion) ---
       async function handleSuccessfulLogin() {
-        const redirectUrl = getIntendedRedirect();
-        const destinationPage = redirectUrl.split('/').pop().replace('.html', '') || 'home';
+        const redirectUrl = getRedirectUrl();
         
-        showMessage(`✓ Success! Redirecting to ${destinationPage}...`, 'success');
+        // Clear the stored redirect
+        clearStoredRedirect();
         
+        // Show success message with destination
+        const pageName = getPageNameFromUrl(redirectUrl);
+        showMessage(`✓ Success! Redirecting to ${pageName}...`, 'success');
+        
+        // Redirect after brief delay
         setTimeout(() => {
           window.location.href = redirectUrl;
         }, 1000);
@@ -603,29 +644,28 @@
         }
       }
 
-      // --- Google Login ---
+      // --- Google Login (preserves redirect intent) ---
       async function googleLoginHandler() {
         const rememberMe = rememberMeCheckbox.checked;
+        const redirectUrl = getRedirectUrl();
         
         try {
           googleBtn.disabled = true;
           googleBtn.innerHTML = '<span>Connecting to Google...</span>';
           
           // Store the intended redirect before Google OAuth
-          const redirectUrl = getIntendedRedirect();
-          const storage = rememberMe ? localStorage : sessionStorage;
-          storage.setItem(STORAGE_KEYS.INTENDED_PAGE, redirectUrl);
+          storeIntendedPage(redirectUrl);
           
           // Configure persistence for the OAuth flow
           configureSessionPersistence(rememberMe);
           
-          // Get the current page URL for the redirect
-          const redirectTo = window.location.origin + '/login.html';
+          // Save remember me preference
+          savePreferences(emailInput.value.trim() || 'google-user', rememberMe);
           
           const { data, error } = await sb.auth.signInWithOAuth({
             provider: 'google',
             options: {
-              redirectTo: redirectTo,
+              redirectTo: window.location.href.split('?')[0], // Current page without params
               queryParams: {
                 access_type: 'offline',
                 prompt: 'consent'
@@ -637,7 +677,7 @@
             throw error;
           }
 
-          // The OAuth redirect will happen automatically
+          // OAuth redirect will happen automatically
           
         } catch (error) {
           console.error('Google login error:', error);
@@ -715,13 +755,13 @@
               }
             }
             
-            // User is already logged in, redirect to intended page
-            const redirectUrl = getIntendedRedirect();
+            // User is already logged in, check if they were trying to access a protected page
+            const redirectUrl = getRedirectUrl();
             
             // Only redirect if we're not already on the login page with a hash
             if (!window.location.hash && window.location.pathname.includes('login')) {
-              const destinationPage = redirectUrl.split('/').pop().replace('.html', '') || 'home';
-              showMessage(`Already logged in! Redirecting to ${destinationPage}...`, 'info');
+              const pageName = getPageNameFromUrl(redirectUrl);
+              showMessage(`Already logged in! Redirecting to ${pageName}...`, 'info');
               
               setTimeout(() => {
                 window.location.replace(redirectUrl);
@@ -758,15 +798,18 @@
       document.addEventListener('DOMContentLoaded', () => {
         loadSavedCredentials();
         
-        // Store the previous page if we came from somewhere
-        getPreviousPage();
+        // Check if this is Scenario 1 (user came from protected page)
+        const intendedRedirect = getIntendedRedirectFromUrl();
+        if (intendedRedirect) {
+          showRedirectMessage(intendedRedirect);
+          // Store it for OAuth flow
+          storeIntendedPage(intendedRedirect);
+        }
         
-        // Process any redirect parameters
-        setTimeout(() => {
-          storeIntendedPage();
-        }, 100);
-        
+        // Check existing session
         checkExistingSession();
+        
+        // Setup visibility handler
         setupVisibilityHandler();
       });
 
