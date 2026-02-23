@@ -385,6 +385,16 @@
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-image img.loaded {
+            opacity: 1;
+        }
+
+        .product-image img.lazy {
+            opacity: 0;
         }
 
         .product-card-horizontal:hover .product-image img {
@@ -723,6 +733,18 @@
             background: var(--gray-200);
         }
 
+        /* Intersection Observer image placeholder */
+        .image-placeholder {
+            background: var(--gray-200);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-400);
+            font-size: 12px;
+        }
+
         /* Responsive */
         @media (min-width: 640px) {
             .products-grid,
@@ -823,19 +845,69 @@
             <div class="swiper-pagination"></div>
         </div>
 
-        <!-- Meta Categories Menu -->
+        <!-- Meta Categories Menu - Updated with separate HTML files -->
         <div class="meta-categories" id="metaCategories">
-            <!-- Will be populated from homepage_spotlights -->
+            <a href="featured-deals.html" class="meta-category-btn active">
+                <i class="fas fa-star"></i> Featured Deals
+            </a>
+            <a href="trending-now.html" class="meta-category-btn">
+                <i class="fas fa-fire"></i> Trending Now
+            </a>
+            <a href="new-arrivals.html" class="meta-category-btn">
+                <i class="fas fa-clock"></i> New Arrivals
+            </a>
+            <a href="budget-finds.html" class="meta-category-btn">
+                <i class="fas fa-wallet"></i> Budget Finds
+            </a>
         </div>
 
-        <!-- Meta Category Results -->
-        <section class="section" id="metaCategorySection">
+        <!-- Featured Deals Section -->
+        <section class="section" id="featuredSection">
             <div class="section-header">
-                <h2 class="section-title" id="metaCategoryTitle">⭐ Featured Deals</h2>
-                <a href="#" class="section-link" id="metaCategoryLink">View All</a>
+                <h2 class="section-title">⭐ Featured Deals</h2>
+                <a href="featured-deals.html" class="section-link">See All <i class="fas fa-chevron-right"></i></a>
             </div>
-            <div class="horizontal-scroll" id="metaCategoryScroll">
-                <div class="scroll-wrapper" id="metaCategoryWrapper">
+            <div class="horizontal-scroll">
+                <div class="scroll-wrapper" id="featuredWrapper">
+                    <!-- Will be populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Trending Now Section -->
+        <section class="section" id="trendingSection">
+            <div class="section-header">
+                <h2 class="section-title">🔥 Trending Now</h2>
+                <a href="trending-now.html" class="section-link">See All <i class="fas fa-chevron-right"></i></a>
+            </div>
+            <div class="horizontal-scroll">
+                <div class="scroll-wrapper" id="trendingWrapper">
+                    <!-- Will be populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- New Arrivals Section -->
+        <section class="section" id="newArrivalsSection">
+            <div class="section-header">
+                <h2 class="section-title">🆕 New Arrivals</h2>
+                <a href="new-arrivals.html" class="section-link">See All <i class="fas fa-chevron-right"></i></a>
+            </div>
+            <div class="horizontal-scroll">
+                <div class="scroll-wrapper" id="newArrivalsWrapper">
+                    <!-- Will be populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Budget Finds Section -->
+        <section class="section" id="budgetSection">
+            <div class="section-header">
+                <h2 class="section-title">💰 Budget Finds</h2>
+                <a href="budget-finds.html" class="section-link">See All <i class="fas fa-chevron-right"></i></a>
+            </div>
+            <div class="horizontal-scroll">
+                <div class="scroll-wrapper" id="budgetWrapper">
                     <!-- Will be populated -->
                 </div>
             </div>
@@ -902,6 +974,36 @@
         let selectedDistrict = localStorage.getItem('selectedDistrict') || 'Central';
 
         // ============================================
+        // INTERSECTION OBSERVER FOR LAZY LOADING
+        // ============================================
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    const dataSrc = img.getAttribute('data-src');
+                    if (dataSrc) {
+                        img.src = dataSrc;
+                        img.classList.add('loaded');
+                        img.onload = () => {
+                            img.classList.add('loaded');
+                        };
+                    }
+                    observer.unobserve(img);
+                }
+            });
+        }, {
+            rootMargin: '50px 0px',
+            threshold: 0.01
+        });
+
+        // Function to observe all lazy images
+        function observeLazyImages() {
+            document.querySelectorAll('img.lazy').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+
+        // ============================================
         // LOCATION SELECTION
         // ============================================
         const ugandaRegions = [
@@ -963,9 +1065,8 @@
                     modal.classList.remove('show');
                     showToast('Location updated to Kampala');
                     
-                    // Reload products with new location filter
-                    loadConduciveSections();
-                    loadMetaCategory('featured');
+                    // Reload all sections with new location filter
+                    loadAllSections();
                 }, 1500);
             });
         }
@@ -1006,114 +1107,40 @@
                     document.getElementById('locationModal').classList.remove('show');
                     showToast(`Location set to ${district}, ${region}`);
                     
-                    // Reload products with new location filter
-                    loadConduciveSections();
-                    loadMetaCategory('featured');
+                    // Reload all sections with new location filter
+                    loadAllSections();
                 });
             });
         }
 
         // ============================================
-        // LOAD META CATEGORIES FROM SPOTLIGHT
+        // LOAD ALL SECTIONS PARALLEL
         // ============================================
-        async function loadMetaCategories() {
-            const container = document.getElementById('metaCategories');
+        async function loadAllSections() {
+            // Load all sections in parallel for faster rendering
+            await Promise.all([
+                loadSection('featured', 'featuredWrapper', { is_featured: true }, 'created_at', 10),
+                loadSection('trending', 'trendingWrapper', {}, 'view_count', 10),
+                loadSection('new', 'newArrivalsWrapper', {}, 'created_at', 10),
+                loadSection('budget', 'budgetWrapper', { price_lt: 500000 }, 'price', 10)
+            ]);
             
-            try {
-                // Get active spotlight types from homepage_spotlights
-                const { data: spotlights, error } = await sb
-                    .from('homepage_spotlights')
-                    .select('spotlight_type')
-                    .eq('is_active', true)
-                    .gt('ends_at', new Date().toISOString())
-                    .order('display_order', { ascending: true });
-                
-                if (error) throw error;
-                
-                // Define meta category details
-                const metaCategoryMap = {
-                    'featured_deals': { icon: 'fa-star', name: 'Featured Deals', param: 'featured' },
-                    'trending_now': { icon: 'fa-fire', name: 'Trending Now', param: 'trending' },
-                    'new_arrivals': { icon: 'fa-clock', name: 'New Arrivals', param: 'new' },
-                    'budget_finds': { icon: 'fa-wallet', name: 'Budget Finds', param: 'budget' },
-                    'editor_picks': { icon: 'fa-pen', name: 'Editor Picks', param: 'editor' },
-                    'premium_listings': { icon: 'fa-crown', name: 'Premium', param: 'premium' },
-                    'local_favorites': { icon: 'fa-heart', name: 'Local Favorites', param: 'local' },
-                    'verified_sellers': { icon: 'fa-check-circle', name: 'Verified Sellers', param: 'verified' }
-                };
-                
-                let metaButtons = '';
-                
-                if (spotlights && spotlights.length > 0) {
-                    spotlights.forEach(spot => {
-                        const meta = metaCategoryMap[spot.spotlight_type];
-                        if (meta) {
-                            metaButtons += `
-                                <a href="spotlight.html?type=${encodeURIComponent(spot.spotlight_type)}" class="meta-category-btn" onclick="loadMetaCategory('${meta.param}'); event.preventDefault();">
-                                    <i class="fas ${meta.icon}"></i> ${meta.name}
-                                </a>
-                            `;
-                        }
-                    });
-                }
-                
-                // Add default meta categories if none in spotlight
-                if (metaButtons === '') {
-                    metaButtons = `
-                        <a href="search-results.html?featured=true" class="meta-category-btn active" onclick="loadMetaCategory('featured'); event.preventDefault();">
-                            <i class="fas fa-star"></i> Featured Deals
-                        </a>
-                        <a href="search-results.html?sort=trending" class="meta-category-btn" onclick="loadMetaCategory('trending'); event.preventDefault();">
-                            <i class="fas fa-fire"></i> Trending Now
-                        </a>
-                        <a href="search-results.html?sort=newest" class="meta-category-btn" onclick="loadMetaCategory('new'); event.preventDefault();">
-                            <i class="fas fa-clock"></i> New Arrivals
-                        </a>
-                        <a href="search-results.html?maxPrice=500000" class="meta-category-btn" onclick="loadMetaCategory('budget'); event.preventDefault();">
-                            <i class="fas fa-wallet"></i> Budget Finds
-                        </a>
-                    `;
-                }
-                
-                container.innerHTML = metaButtons;
-                
-            } catch (error) {
-                console.error('Error loading meta categories:', error);
-                // Fallback to default
-                container.innerHTML = `
-                    <a href="search-results.html?featured=true" class="meta-category-btn active" onclick="loadMetaCategory('featured'); event.preventDefault();">
-                        <i class="fas fa-star"></i> Featured Deals
-                    </a>
-                    <a href="search-results.html?sort=trending" class="meta-category-btn" onclick="loadMetaCategory('trending'); event.preventDefault();">
-                        <i class="fas fa-fire"></i> Trending Now
-                    </a>
-                    <a href="search-results.html?sort=newest" class="meta-category-btn" onclick="loadMetaCategory('new'); event.preventDefault();">
-                        <i class="fas fa-clock"></i> New Arrivals
-                    </a>
-                    <a href="search-results.html?maxPrice=500000" class="meta-category-btn" onclick="loadMetaCategory('budget'); event.preventDefault();">
-                        <i class="fas fa-wallet"></i> Budget Finds
-                    </a>
-                `;
-            }
+            // Load conducive sections after
+            await loadConduciveSections();
+            
+            // Observe lazy images after all content is loaded
+            setTimeout(observeLazyImages, 100);
         }
 
         // ============================================
-        // LOAD META CATEGORY PRODUCTS
+        // LOAD INDIVIDUAL SECTION
         // ============================================
-        async function loadMetaCategory(type) {
-            const title = document.getElementById('metaCategoryTitle');
-            const link = document.getElementById('metaCategoryLink');
-            const wrapper = document.getElementById('metaCategoryWrapper');
+        async function loadSection(sectionType, wrapperId, filters = {}, orderBy = 'created_at', limit = 10) {
+            const wrapper = document.getElementById(wrapperId);
+            if (!wrapper) return;
             
-            // Update active button
-            document.querySelectorAll('.meta-category-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            if (event && event.target) {
-                event.target.classList.add('active');
-            }
-            
-            wrapper.innerHTML = getPlaceholderHorizontal();
+            // Show skeleton
+            wrapper.innerHTML = getPlaceholderHorizontal(6);
             
             try {
                 let query = sb
@@ -1130,6 +1157,7 @@
                         district,
                         seller_id,
                         is_featured,
+                        created_at,
                         profiles!ads_seller_id_fkey (is_verified),
                         category:categories!ads_category_id_fkey (name)
                     `)
@@ -1140,77 +1168,37 @@
                     query = query.eq('district', selectedDistrict);
                 }
                 
-                // Apply different filters based on type
-                switch(type) {
-                    case 'featured':
-                        title.innerHTML = '⭐ Featured Deals';
-                        link.href = 'search-results.html?featured=true';
-                        query = query
-                            .eq('is_featured', true)
-                            .order('created_at', { ascending: false });
-                        break;
-                    case 'trending':
-                        title.innerHTML = '🔥 Trending Now';
-                        link.href = 'search-results.html?sort=trending';
-                        query = query
-                            .order('view_count', { ascending: false })
-                            .order('created_at', { ascending: false });
-                        break;
-                    case 'new':
-                        title.innerHTML = '🆕 New Arrivals';
-                        link.href = 'search-results.html?sort=newest';
-                        query = query
-                            .order('created_at', { ascending: false });
-                        break;
-                    case 'budget':
-                        title.innerHTML = '💰 Budget Finds';
-                        link.href = 'search-results.html?maxPrice=500000';
-                        query = query
-                            .lt('price', 500000)
-                            .order('price', { ascending: true });
-                        break;
-                    case 'editor':
-                        title.innerHTML = '✏️ Editor Picks';
-                        link.href = 'search-results.html?editor=true';
-                        query = query
-                            .order('view_count', { ascending: false })
-                            .limit(20);
-                        break;
-                    case 'premium':
-                        title.innerHTML = '👑 Premium Listings';
-                        link.href = 'search-results.html?premium=true';
-                        query = query
-                            .eq('is_featured', true)
-                            .order('price', { ascending: false });
-                        break;
-                    case 'local':
-                        title.innerHTML = '❤️ Local Favorites';
-                        link.href = 'search-results.html?local=true';
-                        query = query
-                            .order('view_count', { ascending: false });
-                        break;
-                    case 'verified':
-                        title.innerHTML = '✅ Verified Sellers';
-                        link.href = 'search-results.html?verified=true';
-                        query = query
-                            .eq('profiles.is_verified', true)
-                            .order('created_at', { ascending: false });
-                        break;
+                // Apply section-specific filters
+                Object.entries(filters).forEach(([key, value]) => {
+                    if (key === 'price_lt') {
+                        query = query.lt('price', value);
+                    } else {
+                        query = query.eq(key, value);
+                    }
+                });
+                
+                // Apply ordering
+                if (orderBy === 'view_count') {
+                    query = query.order('view_count', { ascending: false }).order('created_at', { ascending: false });
+                } else if (orderBy === 'price') {
+                    query = query.order('price', { ascending: true });
+                } else {
+                    query = query.order('created_at', { ascending: false });
                 }
                 
-                const { data: ads, error } = await query.limit(10);
+                const { data: ads, error } = await query.limit(limit);
                 
                 if (error) throw error;
                 
                 if (ads && ads.length > 0) {
-                    wrapper.innerHTML = ads.map(ad => createHorizontalCard(ad, type)).join('');
+                    wrapper.innerHTML = ads.map(ad => createHorizontalCard(ad, sectionType)).join('');
                 } else {
-                    wrapper.innerHTML = getEmptyHorizontal(type);
+                    wrapper.innerHTML = getEmptyHorizontal(sectionType);
                 }
                 
             } catch (error) {
-                console.error('Error loading meta category:', error);
-                wrapper.innerHTML = getPlaceholderHorizontal();
+                console.error(`Error loading ${sectionType} section:`, error);
+                wrapper.innerHTML = getPlaceholderHorizontal(6);
             }
         }
 
@@ -1219,7 +1207,7 @@
         // ============================================
         async function loadConduciveSections() {
             const container = document.getElementById('conduciveSections');
-            container.innerHTML = getSkeletonConduciveSections(5);
+            container.innerHTML = getSkeletonConduciveSections(3);
             
             try {
                 // First get all active categories
@@ -1228,7 +1216,8 @@
                     .select('id, name, display_name, conducive_tagline, conducive_icon, color_hex')
                     .eq('is_active', true)
                     .order('display_order', { ascending: true })
-                    .order('name', { ascending: true });
+                    .order('name', { ascending: true })
+                    .limit(5);
                 
                 if (catError) throw catError;
                 
@@ -1237,11 +1226,9 @@
                     return;
                 }
                 
-                // For each category, get its ads using the correct foreign key relationship
-                let html = '';
-                
-                for (const cat of categories) {
-                    const { data: ads, error: adsError } = await sb
+                // Load ads for each category in parallel
+                const categoryPromises = categories.map(cat => 
+                    sb
                         .from('ads')
                         .select(`
                             id,
@@ -1259,12 +1246,15 @@
                         .eq('status', 'active')
                         .eq('category_id', cat.id)
                         .order('created_at', { ascending: false })
-                        .limit(4);
-                    
-                    if (adsError) {
-                        console.error(`Error loading ads for category ${cat.name}:`, adsError);
-                        continue;
-                    }
+                        .limit(4)
+                );
+                
+                const categoryResults = await Promise.all(categoryPromises);
+                
+                let html = '';
+                
+                categories.forEach((cat, index) => {
+                    const ads = categoryResults[index].data;
                     
                     if (ads && ads.length > 0) {
                         const displayName = cat.display_name || `Shop ${cat.name}`;
@@ -1292,13 +1282,16 @@
                             </section>
                         `;
                     }
-                }
+                });
                 
                 if (html === '') {
                     container.innerHTML = getEmptyConduciveSections();
                 } else {
                     container.innerHTML = html;
                 }
+                
+                // Observe lazy images in conducive sections
+                setTimeout(observeLazyImages, 100);
                 
             } catch (error) {
                 console.error('Error loading conducive sections:', error);
@@ -1307,27 +1300,26 @@
         }
 
         // ============================================
-        // CARD CREATORS
+        // CARD CREATORS WITH LAZY LOADING
         // ============================================
-        function createHorizontalCard(product, metaType = null) {
+        function createHorizontalCard(product, sectionType = null) {
             const imageUrl = product.image_urls?.[0] || 'https://via.placeholder.com/160?text=No+Image';
             const price = product.price ? `UGX ${parseInt(product.price).toLocaleString()}` : 'Call for price';
             const location = product.district || product.region || 'Uganda';
             const isVerified = product.profiles?.is_verified || false;
             
             let badgeText = '';
-            if (metaType === 'featured') badgeText = 'FEATURED';
-            else if (metaType === 'trending') badgeText = 'TRENDING';
-            else if (metaType === 'new') badgeText = 'NEW';
-            else if (metaType === 'budget') badgeText = 'BUDGET';
-            else if (metaType === 'premium') badgeText = 'PREMIUM';
-            else if (metaType === 'verified') badgeText = 'VERIFIED';
+            if (sectionType === 'featured') badgeText = 'FEATURED';
+            else if (sectionType === 'trending') badgeText = 'TRENDING';
+            else if (sectionType === 'new') badgeText = 'NEW';
+            else if (sectionType === 'budget') badgeText = 'BUDGET';
             
             return `
                 <a href="ad-detail.html?id=${product.id}" class="product-card-horizontal" onclick="trackClick(${product.id})">
                     <div class="product-image">
-                        <img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy"
-                             onload="this.style.opacity=1" style="opacity:0; transition:opacity 0.3s"
+                        <img class="lazy" data-src="${imageUrl}" alt="${escapeHtml(product.title)}" 
+                             src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
+                             onload="this.classList.add('loaded')"
                              onerror="this.src='https://via.placeholder.com/160?text=No+Image'">
                         ${badgeText ? `<span class="product-badge featured">${badgeText}</span>` : ''}
                     </div>
@@ -1360,8 +1352,9 @@
             return `
                 <a href="ad-detail.html?id=${product.id}" class="product-card" onclick="trackClick(${product.id})">
                     <div class="product-image">
-                        <img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy"
-                             onload="this.style.opacity=1" style="opacity:0; transition:opacity 0.3s"
+                        <img class="lazy" data-src="${imageUrl}" alt="${escapeHtml(product.title)}" 
+                             src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
+                             onload="this.classList.add('loaded')"
                              onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
                     </div>
                     <div class="product-info">
@@ -1383,9 +1376,9 @@
         // ============================================
         // PLACEHOLDERS & EMPTY STATES
         // ============================================
-        function getPlaceholderHorizontal() {
+        function getPlaceholderHorizontal(count = 6) {
             let html = '';
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < count; i++) {
                 html += `
                     <div class="product-card-horizontal">
                         <div class="product-image skeleton"></div>
@@ -1405,11 +1398,7 @@
                 'featured': 'Featured Deals',
                 'trending': 'Trending Now',
                 'new': 'New Arrivals',
-                'budget': 'Budget Finds',
-                'editor': 'Editor Picks',
-                'premium': 'Premium Listings',
-                'local': 'Local Favorites',
-                'verified': 'Verified Sellers'
+                'budget': 'Budget Finds'
             };
             
             return `
@@ -1437,7 +1426,7 @@
                             <div class="skeleton-text" style="width: 60px;"></div>
                         </div>
                         <div class="conducive-grid">
-                            ${getSkeletonConducive()}
+                            ${getSkeletonConduciveGrid()}
                         </div>
                     </section>
                 `;
@@ -1445,7 +1434,7 @@
             return html;
         }
 
-        function getSkeletonConducive() {
+        function getSkeletonConduciveGrid() {
             let html = '';
             for (let i = 0; i < 4; i++) {
                 html += `
@@ -1512,20 +1501,34 @@
         document.getElementById('homeNav').addEventListener('click', (e) => {
             e.preventDefault();
             
-            // Reset meta category buttons
-            document.querySelectorAll('.meta-category-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            const firstBtn = document.querySelector('.meta-category-btn');
-            if (firstBtn) {
-                firstBtn.classList.add('active');
-            }
-            
-            // Reload featured deals
-            loadMetaCategory('featured');
-            
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ============================================
+        // SEARCH FUNCTIONALITY
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchBtn = document.getElementById('searchBtn');
+            const searchInput = document.getElementById('searchInput');
+            
+            function performSearch() {
+                const query = searchInput.value.trim();
+                if (query) {
+                    // Redirect to search-results.html with query parameter
+                    window.location.href = `search-results.html?query=${encodeURIComponent(query)}`;
+                } else {
+                    showToast('Please enter a search term');
+                }
+            }
+            
+            searchBtn.addEventListener('click', performSearch);
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
         });
 
         // ============================================
@@ -1590,33 +1593,27 @@
                 currentUser = user;
             }
 
-            // Load meta categories from spotlight
-            await loadMetaCategories();
-
-            // Load conducive sections (only categories with products)
-            await loadConduciveSections();
-
-            // Load initial meta category (Featured Deals)
-            setTimeout(() => {
-                loadMetaCategory('featured');
-            }, 500);
-
-            // Search functionality
-            const searchBtn = document.getElementById('searchBtn');
-            const searchInput = document.getElementById('searchInput');
+            // Load all sections in parallel
+            await loadAllSections();
             
-            searchBtn.addEventListener('click', () => {
-                const query = searchInput.value.trim();
-                if (query) {
-                    window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
-                }
-            });
-
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    searchBtn.click();
-                }
-            });
+            // Observe images initially
+            observeLazyImages();
+            
+            // Re-observe images when scrolling
+            window.addEventListener('scroll', () => {
+                requestAnimationFrame(observeLazyImages);
+            }, { passive: true });
+            
+            // Set active state based on current page
+            const currentPath = window.location.pathname;
+            if (currentPath.includes('index.html') || currentPath === '/') {
+                document.querySelectorAll('.meta-category-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('href') === 'featured-deals.html') {
+                        btn.classList.add('active');
+                    }
+                });
+            }
         });
     </script>
 </body>
