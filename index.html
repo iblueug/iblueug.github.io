@@ -175,6 +175,7 @@
             font-size: 14px;
             color: var(--gray-600);
             gap: 8px;
+            cursor: pointer;
         }
 
         .location-btn {
@@ -190,65 +191,99 @@
             padding: 4px 8px;
         }
 
-        /* Categories - Dynamic from DB */
-        .categories-wrapper {
-            background: var(--white);
-            padding: 16px 0;
-            border-bottom: 1px solid var(--gray-200);
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .categories-wrapper::-webkit-scrollbar {
+        /* Location Modal */
+        .modal {
             display: none;
-        }
-
-        .categories-scroll {
-            display: flex;
-            gap: 24px;
-            padding: 0 16px;
-        }
-
-        .category-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: var(--gray-600);
-            font-size: 12px;
-            gap: 8px;
-            min-width: 64px;
-            transition: color 0.2s;
-        }
-
-        .category-item:hover {
-            color: var(--primary);
-        }
-
-        .category-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--gray-100);
-            border-radius: 50%;
-            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray-500);
+        }
+
+        .region-list {
+            list-style: none;
+        }
+
+        .region-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gray-100);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .region-item:hover {
+            background: var(--gray-100);
+        }
+
+        .region-item i {
             color: var(--primary);
-            transition: all 0.2s;
+            width: 20px;
         }
 
-        .category-item:hover .category-icon {
-            background: var(--primary);
-            color: white;
-            transform: scale(1.05);
+        .region-name {
+            flex: 1;
         }
 
-        .category-name {
-            font-weight: 500;
-            text-align: center;
-            white-space: nowrap;
+        .region-check {
+            color: var(--primary);
+        }
+
+        .current-location {
+            padding: 12px 16px;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .current-location i {
+            color: var(--primary);
         }
 
         /* Banner */
@@ -287,6 +322,13 @@
             font-size: 18px;
             font-weight: 700;
             color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--primary);
         }
 
         .section-link {
@@ -422,19 +464,64 @@
             font-size: 10px;
         }
 
-        .moq-badge {
-            font-size: 10px;
-            color: var(--gray-500);
-            margin: 2px 0;
+        /* Conducive Category Sections */
+        .conducive-section {
+            padding: 16px;
+            background: var(--white);
+            margin-bottom: 8px;
         }
 
-        /* Grid Products */
-        .products-grid {
+        .conducive-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .conducive-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .conducive-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .conducive-text h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .conducive-text p {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .conducive-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .conducive-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
 
+        /* Grid Products */
         .product-card {
             background: var(--white);
             border: 1px solid var(--gray-200);
@@ -470,6 +557,50 @@
 
         .product-card .product-price {
             font-size: 16px;
+        }
+
+        /* Meta Categories Menu */
+        .meta-categories {
+            background: var(--white);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .meta-categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .meta-category-btn {
+            background: var(--gray-100);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-600);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .meta-category-btn i {
+            color: var(--primary);
+        }
+
+        .meta-category-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .meta-category-btn.active i {
+            color: white;
         }
 
         /* Deals Banner */
@@ -592,86 +723,23 @@
             background: var(--gray-200);
         }
 
-        /* Category Skeleton */
-        .category-skeleton {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            min-width: 64px;
-        }
-
-        .category-skeleton .skeleton-circle {
-            width: 48px;
-            height: 48px;
-        }
-
-        .category-skeleton .skeleton-text {
-            width: 60px;
-            height: 12px;
-            margin: 0;
-        }
-
-        /* Product Skeleton for Grid */
-        .product-skeleton {
-            background: var(--white);
-            border-radius: var(--radius);
-            overflow: hidden;
-            border: 1px solid var(--gray-200);
-        }
-
-        .product-skeleton .skeleton-image {
-            height: 140px;
-        }
-
-        .product-skeleton .skeleton-text {
-            margin: 12px 12px 8px;
-        }
-
-        .product-skeleton .skeleton-text.short {
-            width: 60%;
-        }
-
-        .product-skeleton .skeleton-text.medium {
-            width: 80%;
-        }
-
-        /* Loading More Indicator */
-        .loading-more {
-            grid-column: 1 / -1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: var(--gray-500);
-            font-size: 14px;
-        }
-
-        .loading-more .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--gray-200);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         /* Responsive */
         @media (min-width: 640px) {
-            .products-grid {
-                grid-template-columns: repeat(3, 1fr);
+            .products-grid,
+            .conducive-grid {
+                grid-template-columns: repeat(4, 1fr);
                 gap: 16px;
+            }
+            
+            .product-card .product-image {
+                height: 180px;
             }
         }
 
         @media (min-width: 1024px) {
-            .products-grid {
-                grid-template-columns: repeat(4, 1fr);
+            .products-grid,
+            .conducive-grid {
+                grid-template-columns: repeat(6, 1fr);
                 gap: 20px;
             }
             
@@ -714,45 +782,34 @@
         </div>
 
         <!-- Location Bar -->
-        <div class="location-bar">
+        <div class="location-bar" id="locationBar">
             <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
             <button class="location-btn" id="locationBtn">
                 <span id="currentLocation">Kampala, Central</span>
                 <i class="fas fa-chevron-down"></i>
             </button>
         </div>
-
-        <!-- Categories - Dynamically Loaded from DB -->
-        <div class="categories-wrapper">
-            <div class="categories-scroll" id="categoriesContainer">
-                <!-- Categories will be loaded here -->
-                <div class="category-skeleton">
-                    <div class="skeleton-circle"></div>
-                    <div class="skeleton-text"></div>
-                </div>
-                <div class="category-skeleton">
-                    <div class="skeleton-circle"></div>
-                    <div class="skeleton-text"></div>
-                </div>
-                <div class="category-skeleton">
-                    <div class="skeleton-circle"></div>
-                    <div class="skeleton-text"></div>
-                </div>
-                <div class="category-skeleton">
-                    <div class="skeleton-circle"></div>
-                    <div class="skeleton-text"></div>
-                </div>
-                <div class="category-skeleton">
-                    <div class="skeleton-circle"></div>
-                    <div class="skeleton-text"></div>
-                </div>
-                <div class="category-skeleton">
-                    <div class="skeleton-circle"></div>
-                    <div class="skeleton-text"></div>
-                </div>
-            </div>
-        </div>
     </header>
+
+    <!-- Location Modal -->
+    <div class="modal" id="locationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Select Your Location</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            
+            <div class="current-location" id="useCurrentLocation">
+                <i class="fas fa-location-dot"></i>
+                <span>Use my current location</span>
+            </div>
+            
+            <h4 style="margin: 10px 0; color: var(--gray-600);">Popular Regions</h4>
+            <ul class="region-list" id="regionList">
+                <!-- Populated dynamically -->
+            </ul>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -766,78 +823,26 @@
             <div class="swiper-pagination"></div>
         </div>
 
-        <!-- Spotlight / Featured Deals - Using homepage_spotlights table -->
-        <section class="section" id="spotlightSection">
+        <!-- Meta Categories Menu -->
+        <div class="meta-categories" id="metaCategories">
+            <!-- Will be populated from homepage_spotlights -->
+        </div>
+
+        <!-- Meta Category Results -->
+        <section class="section" id="metaCategorySection">
             <div class="section-header">
-                <h2 class="section-title">⭐ Featured Deals</h2>
-                <a href="search-results.html?featured=true" class="section-link">View All</a>
+                <h2 class="section-title" id="metaCategoryTitle">⭐ Featured Deals</h2>
+                <a href="#" class="section-link" id="metaCategoryLink">View All</a>
             </div>
-            <div class="horizontal-scroll" id="spotlightScroll">
-                <div class="scroll-wrapper" id="spotlightWrapper">
+            <div class="horizontal-scroll" id="metaCategoryScroll">
+                <div class="scroll-wrapper" id="metaCategoryWrapper">
                     <!-- Will be populated -->
                 </div>
             </div>
         </section>
 
-        <!-- Trending Now - By view count -->
-        <section class="section">
-            <div class="section-header">
-                <h2 class="section-title">🔥 Trending Now in Uganda</h2>
-                <a href="search-results.html?sort=trending" class="section-link">View All</a>
-            </div>
-            <div class="horizontal-scroll" id="trendingScroll">
-                <div class="scroll-wrapper" id="trendingWrapper">
-                    <!-- Will be populated -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Top Picks Grid - With promotions (First 6) -->
-        <section class="section">
-            <div class="section-header">
-                <h2 class="section-title">⭐ Top Picks for You</h2>
-                <a href="search-results.html?sort=top" class="section-link">See More</a>
-            </div>
-            <div class="products-grid" id="topPicksGrid">
-                <!-- Skeleton loading will be shown here -->
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-            </div>
-        </section>
+        <!-- Conducive Category Sections -->
+        <div id="conduciveSections"></div>
 
         <!-- Deals Banner -->
         <div class="deals-banner">
@@ -847,105 +852,11 @@
             </div>
             <button onclick="window.location.href='search-results.html?deals=true'">Shop Now</button>
         </div>
-
-        <!-- Recently Posted - Using created_at (First 6) -->
-        <section class="section">
-            <div class="section-header">
-                <h2 class="section-title">📦 Recently Posted</h2>
-                <a href="search-results.html?sort=newest" class="section-link">See All</a>
-            </div>
-            <div class="products-grid" id="recentGrid">
-                <!-- Skeleton loading will be shown here -->
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Verified Sellers Section (First 6) -->
-        <section class="section">
-            <div class="section-header">
-                <h2 class="section-title">✅ Verified Sellers</h2>
-                <a href="search-results.html?verified=true" class="section-link">See All</a>
-            </div>
-            <div class="products-grid" id="verifiedGrid">
-                <!-- Skeleton loading will be shown here -->
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text medium"></div>
-                </div>
-            </div>
-        </section>
     </main>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-item active">
+        <a href="index.html" class="nav-item active" id="homeNav">
             <i class="fas fa-home"></i>
             <span>Home</span>
         </a>
@@ -985,83 +896,354 @@
         // STATE MANAGEMENT
         // ============================================
         let currentUser = null;
-        let savedAds = new Set();
         let lastScrollTop = 0;
         const scrollThreshold = 100;
+        let selectedRegion = localStorage.getItem('selectedRegion') || 'Kampala';
+        let selectedDistrict = localStorage.getItem('selectedDistrict') || 'Central';
 
         // ============================================
-        // LOAD CATEGORIES FROM DATABASE
+        // LOCATION SELECTION
         // ============================================
-        async function loadCategories() {
-            const container = document.getElementById('categoriesContainer');
+        const ugandaRegions = [
+            { region: 'Central', districts: ['Kampala', 'Wakiso', 'Mukono', 'Masaka', 'Entebbe'] },
+            { region: 'Western', districts: ['Mbarara', 'Kasese', 'Kabale', 'Fort Portal', 'Bushenyi'] },
+            { region: 'Eastern', districts: ['Jinja', 'Mbale', 'Tororo', 'Soroti', 'Gulu'] },
+            { region: 'Northern', districts: ['Lira', 'Arua', 'Kitgum', 'Nebbi', 'Moroto'] }
+        ];
+
+        function initLocationSelector() {
+            const locationBtn = document.getElementById('locationBtn');
+            const locationBar = document.getElementById('locationBar');
+            const modal = document.getElementById('locationModal');
+            const closeBtn = document.getElementById('closeModal');
+            const currentLocationBtn = document.getElementById('useCurrentLocation');
+            const regionList = document.getElementById('regionList');
+            const currentLocationSpan = document.getElementById('currentLocation');
+
+            // Set initial location
+            currentLocationSpan.textContent = `${selectedDistrict}, ${selectedRegion}`;
+
+            // Populate regions
+            regionList.innerHTML = '';
+            ugandaRegions.forEach(region => {
+                const li = document.createElement('li');
+                li.className = 'region-item';
+                li.innerHTML = `
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span class="region-name">${region.region}</span>
+                    <i class="fas fa-chevron-right" style="color: var(--gray-400);"></i>
+                `;
+                li.addEventListener('click', () => showDistricts(region.region, region.districts));
+                regionList.appendChild(li);
+            });
+
+            // Open modal
+            const openModal = () => modal.classList.add('show');
+            locationBar.addEventListener('click', openModal);
+            locationBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openModal();
+            });
+
+            // Close modal
+            closeBtn.addEventListener('click', () => modal.classList.remove('show'));
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('show');
+            });
+
+            // Use current location (simulated)
+            currentLocationBtn.addEventListener('click', () => {
+                showToast('Getting your location...');
+                setTimeout(() => {
+                    selectedRegion = 'Central';
+                    selectedDistrict = 'Kampala';
+                    localStorage.setItem('selectedRegion', selectedRegion);
+                    localStorage.setItem('selectedDistrict', selectedDistrict);
+                    currentLocationSpan.textContent = `${selectedDistrict}, ${selectedRegion}`;
+                    modal.classList.remove('show');
+                    showToast('Location updated to Kampala');
+                    
+                    // Reload products with new location filter
+                    loadConduciveSections();
+                    loadMetaCategory('featured');
+                }, 1500);
+            });
+        }
+
+        function showDistricts(region, districts) {
+            const modalContent = document.querySelector('.modal-content');
+            const originalContent = modalContent.innerHTML;
+            
+            modalContent.innerHTML = `
+                <div class="modal-header">
+                    <h3 class="modal-title">Select District in ${region}</h3>
+                    <button class="modal-close" id="backBtn">&larr;</button>
+                </div>
+                <ul class="region-list" id="districtList">
+                    ${districts.map(district => `
+                        <li class="region-item" data-district="${district}" data-region="${region}">
+                            <i class="fas fa-map-pin"></i>
+                            <span class="region-name">${district}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+
+            document.getElementById('backBtn').addEventListener('click', () => {
+                modalContent.innerHTML = originalContent;
+                initLocationSelector(); // Reinitialize
+            });
+
+            document.querySelectorAll('#districtList .region-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const district = item.dataset.district;
+                    const region = item.dataset.region;
+                    selectedRegion = region;
+                    selectedDistrict = district;
+                    localStorage.setItem('selectedRegion', region);
+                    localStorage.setItem('selectedDistrict', district);
+                    document.getElementById('currentLocation').textContent = `${district}, ${region}`;
+                    document.getElementById('locationModal').classList.remove('show');
+                    showToast(`Location set to ${district}, ${region}`);
+                    
+                    // Reload products with new location filter
+                    loadConduciveSections();
+                    loadMetaCategory('featured');
+                });
+            });
+        }
+
+        // ============================================
+        // LOAD META CATEGORIES FROM SPOTLIGHT
+        // ============================================
+        async function loadMetaCategories() {
+            const container = document.getElementById('metaCategories');
             
             try {
-                const { data: categories, error } = await sb
-                    .from('categories')
-                    .select('id, name, slug, icon, color_hex, parent_id')
+                // Get active spotlight types from homepage_spotlights
+                const { data: spotlights, error } = await sb
+                    .from('homepage_spotlights')
+                    .select('spotlight_type')
                     .eq('is_active', true)
-                    .is('parent_id', null)
-                    .order('display_order', { ascending: true })
-                    .order('name', { ascending: true })
-                    .limit(15);
+                    .gt('ends_at', new Date().toISOString())
+                    .order('display_order', { ascending: true });
                 
                 if (error) throw error;
                 
-                if (categories && categories.length > 0) {
-                    container.innerHTML = categories.map(cat => `
-                        <a href="category.html?id=${cat.id}" class="category-item">
-                            <div class="category-icon" style="color: ${cat.color_hex || '#2563EB'}">
-                                <i class="fas fa-${cat.icon || 'tag'}"></i>
-                            </div>
-                            <span class="category-name">${escapeHtml(cat.name)}</span>
-                        </a>
-                    `).join('');
-                } else {
-                    container.innerHTML = getDefaultCategories();
+                // Define meta category details
+                const metaCategoryMap = {
+                    'featured_deals': { icon: 'fa-star', name: 'Featured Deals', param: 'featured' },
+                    'trending_now': { icon: 'fa-fire', name: 'Trending Now', param: 'trending' },
+                    'new_arrivals': { icon: 'fa-clock', name: 'New Arrivals', param: 'new' },
+                    'budget_finds': { icon: 'fa-wallet', name: 'Budget Finds', param: 'budget' },
+                    'editor_picks': { icon: 'fa-pen', name: 'Editor Picks', param: 'editor' },
+                    'premium_listings': { icon: 'fa-crown', name: 'Premium', param: 'premium' },
+                    'local_favorites': { icon: 'fa-heart', name: 'Local Favorites', param: 'local' },
+                    'verified_sellers': { icon: 'fa-check-circle', name: 'Verified Sellers', param: 'verified' }
+                };
+                
+                let metaButtons = '';
+                
+                if (spotlights && spotlights.length > 0) {
+                    spotlights.forEach(spot => {
+                        const meta = metaCategoryMap[spot.spotlight_type];
+                        if (meta) {
+                            metaButtons += `
+                                <a href="spotlight.html?type=${encodeURIComponent(spot.spotlight_type)}" class="meta-category-btn" onclick="loadMetaCategory('${meta.param}'); event.preventDefault();">
+                                    <i class="fas ${meta.icon}"></i> ${meta.name}
+                                </a>
+                            `;
+                        }
+                    });
                 }
+                
+                // Add default meta categories if none in spotlight
+                if (metaButtons === '') {
+                    metaButtons = `
+                        <a href="search-results.html?featured=true" class="meta-category-btn active" onclick="loadMetaCategory('featured'); event.preventDefault();">
+                            <i class="fas fa-star"></i> Featured Deals
+                        </a>
+                        <a href="search-results.html?sort=trending" class="meta-category-btn" onclick="loadMetaCategory('trending'); event.preventDefault();">
+                            <i class="fas fa-fire"></i> Trending Now
+                        </a>
+                        <a href="search-results.html?sort=newest" class="meta-category-btn" onclick="loadMetaCategory('new'); event.preventDefault();">
+                            <i class="fas fa-clock"></i> New Arrivals
+                        </a>
+                        <a href="search-results.html?maxPrice=500000" class="meta-category-btn" onclick="loadMetaCategory('budget'); event.preventDefault();">
+                            <i class="fas fa-wallet"></i> Budget Finds
+                        </a>
+                    `;
+                }
+                
+                container.innerHTML = metaButtons;
+                
             } catch (error) {
-                console.error('Error loading categories:', error);
-                container.innerHTML = getDefaultCategories();
+                console.error('Error loading meta categories:', error);
+                // Fallback to default
+                container.innerHTML = `
+                    <a href="search-results.html?featured=true" class="meta-category-btn active" onclick="loadMetaCategory('featured'); event.preventDefault();">
+                        <i class="fas fa-star"></i> Featured Deals
+                    </a>
+                    <a href="search-results.html?sort=trending" class="meta-category-btn" onclick="loadMetaCategory('trending'); event.preventDefault();">
+                        <i class="fas fa-fire"></i> Trending Now
+                    </a>
+                    <a href="search-results.html?sort=newest" class="meta-category-btn" onclick="loadMetaCategory('new'); event.preventDefault();">
+                        <i class="fas fa-clock"></i> New Arrivals
+                    </a>
+                    <a href="search-results.html?maxPrice=500000" class="meta-category-btn" onclick="loadMetaCategory('budget'); event.preventDefault();">
+                        <i class="fas fa-wallet"></i> Budget Finds
+                    </a>
+                `;
             }
         }
 
-        // Fallback categories if DB is empty
-        function getDefaultCategories() {
-            const defaultCats = [
-                { id: 1, name: 'Phones', icon: 'mobile-alt', color: '#2563EB' },
-                { id: 2, name: 'Cars', icon: 'car', color: '#10B981' },
-                { id: 3, name: 'Houses', icon: 'home', color: '#F59E0B' },
-                { id: 4, name: 'Fashion', icon: 'tshirt', color: '#EF4444' },
-                { id: 5, name: 'Electronics', icon: 'laptop', color: '#8B5CF6' },
-                { id: 6, name: 'Furniture', icon: 'couch', color: '#EC4899' },
-                { id: 7, name: 'Jobs', icon: 'briefcase', color: '#14B8A6' },
-                { id: 8, name: 'Services', icon: 'tools', color: '#F97316' }
-            ];
+        // ============================================
+        // LOAD META CATEGORY PRODUCTS
+        // ============================================
+        async function loadMetaCategory(type) {
+            const title = document.getElementById('metaCategoryTitle');
+            const link = document.getElementById('metaCategoryLink');
+            const wrapper = document.getElementById('metaCategoryWrapper');
             
-            return defaultCats.map(cat => `
-                <a href="category.html?id=${cat.id}" class="category-item">
-                    <div class="category-icon" style="color: ${cat.color}">
-                        <i class="fas fa-${cat.icon}"></i>
-                    </div>
-                    <span class="category-name">${cat.name}</span>
-                </a>
-            `).join('');
+            // Update active button
+            document.querySelectorAll('.meta-category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            wrapper.innerHTML = getPlaceholderHorizontal();
+            
+            try {
+                let query = sb
+                    .from('ads')
+                    .select(`
+                        id,
+                        title,
+                        price,
+                        currency,
+                        is_negotiable,
+                        image_urls,
+                        view_count,
+                        region,
+                        district,
+                        seller_id,
+                        is_featured,
+                        profiles!ads_seller_id_fkey (is_verified),
+                        category:categories!ads_category_id_fkey (name)
+                    `)
+                    .eq('status', 'active');
+                
+                // Apply location filter
+                if (selectedDistrict && selectedDistrict !== 'All') {
+                    query = query.eq('district', selectedDistrict);
+                }
+                
+                // Apply different filters based on type
+                switch(type) {
+                    case 'featured':
+                        title.innerHTML = '⭐ Featured Deals';
+                        link.href = 'search-results.html?featured=true';
+                        query = query
+                            .eq('is_featured', true)
+                            .order('created_at', { ascending: false });
+                        break;
+                    case 'trending':
+                        title.innerHTML = '🔥 Trending Now';
+                        link.href = 'search-results.html?sort=trending';
+                        query = query
+                            .order('view_count', { ascending: false })
+                            .order('created_at', { ascending: false });
+                        break;
+                    case 'new':
+                        title.innerHTML = '🆕 New Arrivals';
+                        link.href = 'search-results.html?sort=newest';
+                        query = query
+                            .order('created_at', { ascending: false });
+                        break;
+                    case 'budget':
+                        title.innerHTML = '💰 Budget Finds';
+                        link.href = 'search-results.html?maxPrice=500000';
+                        query = query
+                            .lt('price', 500000)
+                            .order('price', { ascending: true });
+                        break;
+                    case 'editor':
+                        title.innerHTML = '✏️ Editor Picks';
+                        link.href = 'search-results.html?editor=true';
+                        query = query
+                            .order('view_count', { ascending: false })
+                            .limit(20);
+                        break;
+                    case 'premium':
+                        title.innerHTML = '👑 Premium Listings';
+                        link.href = 'search-results.html?premium=true';
+                        query = query
+                            .eq('is_featured', true)
+                            .order('price', { ascending: false });
+                        break;
+                    case 'local':
+                        title.innerHTML = '❤️ Local Favorites';
+                        link.href = 'search-results.html?local=true';
+                        query = query
+                            .order('view_count', { ascending: false });
+                        break;
+                    case 'verified':
+                        title.innerHTML = '✅ Verified Sellers';
+                        link.href = 'search-results.html?verified=true';
+                        query = query
+                            .eq('profiles.is_verified', true)
+                            .order('created_at', { ascending: false });
+                        break;
+                }
+                
+                const { data: ads, error } = await query.limit(10);
+                
+                if (error) throw error;
+                
+                if (ads && ads.length > 0) {
+                    wrapper.innerHTML = ads.map(ad => createHorizontalCard(ad, type)).join('');
+                } else {
+                    wrapper.innerHTML = getEmptyHorizontal(type);
+                }
+                
+            } catch (error) {
+                console.error('Error loading meta category:', error);
+                wrapper.innerHTML = getPlaceholderHorizontal();
+            }
         }
 
         // ============================================
-        // LOAD SPOTLIGHT/FEATURED ADS FROM homepage_spotlights
+        // LOAD CONDUCIVE SECTIONS (Fixed relationship issue)
         // ============================================
-        async function loadSpotlightAds() {
-            const container = document.getElementById('spotlightWrapper');
+        async function loadConduciveSections() {
+            const container = document.getElementById('conduciveSections');
+            container.innerHTML = getSkeletonConduciveSections(5);
             
             try {
-                const { data: spotlights, error } = await sb
-                    .from('homepage_spotlights')
-                    .select(`
-                        id,
-                        spotlight_type,
-                        display_title,
-                        ads!homepage_spotlights_ad_id_fkey (
+                // First get all active categories
+                const { data: categories, error: catError } = await sb
+                    .from('categories')
+                    .select('id, name, display_name, conducive_tagline, conducive_icon, color_hex')
+                    .eq('is_active', true)
+                    .order('display_order', { ascending: true })
+                    .order('name', { ascending: true });
+                
+                if (catError) throw catError;
+                
+                if (!categories || categories.length === 0) {
+                    container.innerHTML = getEmptyConduciveSections();
+                    return;
+                }
+                
+                // For each category, get its ads using the correct foreign key relationship
+                let html = '';
+                
+                for (const cat of categories) {
+                    const { data: ads, error: adsError } = await sb
+                        .from('ads')
+                        .select(`
                             id,
                             title,
                             price,
@@ -1071,218 +1253,75 @@
                             view_count,
                             region,
                             district,
-                            seller_id,
-                            profiles!ads_seller_id_fkey (is_verified, created_at),
-                            ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
-                        )
-                    `)
-                    .eq('is_active', true)
-                    .gt('ends_at', new Date().toISOString())
-                    .order('display_order', { ascending: true })
-                    .limit(10);
-                
-                if (error) throw error;
-                
-                if (spotlights && spotlights.length > 0) {
-                    container.innerHTML = spotlights.map(spotlight => 
-                        createHorizontalCard(spotlight.ads, spotlight.spotlight_type)
-                    ).join('');
-                } else {
-                    container.innerHTML = getPlaceholderHorizontal();
+                            created_at,
+                            profiles!ads_seller_id_fkey (is_verified)
+                        `)
+                        .eq('status', 'active')
+                        .eq('category_id', cat.id)
+                        .order('created_at', { ascending: false })
+                        .limit(4);
+                    
+                    if (adsError) {
+                        console.error(`Error loading ads for category ${cat.name}:`, adsError);
+                        continue;
+                    }
+                    
+                    if (ads && ads.length > 0) {
+                        const displayName = cat.display_name || `Shop ${cat.name}`;
+                        const tagline = cat.conducive_tagline || `Best deals on ${cat.name}`;
+                        const icon = cat.conducive_icon || 'fa-tag';
+                        const color = cat.color_hex || '#2563EB';
+                        
+                        html += `
+                            <section class="conducive-section">
+                                <div class="conducive-header">
+                                    <div class="conducive-title">
+                                        <div class="conducive-icon" style="color: ${color}">
+                                            <i class="fas ${icon}"></i>
+                                        </div>
+                                        <div class="conducive-text">
+                                            <h3>${escapeHtml(displayName)}</h3>
+                                            <p>${escapeHtml(tagline)}</p>
+                                        </div>
+                                    </div>
+                                    <a href="category.html?category=${encodeURIComponent(cat.name)}&id=${cat.id}" class="conducive-link">See all <i class="fas fa-chevron-right"></i></a>
+                                </div>
+                                <div class="conducive-grid">
+                                    ${ads.map(ad => createConduciveCard(ad)).join('')}
+                                </div>
+                            </section>
+                        `;
+                    }
                 }
-            } catch (error) {
-                console.error('Error loading spotlights:', error);
-                container.innerHTML = getPlaceholderHorizontal();
-            }
-        }
-
-        // ============================================
-        // LOAD TRENDING ADS (by view_count) - First 6
-        // ============================================
-        async function loadTrendingAds() {
-            const container = document.getElementById('trendingWrapper');
-            
-            try {
-                const { data: ads, error } = await sb
-                    .from('ads')
-                    .select(`
-                        id,
-                        title,
-                        price,
-                        currency,
-                        is_negotiable,
-                        image_urls,
-                        view_count,
-                        region,
-                        district,
-                        seller_id,
-                        profiles!ads_seller_id_fkey (is_verified, created_at),
-                        ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
-                    `)
-                    .eq('status', 'active')
-                    .order('view_count', { ascending: false })
-                    .limit(6); // Load only 6 trending ads
                 
-                if (error) throw error;
-                
-                if (ads && ads.length > 0) {
-                    container.innerHTML = ads.map(ad => createHorizontalCard(ad)).join('');
+                if (html === '') {
+                    container.innerHTML = getEmptyConduciveSections();
                 } else {
-                    container.innerHTML = getPlaceholderHorizontal();
+                    container.innerHTML = html;
                 }
+                
             } catch (error) {
-                console.error('Error loading trending:', error);
-                container.innerHTML = getPlaceholderHorizontal();
-            }
-        }
-
-        // ============================================
-        // LOAD TOP PICKS (with promotions) - First 6
-        // ============================================
-        async function loadTopPicks() {
-            const container = document.getElementById('topPicksGrid');
-            
-            try {
-                const { data: ads, error } = await sb
-                    .from('ads')
-                    .select(`
-                        id,
-                        title,
-                        price,
-                        currency,
-                        is_negotiable,
-                        image_urls,
-                        view_count,
-                        region,
-                        district,
-                        seller_id,
-                        profiles!ads_seller_id_fkey (is_verified, created_at),
-                        ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
-                    `)
-                    .eq('status', 'active')
-                    .order('is_featured', { ascending: false })
-                    .order('view_count', { ascending: false })
-                    .limit(6); // Load only 6 top picks
-                
-                if (error) throw error;
-                
-                if (ads && ads.length > 0) {
-                    container.innerHTML = ads.map(ad => createGridCard(ad)).join('');
-                } else {
-                    container.innerHTML = getPlaceholderGrid();
-                }
-            } catch (error) {
-                console.error('Error loading top picks:', error);
-                container.innerHTML = getPlaceholderGrid();
-            }
-        }
-
-        // ============================================
-        // LOAD RECENT ADS (by created_at) - First 6
-        // ============================================
-        async function loadRecentAds() {
-            const container = document.getElementById('recentGrid');
-            
-            try {
-                const { data: ads, error } = await sb
-                    .from('ads')
-                    .select(`
-                        id,
-                        title,
-                        price,
-                        currency,
-                        is_negotiable,
-                        image_urls,
-                        view_count,
-                        region,
-                        district,
-                        seller_id,
-                        profiles!ads_seller_id_fkey (is_verified, created_at),
-                        ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
-                    `)
-                    .eq('status', 'active')
-                    .order('created_at', { ascending: false })
-                    .limit(6); // Load only 6 recent ads
-                
-                if (error) throw error;
-                
-                if (ads && ads.length > 0) {
-                    container.innerHTML = ads.map(ad => createGridCard(ad)).join('');
-                } else {
-                    container.innerHTML = getPlaceholderGrid();
-                }
-            } catch (error) {
-                console.error('Error loading recent:', error);
-                container.innerHTML = getPlaceholderGrid();
-            }
-        }
-
-        // ============================================
-        // LOAD VERIFIED SELLER ADS - First 6
-        // ============================================
-        async function loadVerifiedAds() {
-            const container = document.getElementById('verifiedGrid');
-            
-            try {
-                const { data: ads, error } = await sb
-                    .from('ads')
-                    .select(`
-                        id,
-                        title,
-                        price,
-                        currency,
-                        is_negotiable,
-                        image_urls,
-                        view_count,
-                        region,
-                        district,
-                        seller_id,
-                        profiles!ads_seller_id_fkey (is_verified, created_at),
-                        ad_promotions!ad_promotions_ad_id_fkey (promotion_type, is_active)
-                    `)
-                    .eq('status', 'active')
-                    .eq('profiles.is_verified', true)
-                    .order('created_at', { ascending: false })
-                    .limit(6); // Load only 6 verified seller ads
-                
-                if (error) throw error;
-                
-                if (ads && ads.length > 0) {
-                    container.innerHTML = ads.map(ad => createGridCard(ad)).join('');
-                } else {
-                    container.innerHTML = getPlaceholderGrid();
-                }
-            } catch (error) {
-                console.error('Error loading verified ads:', error);
-                container.innerHTML = getPlaceholderGrid();
+                console.error('Error loading conducive sections:', error);
+                container.innerHTML = getErrorConduciveSections();
             }
         }
 
         // ============================================
         // CARD CREATORS
         // ============================================
-        function createHorizontalCard(product, spotlightType = null) {
-            const imageUrl = product.image_urls?.[0] || '';
+        function createHorizontalCard(product, metaType = null) {
+            const imageUrl = product.image_urls?.[0] || 'https://via.placeholder.com/160?text=No+Image';
             const price = product.price ? `UGX ${parseInt(product.price).toLocaleString()}` : 'Call for price';
             const location = product.district || product.region || 'Uganda';
             const isVerified = product.profiles?.is_verified || false;
-            const sellerYears = getSellerYears(product.profiles?.created_at);
-            
-            // Check for active promotions
-            const promotions = product.ad_promotions || [];
-            const hasFeatured = promotions.some(p => p.promotion_type === 'featured' && p.is_active);
-            const hasUrgent = promotions.some(p => p.promotion_type === 'urgent' && p.is_active);
             
             let badgeText = '';
-            if (spotlightType) {
-                badgeText = spotlightType.replace('_', ' ').toUpperCase();
-            } else if (hasFeatured) {
-                badgeText = 'FEATURED';
-            } else if (hasUrgent) {
-                badgeText = 'URGENT';
-            } else if (product.view_count > 100) {
-                badgeText = 'POPULAR';
-            }
+            if (metaType === 'featured') badgeText = 'FEATURED';
+            else if (metaType === 'trending') badgeText = 'TRENDING';
+            else if (metaType === 'new') badgeText = 'NEW';
+            else if (metaType === 'budget') badgeText = 'BUDGET';
+            else if (metaType === 'premium') badgeText = 'PREMIUM';
+            else if (metaType === 'verified') badgeText = 'VERIFIED';
             
             return `
                 <a href="ad-detail.html?id=${product.id}" class="product-card-horizontal" onclick="trackClick(${product.id})">
@@ -1290,19 +1329,23 @@
                         <img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy"
                              onload="this.style.opacity=1" style="opacity:0; transition:opacity 0.3s"
                              onerror="this.src='https://via.placeholder.com/160?text=No+Image'">
-                        ${badgeText ? `<span class="product-badge ${hasFeatured ? 'featured' : ''}">${badgeText}</span>` : ''}
+                        ${badgeText ? `<span class="product-badge featured">${badgeText}</span>` : ''}
                     </div>
                     <div class="product-info">
-                        <div class="product-title">${escapeHtml(product.title.substring(0, 30))}...</div>
+                        <div class="product-title">${escapeHtml(product.title.substring(0, 30))}${product.title.length > 30 ? '...' : ''}</div>
                         <div class="product-price">${price} ${product.is_negotiable ? '<small>Neg.</small>' : ''}</div>
                         <div class="product-meta">
                             <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(location)}</span>
                             <span><i class="far fa-eye"></i> ${product.view_count || 0}</span>
                         </div>
-                        <div class="moq-badge">MOQ: 1 piece</div>
+                        ${product.category ? `
+                            <div class="product-meta">
+                                <span><i class="fas fa-tag"></i> ${escapeHtml(product.category.name)}</span>
+                            </div>
+                        ` : ''}
                         ${isVerified ? `
                             <div class="verified-badge">
-                                <i class="fas fa-check-circle"></i> Verified • ${sellerYears}
+                                <i class="fas fa-check-circle"></i> Verified
                             </div>
                         ` : ''}
                     </div>
@@ -1310,16 +1353,9 @@
             `;
         }
 
-        function createGridCard(product) {
-            const imageUrl = product.image_urls?.[0] || '';
+        function createConduciveCard(product) {
+            const imageUrl = product.image_urls?.[0] || 'https://via.placeholder.com/200?text=No+Image';
             const price = product.price ? `UGX ${parseInt(product.price).toLocaleString()}` : 'Call for price';
-            const location = product.district || product.region || 'Uganda';
-            const isVerified = product.profiles?.is_verified || false;
-            const sellerYears = getSellerYears(product.profiles?.created_at);
-            
-            // Check for promotions
-            const promotions = product.ad_promotions || [];
-            const hasFeatured = promotions.some(p => p.promotion_type === 'featured' && p.is_active);
             
             return `
                 <a href="ad-detail.html?id=${product.id}" class="product-card" onclick="trackClick(${product.id})">
@@ -1327,18 +1363,16 @@
                         <img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy"
                              onload="this.style.opacity=1" style="opacity:0; transition:opacity 0.3s"
                              onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
-                        ${hasFeatured ? '<span class="product-badge featured">FEATURED</span>' : ''}
                     </div>
                     <div class="product-info">
-                        <div class="product-title">${escapeHtml(product.title)}</div>
-                        <div class="product-price">${price} ${product.is_negotiable ? '<small>Neg.</small>' : ''}</div>
+                        <div class="product-title">${escapeHtml(product.title.substring(0, 25))}${product.title.length > 25 ? '...' : ''}</div>
+                        <div class="product-price">${price}</div>
                         <div class="product-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(location)}</span>
+                            <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(product.district || product.region || 'Uganda')}</span>
                         </div>
-                        <div class="moq-badge">MOQ: 1 piece</div>
-                        ${isVerified ? `
+                        ${product.profiles?.is_verified ? `
                             <div class="verified-badge">
-                                <i class="fas fa-check-circle"></i> Verified • ${sellerYears}
+                                <i class="fas fa-check-circle"></i> Verified
                             </div>
                         ` : ''}
                     </div>
@@ -1346,19 +1380,13 @@
             `;
         }
 
-        function getSellerYears(createdAt) {
-            if (!createdAt) return 'New';
-            const years = Math.floor((new Date() - new Date(createdAt)) / (365 * 24 * 60 * 60 * 1000));
-            return years > 0 ? `${years}YR` : 'New';
-        }
-
         // ============================================
-        // PLACEHOLDERS
+        // PLACEHOLDERS & EMPTY STATES
         // ============================================
         function getPlaceholderHorizontal() {
-            const placeholders = [];
+            let html = '';
             for (let i = 0; i < 6; i++) {
-                placeholders.push(`
+                html += `
                     <div class="product-card-horizontal">
                         <div class="product-image skeleton"></div>
                         <div class="product-info">
@@ -1367,26 +1395,90 @@
                             <div class="skeleton-text" style="width: 40%"></div>
                         </div>
                     </div>
-                `);
+                `;
             }
-            return placeholders.join('');
+            return html;
         }
 
-        function getPlaceholderGrid() {
-            const placeholders = [];
-            for (let i = 0; i < 6; i++) {
-                placeholders.push(`
+        function getEmptyHorizontal(type) {
+            const typeNames = {
+                'featured': 'Featured Deals',
+                'trending': 'Trending Now',
+                'new': 'New Arrivals',
+                'budget': 'Budget Finds',
+                'editor': 'Editor Picks',
+                'premium': 'Premium Listings',
+                'local': 'Local Favorites',
+                'verified': 'Verified Sellers'
+            };
+            
+            return `
+                <div style="text-align: center; padding: 40px; width: 100%;">
+                    <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray-400); margin-bottom: 16px;"></i>
+                    <h3 style="color: var(--gray-600); margin-bottom: 8px;">No ${typeNames[type] || 'Products'} Available</h3>
+                    <p style="color: var(--gray-500);">Check back later for new listings</p>
+                </div>
+            `;
+        }
+
+        function getSkeletonConduciveSections(count = 3) {
+            let html = '';
+            for (let s = 0; s < count; s++) {
+                html += `
+                    <section class="conducive-section">
+                        <div class="conducive-header">
+                            <div class="conducive-title">
+                                <div class="conducive-icon skeleton-circle"></div>
+                                <div class="conducive-text">
+                                    <div class="skeleton-text" style="width: 200px; height: 20px;"></div>
+                                    <div class="skeleton-text" style="width: 150px; height: 16px;"></div>
+                                </div>
+                            </div>
+                            <div class="skeleton-text" style="width: 60px;"></div>
+                        </div>
+                        <div class="conducive-grid">
+                            ${getSkeletonConducive()}
+                        </div>
+                    </section>
+                `;
+            }
+            return html;
+        }
+
+        function getSkeletonConducive() {
+            let html = '';
+            for (let i = 0; i < 4; i++) {
+                html += `
                     <div class="product-card">
                         <div class="skeleton-image"></div>
                         <div class="product-info">
                             <div class="skeleton-text" style="width: 90%"></div>
                             <div class="skeleton-text" style="width: 60%"></div>
-                            <div class="skeleton-text" style="width: 40%"></div>
                         </div>
                     </div>
-                `);
+                `;
             }
-            return placeholders.join('');
+            return html;
+        }
+
+        function getEmptyConduciveSections() {
+            return `
+                <div class="conducive-section" style="text-align: center; padding: 40px;">
+                    <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray-400); margin-bottom: 16px;"></i>
+                    <h3 style="color: var(--gray-600); margin-bottom: 8px;">No Products Available</h3>
+                    <p style="color: var(--gray-500);">Check back later for new listings</p>
+                </div>
+            `;
+        }
+
+        function getErrorConduciveSections() {
+            return `
+                <div class="conducive-section" style="text-align: center; padding: 40px;">
+                    <i class="fas fa-exclamation-circle" style="font-size: 48px; color: var(--danger); margin-bottom: 16px;"></i>
+                    <h3 style="color: var(--gray-600); margin-bottom: 8px;">Error Loading Products</h3>
+                    <p style="color: var(--gray-500);">Please try again later</p>
+                </div>
+            `;
         }
 
         // ============================================
@@ -1398,14 +1490,12 @@
             window.addEventListener('scroll', () => {
                 const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 
-                // Add shadow on scroll
                 if (scrollTop > 10) {
                     header.classList.add('scrolled');
                 } else {
                     header.classList.remove('scrolled');
                 }
                 
-                // Hide/show header on scroll direction
                 if (scrollTop > lastScrollTop && scrollTop > scrollThreshold) {
                     header.classList.add('hidden');
                 } else {
@@ -1417,41 +1507,47 @@
         }
 
         // ============================================
-        // TRACK CLICK (for ad_engagement table)
+        // HOME NAVIGATION
+        // ============================================
+        document.getElementById('homeNav').addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Reset meta category buttons
+            document.querySelectorAll('.meta-category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const firstBtn = document.querySelector('.meta-category-btn');
+            if (firstBtn) {
+                firstBtn.classList.add('active');
+            }
+            
+            // Reload featured deals
+            loadMetaCategory('featured');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ============================================
+        // TRACK CLICK
         // ============================================
         window.trackClick = async function(adId) {
             try {
                 const { data: { user } } = await sb.auth.getUser();
                 
-                // Insert into ad_engagement table
                 await sb
                     .from('ad_engagement')
                     .insert({
                         ad_id: adId,
                         user_id: user?.id || null,
                         action: 'click',
-                        ip_address: await getClientIP(),
                         user_agent: navigator.userAgent
                     });
-                
-                // Increment view count
-                await sb.rpc('increment_ad_view_count', { ad_id_param: adId });
                 
             } catch (error) {
                 console.error('Error tracking click:', error);
             }
         };
-
-        // Helper to get client IP (simplified)
-        async function getClientIP() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                return data.ip;
-            } catch {
-                return 'unknown';
-            }
-        }
 
         // ============================================
         // UTILITIES
@@ -1485,19 +1581,25 @@
             // Setup scroll behavior
             setupScrollBehavior();
 
+            // Initialize location selector
+            initLocationSelector();
+
             // Check authentication
             const { data: { user } } = await sb.auth.getUser();
             if (user) {
                 currentUser = user;
             }
 
-            // Load all data from database - each limited to 6 items
-            await loadCategories();
-            await loadSpotlightAds();
-            await loadTrendingAds();
-            await loadTopPicks();
-            await loadRecentAds();
-            await loadVerifiedAds();
+            // Load meta categories from spotlight
+            await loadMetaCategories();
+
+            // Load conducive sections (only categories with products)
+            await loadConduciveSections();
+
+            // Load initial meta category (Featured Deals)
+            setTimeout(() => {
+                loadMetaCategory('featured');
+            }, 500);
 
             // Search functionality
             const searchBtn = document.getElementById('searchBtn');
@@ -1514,11 +1616,6 @@
                 if (e.key === 'Enter') {
                     searchBtn.click();
                 }
-            });
-
-            // Location button
-            document.getElementById('locationBtn').addEventListener('click', () => {
-                showToast('Location selection coming soon');
             });
         });
     </script>
