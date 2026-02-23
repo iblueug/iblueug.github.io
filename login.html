@@ -121,16 +121,35 @@
       align-items: center;
       justify-content: center;
       letter-spacing: 0.3px;
+    }
+
+    #loginBtn {
       background: #0B4F6C;
       color: white;
       box-shadow: 0 10px 18px -8px rgba(11, 79, 108, 0.4);
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
       border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .google-btn {
+      background: white;
+      color: #2c3e50;
+      border: 1.5px solid #e2e9f0;
+      margin-bottom: 0.8rem;
+      gap: 10px;
+    }
+
+    .google-btn:hover {
+      background: #f8fafc;
+    }
+
+    .google-btn img {
+      width: 20px;
+      height: 20px;
     }
 
     button:active {
       transform: scale(0.98);
-      box-shadow: 0 5px 12px -6px rgba(11, 79, 108, 0.5);
     }
 
     button:disabled {
@@ -180,7 +199,7 @@
       display: flex;
       align-items: center;
       text-align: center;
-      margin: 1.5rem 0 0.5rem;
+      margin: 1.5rem 0;
       color: #7a8e9e;
       font-size: 0.85rem;
     }
@@ -268,18 +287,23 @@
     
     <div class="remember-me">
       <input type="checkbox" id="rememberMe" checked>
-      <label for="rememberMe">Remember me on this device</label>
+      <label for="rememberMe">Keep me logged in on this device</label>
     </div>
     
     <button id="loginBtn">Sign in →</button>
+    
+    <div class="divider">or continue with</div>
+    
+    <button id="googleLoginBtn" class="google-btn">
+      <img src="https://www.google.com/favicon.ico" alt="Google" style="width: 20px; height: 20px;">
+      <span>Continue with Google</span>
+    </button>
     
     <!-- Auth Links: Register and Forgot Password -->
     <div class="auth-links">
       <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
       <a href="register.html" class="register-link">Create account →</a>
     </div>
-    
-    <div class="divider">secure login</div>
     
     <div id="msg" class="msg" role="status"></div>
   </div>
@@ -292,16 +316,18 @@
       // Supabase configuration
       const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
       const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
-      const sb = supabase.createClient(supabaseUrl, supabaseKey, { 
-        auth: { 
-          flowType: 'pkce',
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-          persistSession: true
-        } 
-      });
+      
+      // Session storage keys
+      const STORAGE_KEYS = {
+        SAVED_EMAIL: 'iblue_saved_email',
+        REMEMBER_ME: 'iblue_remember_me',
+        SESSION_EXPIRY: 'iblue_session_expiry',
+        INTENDED_PAGE: 'iblue_intended_page',
+        PREVIOUS_PAGE: 'iblue_previous_page',
+        AUTH_PERSISTENCE: 'iblue_auth_persistence'
+      };
 
-      // Allowed redirect URLs
+      // Allowed redirect URLs (internal pages only)
       const ALLOWED_REDIRECTS = [
         'https://iblueug.github.io/dashboard.html',
         'https://iblueug.github.io/messages.html',
@@ -309,17 +335,45 @@
         'https://iblueug.github.io/chat.html',
         'https://iblueug.github.io/my-ads.html',
         'https://iblueug.github.io/post-ad.html',
-        'https://iblueug.github.io/saved-ads.html'
+        'https://iblueug.github.io/saved.html',
+        'https://iblueug.github.io/index.html',
+        'https://iblueug.github.io/categories.html',
+        'https://iblueug.github.io/category.html',
+        'https://iblueug.github.io/search-results.html',
+        'https://iblueug.github.io/ad-detail.html',
+        'https://iblueug.github.io/seller-profile.html',
+        'https://iblueug.github.io/notifications.html',
+        'https://iblueug.github.io/help-support.html'
       ];
 
-      const DEFAULT_REDIRECT = 'https://iblueug.github.io/dashboard.html';
+      const DEFAULT_REDIRECT = 'https://iblueug.github.io/index.html';
 
       // DOM elements
       const msgEl = document.getElementById('msg');
       const loginBtn = document.getElementById('loginBtn');
+      const googleBtn = document.getElementById('googleLoginBtn');
       const emailInput = document.getElementById('email');
       const passwordInput = document.getElementById('password');
       const rememberMeCheckbox = document.getElementById('rememberMe');
+
+      // Initialize Supabase client
+      let sb;
+
+      // --- Initialize Supabase client with persistence settings ---
+      function initSupabaseClient(rememberMe) {
+        return supabase.createClient(supabaseUrl, supabaseKey, { 
+          auth: { 
+            flowType: 'pkce',
+            autoRefreshToken: rememberMe,
+            detectSessionInUrl: true,
+            persistSession: rememberMe,
+            storage: rememberMe ? localStorage : sessionStorage
+          } 
+        });
+      }
+
+      // Initialize with default
+      sb = initSupabaseClient(true);
 
       // --- Message handler ---
       function showMessage(text, type = 'error') {
@@ -334,117 +388,169 @@
         }
       }
 
-      // --- Get intended redirect ---
+      // --- Get the previous page the user came from ---
+      function getPreviousPage() {
+        const referrer = document.referrer;
+        
+        // Check if referrer is from our site
+        if (referrer && referrer.includes('iblueug.github.io')) {
+          // Store it for later use
+          sessionStorage.setItem(STORAGE_KEYS.PREVIOUS_PAGE, referrer);
+          return referrer;
+        }
+        
+        // Check if we stored it earlier
+        const storedPrevious = sessionStorage.getItem(STORAGE_KEYS.PREVIOUS_PAGE);
+        if (storedPrevious) {
+          return storedPrevious;
+        }
+        
+        return null;
+      }
+
+      // --- Get intended redirect (prioritizes previous page, then redirect param, then default) ---
       function getIntendedRedirect() {
-        // Priority 1: Check for redirect parameter in URL
+        // Priority 1: Check if we came from a page on our site
+        const previousPage = getPreviousPage();
+        if (previousPage && ALLOWED_REDIRECTS.some(url => previousPage.startsWith(url))) {
+          // Clear it after retrieving
+          sessionStorage.removeItem(STORAGE_KEYS.PREVIOUS_PAGE);
+          return previousPage;
+        }
+        
+        // Priority 2: Check for redirect parameter in URL
         const urlParams = new URLSearchParams(window.location.search);
         const urlRedirect = urlParams.get('redirect');
         
         if (urlRedirect) {
-          // If it's a relative path, make it absolute
+          // Handle relative paths
+          let fullUrl = urlRedirect;
           if (urlRedirect.startsWith('/')) {
-            const baseUrl = 'https://iblueug.github.io';
-            const fullUrl = baseUrl + urlRedirect;
-            if (ALLOWED_REDIRECTS.includes(fullUrl)) {
-              return fullUrl;
-            }
+            fullUrl = 'https://iblueug.github.io' + urlRedirect;
           }
-          // If it's a full URL
-          if (ALLOWED_REDIRECTS.includes(urlRedirect)) {
-            return urlRedirect;
+          
+          if (ALLOWED_REDIRECTS.includes(fullUrl)) {
+            return fullUrl;
           }
         }
         
-        // Priority 2: Check sessionStorage for intended page
-        const sessionRedirect = sessionStorage.getItem('intendedPage');
-        if (sessionRedirect && ALLOWED_REDIRECTS.includes(sessionRedirect)) {
-          // Clear it after retrieving
-          sessionStorage.removeItem('intendedPage');
-          return sessionRedirect;
+        // Priority 3: Check storage for intended page
+        const rememberMe = localStorage.getItem(STORAGE_KEYS.REMEMBER_ME) === 'true';
+        const storage = rememberMe ? localStorage : sessionStorage;
+        const storedRedirect = storage.getItem(STORAGE_KEYS.INTENDED_PAGE);
+        
+        if (storedRedirect && ALLOWED_REDIRECTS.includes(storedRedirect)) {
+          storage.removeItem(STORAGE_KEYS.INTENDED_PAGE);
+          return storedRedirect;
         }
         
-        // Priority 3: Check localStorage for intended page (for "remember me")
-        const localRedirect = localStorage.getItem('intendedPage');
-        if (localRedirect && ALLOWED_REDIRECTS.includes(localRedirect)) {
-          // Clear it after retrieving
-          localStorage.removeItem('intendedPage');
-          return localRedirect;
-        }
-        
-        // Priority 4: Check referrer to see if they came from another page
-        const referrer = document.referrer;
-        if (referrer) {
-          for (const allowedUrl of ALLOWED_REDIRECTS) {
-            if (referrer.startsWith(allowedUrl)) {
-              return allowedUrl;
-            }
-          }
-        }
-        
-        // Default to dashboard
+        // Default to home page
         return DEFAULT_REDIRECT;
       }
 
-      // --- Save credentials ---
-      function saveCredentials(email) {
-        if (rememberMeCheckbox.checked) {
-          localStorage.setItem('savedEmail', email);
-          localStorage.setItem('rememberMe', 'true');
-        } else {
-          localStorage.removeItem('savedEmail');
-          localStorage.setItem('rememberMe', 'false');
-        }
-      }
-
-      // --- Load saved email ---
-      function loadSavedCredentials() {
-        const savedEmail = localStorage.getItem('savedEmail');
-        const rememberMe = localStorage.getItem('rememberMe') === 'true';
-        
-        if (savedEmail && rememberMe) {
-          emailInput.value = savedEmail;
-          rememberMeCheckbox.checked = true;
-        }
-      }
-
-      // --- Process and store redirect parameter ---
-      function processRedirectParameter() {
+      // --- Store the intended page before redirecting to login ---
+      function storeIntendedPage() {
         const urlParams = new URLSearchParams(window.location.search);
         const redirect = urlParams.get('redirect');
         
         if (redirect) {
           let redirectUrl = redirect;
-          
-          // Handle relative paths
           if (redirect.startsWith('/')) {
             redirectUrl = 'https://iblueug.github.io' + redirect;
           }
           
-          // Store the intended page based on "remember me" preference
           if (ALLOWED_REDIRECTS.includes(redirectUrl)) {
-            if (rememberMeCheckbox.checked) {
-              localStorage.setItem('intendedPage', redirectUrl);
-            } else {
-              sessionStorage.setItem('intendedPage', redirectUrl);
-            }
-            
-            // Show a message to the user
-            const pageName = redirectUrl.split('/').pop().replace('.html', '');
-            showMessage(`You'll be redirected to ${pageName} after login`, 'info');
+            const rememberMe = rememberMeCheckbox.checked;
+            const storage = rememberMe ? localStorage : sessionStorage;
+            storage.setItem(STORAGE_KEYS.INTENDED_PAGE, redirectUrl);
           }
-          
-          // Clean the URL by removing the redirect parameter
-          const cleanUrl = window.location.pathname;
-          history.replaceState({}, document.title, cleanUrl);
         }
       }
 
-      // --- Login handler ---
+      // --- Save preferences ---
+      function savePreferences(email, rememberMe) {
+        if (rememberMe) {
+          localStorage.setItem(STORAGE_KEYS.SAVED_EMAIL, email);
+          localStorage.setItem(STORAGE_KEYS.REMEMBER_ME, 'true');
+          
+          const expiryDate = new Date();
+          expiryDate.setDate(expiryDate.getDate() + 30);
+          localStorage.setItem(STORAGE_KEYS.SESSION_EXPIRY, expiryDate.toISOString());
+        } else {
+          sessionStorage.setItem(STORAGE_KEYS.SAVED_EMAIL, email);
+          localStorage.setItem(STORAGE_KEYS.REMEMBER_ME, 'false');
+          
+          localStorage.removeItem(STORAGE_KEYS.SAVED_EMAIL);
+          localStorage.removeItem(STORAGE_KEYS.SESSION_EXPIRY);
+        }
+      }
+
+      // --- Load saved email ---
+      function loadSavedCredentials() {
+        const rememberMe = localStorage.getItem(STORAGE_KEYS.REMEMBER_ME) === 'true';
+        const savedEmail = rememberMe ? 
+          localStorage.getItem(STORAGE_KEYS.SAVED_EMAIL) : 
+          sessionStorage.getItem(STORAGE_KEYS.SAVED_EMAIL);
+        
+        // Check session expiry
+        if (rememberMe) {
+          const expiryStr = localStorage.getItem(STORAGE_KEYS.SESSION_EXPIRY);
+          if (expiryStr) {
+            const expiryDate = new Date(expiryStr);
+            if (new Date() > expiryDate) {
+              localStorage.removeItem(STORAGE_KEYS.SAVED_EMAIL);
+              localStorage.removeItem(STORAGE_KEYS.SESSION_EXPIRY);
+              localStorage.setItem(STORAGE_KEYS.REMEMBER_ME, 'false');
+              rememberMeCheckbox.checked = false;
+              return;
+            }
+          }
+        }
+        
+        if (savedEmail) {
+          emailInput.value = savedEmail;
+          rememberMeCheckbox.checked = rememberMe;
+        }
+      }
+
+      // --- Configure session persistence ---
+      function configureSessionPersistence(rememberMe) {
+        sb = initSupabaseClient(rememberMe);
+        localStorage.setItem(STORAGE_KEYS.AUTH_PERSISTENCE, rememberMe ? 'local' : 'session');
+        
+        if (!rememberMe) {
+          sb.auth.signOut().catch(console.error);
+          
+          const keysToRemove = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && (key.includes('supabase') || key.includes('sb-'))) {
+              keysToRemove.push(key);
+            }
+          }
+          keysToRemove.forEach(key => localStorage.removeItem(key));
+        }
+      }
+
+      // --- Handle successful login ---
+      async function handleSuccessfulLogin() {
+        const redirectUrl = getIntendedRedirect();
+        const destinationPage = redirectUrl.split('/').pop().replace('.html', '') || 'home';
+        
+        showMessage(`✓ Success! Redirecting to ${destinationPage}...`, 'success');
+        
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 1000);
+      }
+
+      // --- Email/Password Login ---
       async function loginHandler(e) {
         e.preventDefault();
         
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
+        const rememberMe = rememberMeCheckbox.checked;
         
         if (!email) {
           showMessage('📧 Email is required', 'error');
@@ -462,7 +568,8 @@
           return;
         }
 
-        saveCredentials(email);
+        configureSessionPersistence(rememberMe);
+        savePreferences(email, rememberMe);
 
         loginBtn.disabled = true;
         loginBtn.textContent = 'Signing in...';
@@ -480,17 +587,14 @@
             return;
           }
 
-          // Get the intended redirect URL
-          const redirectUrl = getIntendedRedirect();
-          
-          // Show success message with destination
-          const destinationPage = redirectUrl.split('/').pop().replace('.html', '');
-          showMessage(`✓ Success! Redirecting to ${destinationPage}...`, 'success');
-          
-          // Redirect after a brief delay
-          setTimeout(() => {
-            window.location.href = redirectUrl;
-          }, 1000);
+          if (rememberMe && data.session) {
+            const expiresAt = new Date();
+            expiresAt.setDate(expiresAt.getDate() + 30);
+            localStorage.setItem(STORAGE_KEYS.SESSION_EXPIRY, expiresAt.toISOString());
+            localStorage.setItem(STORAGE_KEYS.SAVED_EMAIL, email);
+          }
+
+          await handleSuccessfulLogin();
           
         } catch (err) {
           showMessage('Network error. Try again.', 'error');
@@ -499,9 +603,98 @@
         }
       }
 
+      // --- Google Login ---
+      async function googleLoginHandler() {
+        const rememberMe = rememberMeCheckbox.checked;
+        
+        try {
+          googleBtn.disabled = true;
+          googleBtn.innerHTML = '<span>Connecting to Google...</span>';
+          
+          // Store the intended redirect before Google OAuth
+          const redirectUrl = getIntendedRedirect();
+          const storage = rememberMe ? localStorage : sessionStorage;
+          storage.setItem(STORAGE_KEYS.INTENDED_PAGE, redirectUrl);
+          
+          // Configure persistence for the OAuth flow
+          configureSessionPersistence(rememberMe);
+          
+          // Get the current page URL for the redirect
+          const redirectTo = window.location.origin + '/login.html';
+          
+          const { data, error } = await sb.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: redirectTo,
+              queryParams: {
+                access_type: 'offline',
+                prompt: 'consent'
+              }
+            }
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          // The OAuth redirect will happen automatically
+          
+        } catch (error) {
+          console.error('Google login error:', error);
+          showMessage(error.message || 'Failed to sign in with Google', 'error');
+          googleBtn.disabled = false;
+          googleBtn.innerHTML = `
+            <img src="https://www.google.com/favicon.ico" alt="Google" style="width: 20px; height: 20px;">
+            <span>Continue with Google</span>
+          `;
+        }
+      }
+
+      // --- Handle OAuth callback and session restoration ---
+      async function handleOAuthCallback() {
+        try {
+          // Check if this is an OAuth callback
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const accessToken = hashParams.get('access_token');
+          
+          if (accessToken) {
+            showMessage('Completing Google sign in...', 'info');
+            
+            const { data, error } = await sb.auth.getSession();
+            
+            if (error) {
+              console.error('OAuth callback error:', error);
+              showMessage('Failed to complete Google sign in', 'error');
+              return;
+            }
+            
+            if (data.session) {
+              // Apply remember me settings
+              const rememberMe = localStorage.getItem(STORAGE_KEYS.REMEMBER_ME) === 'true';
+              
+              if (rememberMe) {
+                const expiresAt = new Date();
+                expiresAt.setDate(expiresAt.getDate() + 30);
+                localStorage.setItem(STORAGE_KEYS.SESSION_EXPIRY, expiresAt.toISOString());
+              }
+              
+              await handleSuccessfulLogin();
+            }
+          }
+        } catch (error) {
+          console.error('OAuth callback handling error:', error);
+        }
+      }
+
       // --- Check existing session ---
       async function checkExistingSession() {
         try {
+          // First, handle any OAuth callback
+          await handleOAuthCallback();
+          
+          const rememberMe = localStorage.getItem(STORAGE_KEYS.REMEMBER_ME) === 'true';
+          configureSessionPersistence(rememberMe);
+          
           const { data, error } = await sb.auth.getSession();
           
           if (error) {
@@ -510,12 +703,24 @@
           }
           
           if (data && data.session) {
+            // Check session expiry for remember me
+            if (rememberMe) {
+              const expiryStr = localStorage.getItem(STORAGE_KEYS.SESSION_EXPIRY);
+              if (expiryStr) {
+                const expiryDate = new Date(expiryStr);
+                if (new Date() > expiryDate) {
+                  await sb.auth.signOut();
+                  return;
+                }
+              }
+            }
+            
             // User is already logged in, redirect to intended page
             const redirectUrl = getIntendedRedirect();
             
             // Only redirect if we're not already on the login page with a hash
             if (!window.location.hash && window.location.pathname.includes('login')) {
-              const destinationPage = redirectUrl.split('/').pop().replace('.html', '');
+              const destinationPage = redirectUrl.split('/').pop().replace('.html', '') || 'home';
               showMessage(`Already logged in! Redirecting to ${destinationPage}...`, 'info');
               
               setTimeout(() => {
@@ -528,21 +733,46 @@
         }
       }
 
+      // --- Setup visibility handler for session expiry ---
+      function setupVisibilityHandler() {
+        document.addEventListener('visibilitychange', function() {
+          if (document.visibilityState === 'visible') {
+            const rememberMe = localStorage.getItem(STORAGE_KEYS.REMEMBER_ME) === 'true';
+            if (rememberMe) {
+              const expiryStr = localStorage.getItem(STORAGE_KEYS.SESSION_EXPIRY);
+              if (expiryStr) {
+                const expiryDate = new Date(expiryStr);
+                if (new Date() > expiryDate) {
+                  localStorage.removeItem(STORAGE_KEYS.SAVED_EMAIL);
+                  localStorage.removeItem(STORAGE_KEYS.SESSION_EXPIRY);
+                  localStorage.setItem(STORAGE_KEYS.REMEMBER_ME, 'false');
+                  showMessage('Your session has expired. Please log in again.', 'info');
+                }
+              }
+            }
+          }
+        });
+      }
+
       // --- Initialize ---
       document.addEventListener('DOMContentLoaded', () => {
         loadSavedCredentials();
         
-        // Process redirect parameter after loading saved credentials
-        // to ensure "remember me" state is known
+        // Store the previous page if we came from somewhere
+        getPreviousPage();
+        
+        // Process any redirect parameters
         setTimeout(() => {
-          processRedirectParameter();
+          storeIntendedPage();
         }, 100);
         
         checkExistingSession();
+        setupVisibilityHandler();
       });
 
       // Event listeners
       loginBtn.addEventListener('click', loginHandler);
+      googleBtn.addEventListener('click', googleLoginHandler);
 
       emailInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -558,9 +788,19 @@
         }
       });
 
+      rememberMeCheckbox.addEventListener('change', function(e) {
+        configureSessionPersistence(e.target.checked);
+      });
+
       window.addEventListener('pageshow', function() {
         loginBtn.disabled = false;
         loginBtn.textContent = 'Sign in →';
+        
+        googleBtn.disabled = false;
+        googleBtn.innerHTML = `
+          <img src="https://www.google.com/favicon.ico" alt="Google" style="width: 20px; height: 20px;">
+          <span>Continue with Google</span>
+        `;
       });
 
     })();
