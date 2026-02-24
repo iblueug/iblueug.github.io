@@ -80,89 +80,35 @@
             text-decoration: none;
         }
 
-        .logo-icon {
+        /* Logo with italic i in circle */
+        .logo-circle {
             width: 36px;
             height: 36px;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: 8px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: 700;
-            font-size: 18px;
+            font-weight: 800;
+            font-size: 24px;
+            font-style: italic;
         }
 
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
+        .logo-text span {
+            color: var(--primary);
         }
 
-        .header-actions a {
+        /* Search icon at the right of iBlueUG */
+        .search-icon-header {
             color: var(--gray-600);
-            text-decoration: none;
             font-size: 20px;
-            position: relative;
-        }
-
-        .badge {
-            position: absolute;
-            top: -6px;
-            right: -8px;
-            background: var(--danger);
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
-            min-width: 16px;
-            text-align: center;
-        }
-
-        /* Search */
-        .search-container {
-            padding: 8px 16px 12px;
-        }
-
-        .search-wrapper {
-            display: flex;
-            align-items: center;
-            background: var(--gray-100);
-            border: 1px solid var(--gray-300);
-            border-radius: 24px;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-
-        .search-wrapper:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-        }
-
-        .search-icon {
-            padding: 0 12px;
-            color: var(--gray-400);
-            font-size: 16px;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 12px 0;
-            border: none;
-            background: transparent;
-            font-size: 15px;
-            outline: none;
-        }
-
-        .search-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            font-weight: 600;
-            font-size: 14px;
             cursor: pointer;
-            height: 44px;
+            padding: 8px;
+        }
+
+        .search-icon-header:active {
+            color: var(--primary);
         }
 
         /* Location Bar */
@@ -464,6 +410,101 @@
             font-size: 10px;
         }
 
+        /* NEW: Recommended Wholesalers Section */
+        .wholesaler-card-horizontal {
+            flex: 0 0 180px;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s;
+            padding: 16px 12px;
+        }
+
+        .wholesaler-card-horizontal:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .wholesaler-avatar-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 12px;
+            position: relative;
+        }
+
+        .wholesaler-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 28px;
+            overflow: hidden;
+        }
+
+        .wholesaler-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .wholesaler-verified {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--secondary);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            border: 2px solid white;
+        }
+
+        .wholesaler-name {
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wholesaler-location {
+            font-size: 12px;
+            color: var(--gray-500);
+            text-align: center;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .wholesaler-stats {
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 600;
+            text-align: center;
+            background: #EFF6FF;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            width: 100%;
+        }
+
         /* Conducive Category Sections */
         .conducive-section {
             padding: 16px;
@@ -723,6 +764,18 @@
             background: var(--gray-200);
         }
 
+        /* Fade-in animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Responsive */
         @media (min-width: 640px) {
             .products-grid,
@@ -754,30 +807,14 @@
     <!-- Header -->
     <header class="header" id="mainHeader">
         <div class="header-top">
+            <!-- Logo with italic i in circle -->
             <a href="index.html" class="logo">
-                <div class="logo-icon">iB</div>
-                <span>iBlue Uganda</span>
+                <div class="logo-circle">i</div>
+                <span class="logo-text">iBlue<span>UG</span></span>
             </a>
-            <div class="header-actions">
-                <a href="wholesalers.html">
-                    <i class="fas fa-store"></i>
-                    <span class="badge">B2B</span>
-                </a>
-                <a href="cart.html">
-                    <i class="fas fa-shopping-cart"></i>
-                </a>
-                <a href="profile.html">
-                    <i class="far fa-user"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- Search -->
-        <div class="search-container">
-            <div class="search-wrapper">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search phones, cars, houses..." id="searchInput">
-                <button class="search-btn" id="searchBtn">Search</button>
+            <!-- Search icon at the right of iBlueUG -->
+            <div class="search-icon-header" id="headerSearchIcon">
+                <i class="fas fa-search"></i>
             </div>
         </div>
 
@@ -825,23 +862,26 @@
 
         <!-- Meta Categories Menu -->
         <div class="meta-categories" id="metaCategories">
-            <!-- Will be populated from homepage_spotlights -->
+            <!-- Will be populated from homepage_spotlights with updated links -->
         </div>
 
-        <!-- Meta Category Results -->
-        <section class="section" id="metaCategorySection">
+        <!-- Recommended Wholesalers Section (KEPT) -->
+        <section class="section">
             <div class="section-header">
-                <h2 class="section-title" id="metaCategoryTitle">⭐ Featured Deals</h2>
-                <a href="#" class="section-link" id="metaCategoryLink">View All</a>
+                <h2 class="section-title">
+                    <i class="fas fa-handshake"></i>
+                    Recommended Wholesalers
+                </h2>
+                <a href="wholesalers.html" class="section-link">See All <i class="fas fa-arrow-right"></i></a>
             </div>
-            <div class="horizontal-scroll" id="metaCategoryScroll">
-                <div class="scroll-wrapper" id="metaCategoryWrapper">
-                    <!-- Will be populated -->
+            <div class="horizontal-scroll" id="wholesalersScroll">
+                <div class="scroll-wrapper" id="wholesalersWrapper">
+                    <!-- Populated by JavaScript -->
                 </div>
             </div>
         </section>
 
-        <!-- Conducive Category Sections -->
+        <!-- Conducive Category Sections (directly after wholesalers, Featured Deals removed) -->
         <div id="conduciveSections"></div>
 
         <!-- Deals Banner -->
@@ -860,9 +900,9 @@
             <i class="fas fa-home"></i>
             <span>Home</span>
         </a>
-        <a href="help-support.html" class="nav-item">
-            <i class="far fa-lightbulb"></i>
-            <span>Help</span>
+        <a href="wholesalers.html" class="nav-item">
+            <i class="fas fa-warehouse"></i>
+            <span>B2B</span>
         </a>
         <a href="chat.html" class="nav-item">
             <i class="far fa-comment"></i>
@@ -872,9 +912,9 @@
             <i class="fas fa-shopping-cart"></i>
             <span>Cart</span>
         </a>
-        <a href="dashboard.html" class="nav-item">
+        <a href="profile.html" class="nav-item">
             <i class="far fa-user"></i>
-            <span>Dashboard</span>
+            <span>Profile</span>
         </a>
     </nav>
 
@@ -900,6 +940,18 @@
         const scrollThreshold = 100;
         let selectedRegion = localStorage.getItem('selectedRegion') || 'Kampala';
         let selectedDistrict = localStorage.getItem('selectedDistrict') || 'Central';
+
+        // ============================================
+        // SEARCH - Header icon opens search.html
+        // ============================================
+        function setupSearch() {
+            const searchIcon = document.getElementById('headerSearchIcon');
+
+            // Click on search icon opens search.html
+            searchIcon.addEventListener('click', () => {
+                window.location.href = 'search.html';
+            });
+        }
 
         // ============================================
         // LOCATION SELECTION
@@ -965,7 +1017,7 @@
                     
                     // Reload products with new location filter
                     loadConduciveSections();
-                    loadMetaCategory('featured');
+                    loadRecommendedWholesalers();
                 }, 1500);
             });
         }
@@ -1008,7 +1060,7 @@
                     
                     // Reload products with new location filter
                     loadConduciveSections();
-                    loadMetaCategory('featured');
+                    loadRecommendedWholesalers();
                 });
             });
         }
@@ -1030,16 +1082,16 @@
                 
                 if (error) throw error;
                 
-                // Define meta category details
+                // Define meta category details with correct page links
                 const metaCategoryMap = {
-                    'featured_deals': { icon: 'fa-star', name: 'Featured Deals', param: 'featured' },
-                    'trending_now': { icon: 'fa-fire', name: 'Trending Now', param: 'trending' },
-                    'new_arrivals': { icon: 'fa-clock', name: 'New Arrivals', param: 'new' },
-                    'budget_finds': { icon: 'fa-wallet', name: 'Budget Finds', param: 'budget' },
-                    'editor_picks': { icon: 'fa-pen', name: 'Editor Picks', param: 'editor' },
-                    'premium_listings': { icon: 'fa-crown', name: 'Premium', param: 'premium' },
-                    'local_favorites': { icon: 'fa-heart', name: 'Local Favorites', param: 'local' },
-                    'verified_sellers': { icon: 'fa-check-circle', name: 'Verified Sellers', param: 'verified' }
+                    'featured_deals': { icon: 'fa-star', name: 'Featured Deals', page: 'featured-deals.html' },
+                    'trending_now': { icon: 'fa-fire', name: 'Trending Now', page: 'trending-now.html' },
+                    'new_arrivals': { icon: 'fa-clock', name: 'New Arrivals', page: 'new-arrivals.html' },
+                    'budget_finds': { icon: 'fa-wallet', name: 'Budget Finds', page: 'budget-finds.html' },
+                    'editor_picks': { icon: 'fa-pen', name: 'Editor Picks', page: 'editor-picks.html' },
+                    'premium_listings': { icon: 'fa-crown', name: 'Premium', page: 'premium-listings.html' },
+                    'local_favorites': { icon: 'fa-heart', name: 'Local Favorites', page: 'local-favorites.html' },
+                    'verified_sellers': { icon: 'fa-check-circle', name: 'Verified Sellers', page: 'verified-sellers.html' }
                 };
                 
                 let metaButtons = '';
@@ -1049,7 +1101,7 @@
                         const meta = metaCategoryMap[spot.spotlight_type];
                         if (meta) {
                             metaButtons += `
-                                <a href="spotlight.html?type=${encodeURIComponent(spot.spotlight_type)}" class="meta-category-btn" onclick="loadMetaCategory('${meta.param}'); event.preventDefault();">
+                                <a href="${meta.page}" class="meta-category-btn">
                                     <i class="fas ${meta.icon}"></i> ${meta.name}
                                 </a>
                             `;
@@ -1060,17 +1112,17 @@
                 // Add default meta categories if none in spotlight
                 if (metaButtons === '') {
                     metaButtons = `
-                        <a href="search-results.html?featured=true" class="meta-category-btn active" onclick="loadMetaCategory('featured'); event.preventDefault();">
+                        <a href="featured-deals.html" class="meta-category-btn">
                             <i class="fas fa-star"></i> Featured Deals
                         </a>
-                        <a href="search-results.html?sort=trending" class="meta-category-btn" onclick="loadMetaCategory('trending'); event.preventDefault();">
-                            <i class="fas fa-fire"></i> Trending Now
-                        </a>
-                        <a href="search-results.html?sort=newest" class="meta-category-btn" onclick="loadMetaCategory('new'); event.preventDefault();">
+                        <a href="new-arrivals.html" class="meta-category-btn">
                             <i class="fas fa-clock"></i> New Arrivals
                         </a>
-                        <a href="search-results.html?maxPrice=500000" class="meta-category-btn" onclick="loadMetaCategory('budget'); event.preventDefault();">
+                        <a href="budget-finds.html" class="meta-category-btn">
                             <i class="fas fa-wallet"></i> Budget Finds
+                        </a>
+                        <a href="verified-sellers.html" class="meta-category-btn">
+                            <i class="fas fa-check-circle"></i> Verified Sellers
                         </a>
                     `;
                 }
@@ -1081,141 +1133,128 @@
                 console.error('Error loading meta categories:', error);
                 // Fallback to default
                 container.innerHTML = `
-                    <a href="search-results.html?featured=true" class="meta-category-btn active" onclick="loadMetaCategory('featured'); event.preventDefault();">
+                    <a href="featured-deals.html" class="meta-category-btn">
                         <i class="fas fa-star"></i> Featured Deals
                     </a>
-                    <a href="search-results.html?sort=trending" class="meta-category-btn" onclick="loadMetaCategory('trending'); event.preventDefault();">
-                        <i class="fas fa-fire"></i> Trending Now
-                    </a>
-                    <a href="search-results.html?sort=newest" class="meta-category-btn" onclick="loadMetaCategory('new'); event.preventDefault();">
+                    <a href="new-arrivals.html" class="meta-category-btn">
                         <i class="fas fa-clock"></i> New Arrivals
                     </a>
-                    <a href="search-results.html?maxPrice=500000" class="meta-category-btn" onclick="loadMetaCategory('budget'); event.preventDefault();">
+                    <a href="budget-finds.html" class="meta-category-btn">
                         <i class="fas fa-wallet"></i> Budget Finds
+                    </a>
+                    <a href="verified-sellers.html" class="meta-category-btn">
+                        <i class="fas fa-check-circle"></i> Verified Sellers
                     </a>
                 `;
             }
         }
 
         // ============================================
-        // LOAD META CATEGORY PRODUCTS
+        // LOAD RECOMMENDED WHOLESALERS (KEPT)
         // ============================================
-        async function loadMetaCategory(type) {
-            const title = document.getElementById('metaCategoryTitle');
-            const link = document.getElementById('metaCategoryLink');
-            const wrapper = document.getElementById('metaCategoryWrapper');
+        async function loadRecommendedWholesalers() {
+            const wrapper = document.getElementById('wholesalersWrapper');
+            if (!wrapper) return;
             
-            // Update active button
-            document.querySelectorAll('.meta-category-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            if (event && event.target) {
-                event.target.classList.add('active');
-            }
-            
-            wrapper.innerHTML = getPlaceholderHorizontal();
+            wrapper.innerHTML = getPlaceholderWholesalers();
             
             try {
-                let query = sb
+                // Get sellers with most active ads
+                const { data: adsData, error: adsError } = await sb
                     .from('ads')
-                    .select(`
-                        id,
-                        title,
-                        price,
-                        currency,
-                        is_negotiable,
-                        image_urls,
-                        view_count,
-                        region,
-                        district,
-                        seller_id,
-                        is_featured,
-                        profiles!ads_seller_id_fkey (is_verified),
-                        category:categories!ads_category_id_fkey (name)
-                    `)
+                    .select('seller_id')
                     .eq('status', 'active');
-                
-                // Apply location filter
-                if (selectedDistrict && selectedDistrict !== 'All') {
-                    query = query.eq('district', selectedDistrict);
+
+                if (adsError) throw adsError;
+                if (!adsData || adsData.length === 0) {
+                    wrapper.innerHTML = '<p style="padding: 20px;">No wholesalers found</p>';
+                    return;
                 }
-                
-                // Apply different filters based on type
-                switch(type) {
-                    case 'featured':
-                        title.innerHTML = '⭐ Featured Deals';
-                        link.href = 'search-results.html?featured=true';
-                        query = query
-                            .eq('is_featured', true)
-                            .order('created_at', { ascending: false });
-                        break;
-                    case 'trending':
-                        title.innerHTML = '🔥 Trending Now';
-                        link.href = 'search-results.html?sort=trending';
-                        query = query
-                            .order('view_count', { ascending: false })
-                            .order('created_at', { ascending: false });
-                        break;
-                    case 'new':
-                        title.innerHTML = '🆕 New Arrivals';
-                        link.href = 'search-results.html?sort=newest';
-                        query = query
-                            .order('created_at', { ascending: false });
-                        break;
-                    case 'budget':
-                        title.innerHTML = '💰 Budget Finds';
-                        link.href = 'search-results.html?maxPrice=500000';
-                        query = query
-                            .lt('price', 500000)
-                            .order('price', { ascending: true });
-                        break;
-                    case 'editor':
-                        title.innerHTML = '✏️ Editor Picks';
-                        link.href = 'search-results.html?editor=true';
-                        query = query
-                            .order('view_count', { ascending: false })
-                            .limit(20);
-                        break;
-                    case 'premium':
-                        title.innerHTML = '👑 Premium Listings';
-                        link.href = 'search-results.html?premium=true';
-                        query = query
-                            .eq('is_featured', true)
-                            .order('price', { ascending: false });
-                        break;
-                    case 'local':
-                        title.innerHTML = '❤️ Local Favorites';
-                        link.href = 'search-results.html?local=true';
-                        query = query
-                            .order('view_count', { ascending: false });
-                        break;
-                    case 'verified':
-                        title.innerHTML = '✅ Verified Sellers';
-                        link.href = 'search-results.html?verified=true';
-                        query = query
-                            .eq('profiles.is_verified', true)
-                            .order('created_at', { ascending: false });
-                        break;
+
+                // Count ads per seller
+                const sellerCounts = {};
+                adsData.forEach(ad => {
+                    sellerCounts[ad.seller_id] = (sellerCounts[ad.seller_id] || 0) + 1;
+                });
+
+                // Get top 8 sellers with most ads
+                const topSellerIds = Object.keys(sellerCounts)
+                    .sort((a, b) => sellerCounts[b] - sellerCounts[a])
+                    .slice(0, 8);
+
+                if (topSellerIds.length === 0) {
+                    wrapper.innerHTML = '<p style="padding: 20px;">No wholesalers found</p>';
+                    return;
                 }
-                
-                const { data: ads, error } = await query.limit(10);
-                
-                if (error) throw error;
-                
-                if (ads && ads.length > 0) {
-                    wrapper.innerHTML = ads.map(ad => createHorizontalCard(ad, type)).join('');
-                } else {
-                    wrapper.innerHTML = getEmptyHorizontal(type);
+
+                // Get seller profiles
+                const { data: sellers, error: sellersError } = await sb
+                    .from('profiles')
+                    .select('id, full_name, avatar_url, location, district, is_verified')
+                    .in('id', topSellerIds);
+
+                if (sellersError) throw sellersError;
+                if (!sellers || sellers.length === 0) {
+                    wrapper.innerHTML = '<p style="padding: 20px;">No wholesalers found</p>';
+                    return;
                 }
-                
+
+                // Render wholesalers
+                wrapper.innerHTML = sellers.map(seller => {
+                    const initials = seller.full_name
+                        ?.split(' ')
+                        .map(n => n[0])
+                        .join('')
+                        .toUpperCase()
+                        .substring(0, 2) || 'BS';
+
+                    return `
+                        <a href="seller-profile.html?id=${seller.id}" class="wholesaler-card-horizontal">
+                            <div class="wholesaler-avatar-container">
+                                <div class="wholesaler-avatar">
+                                    ${seller.avatar_url ? 
+                                        `<img src="${seller.avatar_url}" alt="${seller.full_name}">` : 
+                                        `<span>${initials}</span>`
+                                    }
+                                </div>
+                                ${seller.is_verified ? 
+                                    '<span class="wholesaler-verified"><i class="fas fa-check"></i></span>' : 
+                                    ''}
+                            </div>
+                            <div class="wholesaler-name">${escapeHtml(seller.full_name || 'Business')}</div>
+                            <div class="wholesaler-location">
+                                <i class="fas fa-map-marker-alt"></i> ${escapeHtml(seller.district || seller.location || 'Uganda')}
+                            </div>
+                            <div class="wholesaler-stats">${sellerCounts[seller.id] || 0} active ads</div>
+                        </a>
+                    `;
+                }).join('');
+
             } catch (error) {
-                console.error('Error loading meta category:', error);
-                wrapper.innerHTML = getPlaceholderHorizontal();
+                console.error('Error loading wholesalers:', error);
+                wrapper.innerHTML = '<p style="padding: 20px;">Error loading wholesalers</p>';
             }
         }
 
+        function getPlaceholderWholesalers() {
+            let html = '';
+            for (let i = 0; i < 6; i++) {
+                html += `
+                    <div class="wholesaler-card-horizontal">
+                        <div class="wholesaler-avatar-container">
+                            <div class="wholesaler-avatar skeleton" style="border-radius: 50%;"></div>
+                        </div>
+                        <div class="skeleton-text" style="width: 80%; margin: 8px auto;"></div>
+                        <div class="skeleton-text" style="width: 60%; margin: 4px auto;"></div>
+                        <div class="skeleton-text" style="width: 70%; margin: 8px auto;"></div>
+                    </div>
+                `;
+            }
+            return html;
+        }
+
         // ============================================
-        // LOAD CONDUCIVE SECTIONS (Fixed relationship issue)
+        // LOAD CONDUCIVE SECTIONS
         // ============================================
         async function loadConduciveSections() {
             const container = document.getElementById('conduciveSections');
@@ -1273,7 +1312,7 @@
                         const color = cat.color_hex || '#2563EB';
                         
                         html += `
-                            <section class="conducive-section">
+                            <section class="conducive-section fade-in">
                                 <div class="conducive-header">
                                     <div class="conducive-title">
                                         <div class="conducive-icon" style="color: ${color}">
@@ -1298,6 +1337,20 @@
                     container.innerHTML = getEmptyConduciveSections();
                 } else {
                     container.innerHTML = html;
+                    
+                    // Setup intersection observer for fade-in sections
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('visible');
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: 0.1, rootMargin: '50px' });
+                    
+                    document.querySelectorAll('.conducive-section').forEach(section => {
+                        observer.observe(section);
+                    });
                 }
                 
             } catch (error) {
@@ -1309,50 +1362,6 @@
         // ============================================
         // CARD CREATORS
         // ============================================
-        function createHorizontalCard(product, metaType = null) {
-            const imageUrl = product.image_urls?.[0] || 'https://via.placeholder.com/160?text=No+Image';
-            const price = product.price ? `UGX ${parseInt(product.price).toLocaleString()}` : 'Call for price';
-            const location = product.district || product.region || 'Uganda';
-            const isVerified = product.profiles?.is_verified || false;
-            
-            let badgeText = '';
-            if (metaType === 'featured') badgeText = 'FEATURED';
-            else if (metaType === 'trending') badgeText = 'TRENDING';
-            else if (metaType === 'new') badgeText = 'NEW';
-            else if (metaType === 'budget') badgeText = 'BUDGET';
-            else if (metaType === 'premium') badgeText = 'PREMIUM';
-            else if (metaType === 'verified') badgeText = 'VERIFIED';
-            
-            return `
-                <a href="ad-detail.html?id=${product.id}" class="product-card-horizontal" onclick="trackClick(${product.id})">
-                    <div class="product-image">
-                        <img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy"
-                             onload="this.style.opacity=1" style="opacity:0; transition:opacity 0.3s"
-                             onerror="this.src='https://via.placeholder.com/160?text=No+Image'">
-                        ${badgeText ? `<span class="product-badge featured">${badgeText}</span>` : ''}
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">${escapeHtml(product.title.substring(0, 30))}${product.title.length > 30 ? '...' : ''}</div>
-                        <div class="product-price">${price} ${product.is_negotiable ? '<small>Neg.</small>' : ''}</div>
-                        <div class="product-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(location)}</span>
-                            <span><i class="far fa-eye"></i> ${product.view_count || 0}</span>
-                        </div>
-                        ${product.category ? `
-                            <div class="product-meta">
-                                <span><i class="fas fa-tag"></i> ${escapeHtml(product.category.name)}</span>
-                            </div>
-                        ` : ''}
-                        ${isVerified ? `
-                            <div class="verified-badge">
-                                <i class="fas fa-check-circle"></i> Verified
-                            </div>
-                        ` : ''}
-                    </div>
-                </a>
-            `;
-        }
-
         function createConduciveCard(product) {
             const imageUrl = product.image_urls?.[0] || 'https://via.placeholder.com/200?text=No+Image';
             const price = product.price ? `UGX ${parseInt(product.price).toLocaleString()}` : 'Call for price';
@@ -1383,49 +1392,11 @@
         // ============================================
         // PLACEHOLDERS & EMPTY STATES
         // ============================================
-        function getPlaceholderHorizontal() {
-            let html = '';
-            for (let i = 0; i < 6; i++) {
-                html += `
-                    <div class="product-card-horizontal">
-                        <div class="product-image skeleton"></div>
-                        <div class="product-info">
-                            <div class="skeleton-text" style="width: 90%"></div>
-                            <div class="skeleton-text" style="width: 60%"></div>
-                            <div class="skeleton-text" style="width: 40%"></div>
-                        </div>
-                    </div>
-                `;
-            }
-            return html;
-        }
-
-        function getEmptyHorizontal(type) {
-            const typeNames = {
-                'featured': 'Featured Deals',
-                'trending': 'Trending Now',
-                'new': 'New Arrivals',
-                'budget': 'Budget Finds',
-                'editor': 'Editor Picks',
-                'premium': 'Premium Listings',
-                'local': 'Local Favorites',
-                'verified': 'Verified Sellers'
-            };
-            
-            return `
-                <div style="text-align: center; padding: 40px; width: 100%;">
-                    <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray-400); margin-bottom: 16px;"></i>
-                    <h3 style="color: var(--gray-600); margin-bottom: 8px;">No ${typeNames[type] || 'Products'} Available</h3>
-                    <p style="color: var(--gray-500);">Check back later for new listings</p>
-                </div>
-            `;
-        }
-
         function getSkeletonConduciveSections(count = 3) {
             let html = '';
             for (let s = 0; s < count; s++) {
                 html += `
-                    <section class="conducive-section">
+                    <section class="conducive-section fade-in">
                         <div class="conducive-header">
                             <div class="conducive-title">
                                 <div class="conducive-icon skeleton-circle"></div>
@@ -1512,18 +1483,6 @@
         document.getElementById('homeNav').addEventListener('click', (e) => {
             e.preventDefault();
             
-            // Reset meta category buttons
-            document.querySelectorAll('.meta-category-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            const firstBtn = document.querySelector('.meta-category-btn');
-            if (firstBtn) {
-                firstBtn.classList.add('active');
-            }
-            
-            // Reload featured deals
-            loadMetaCategory('featured');
-            
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
@@ -1581,6 +1540,9 @@
             // Setup scroll behavior
             setupScrollBehavior();
 
+            // Setup search (header icon opens search.html)
+            setupSearch();
+
             // Initialize location selector
             initLocationSelector();
 
@@ -1593,30 +1555,11 @@
             // Load meta categories from spotlight
             await loadMetaCategories();
 
+            // Load recommended wholesalers (KEPT)
+            await loadRecommendedWholesalers();
+
             // Load conducive sections (only categories with products)
             await loadConduciveSections();
-
-            // Load initial meta category (Featured Deals)
-            setTimeout(() => {
-                loadMetaCategory('featured');
-            }, 500);
-
-            // Search functionality
-            const searchBtn = document.getElementById('searchBtn');
-            const searchInput = document.getElementById('searchInput');
-            
-            searchBtn.addEventListener('click', () => {
-                const query = searchInput.value.trim();
-                if (query) {
-                    window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
-                }
-            });
-
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    searchBtn.click();
-                }
-            });
         });
     </script>
 </body>
