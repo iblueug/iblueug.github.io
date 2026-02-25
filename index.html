@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>iBlue Uganda - Buy & Sell Everything</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.css">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.css" as="style">
+    
+    <!-- Critical CSS inline (above the fold) -->
     <style>
-        /* Alibaba-inspired styling with blue theme */
+        /* Critical path CSS - only what's needed for first paint */
         :root {
             --primary: #2563EB;
             --primary-dark: #1D4ED8;
@@ -44,7 +48,7 @@
             padding-bottom: 70px;
         }
 
-        /* Header with scroll behavior */
+        /* Critical header styles */
         .header {
             position: sticky;
             top: 0;
@@ -52,14 +56,6 @@
             z-index: 1000;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             transform: translateY(0);
-        }
-
-        .header.scrolled {
-            box-shadow: var(--shadow);
-        }
-
-        .header.hidden {
-            transform: translateY(-100%);
         }
 
         .header-top {
@@ -80,7 +76,6 @@
             text-decoration: none;
         }
 
-        /* Logo with italic i in circle */
         .logo-circle {
             width: 36px;
             height: 36px;
@@ -95,23 +90,6 @@
             font-style: italic;
         }
 
-        .logo-text span {
-            color: var(--primary);
-        }
-
-        /* Search icon at the right of iBlueUG */
-        .search-icon-header {
-            color: var(--gray-600);
-            font-size: 20px;
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .search-icon-header:active {
-            color: var(--primary);
-        }
-
-        /* Location Bar */
         .location-bar {
             display: flex;
             align-items: center;
@@ -124,560 +102,19 @@
             cursor: pointer;
         }
 
-        .location-btn {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: none;
-            border: none;
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            padding: 4px 8px;
+        /* Minimal skeleton styles */
+        .skeleton {
+            background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
         }
 
-        /* Location Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: var(--radius);
-            width: 90%;
-            max-width: 400px;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--gray-500);
-        }
-
-        .region-list {
-            list-style: none;
-        }
-
-        .region-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--gray-100);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .region-item:hover {
-            background: var(--gray-100);
-        }
-
-        .region-item i {
-            color: var(--primary);
-            width: 20px;
-        }
-
-        .region-name {
-            flex: 1;
-        }
-
-        .region-check {
-            color: var(--primary);
-        }
-
-        .current-location {
-            padding: 12px 16px;
-            background: var(--gray-100);
-            border-radius: var(--radius);
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-
-        .current-location i {
-            color: var(--primary);
-        }
-
-        /* Banner */
-        .swiper {
-            height: 160px;
-            margin: 12px 16px;
-            border-radius: var(--radius);
-            overflow: hidden;
-        }
-
-        .swiper-slide {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        /* Section Headers */
-        .section {
-            padding: 16px;
-            background: var(--white);
-            margin-bottom: 8px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-title i {
-            color: var(--primary);
-        }
-
-        .section-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        /* Horizontal Scroll Products */
-        .horizontal-scroll {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            margin: 0 -16px;
-            padding: 4px 16px;
-            scroll-behavior: smooth;
-        }
-
-        .horizontal-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .scroll-wrapper {
-            display: flex;
-            gap: 12px;
-        }
-
-        .product-card-horizontal {
-            flex: 0 0 160px;
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius);
-            overflow: hidden;
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.2s;
-        }
-
-        .product-card-horizontal:active {
-            transform: scale(0.98);
-        }
-
-        .product-image {
-            width: 160px;
-            height: 160px;
-            background: var(--gray-100);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-
-        .product-card-horizontal:hover .product-image img {
-            transform: scale(1.05);
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            background: var(--danger);
-            color: white;
-            font-size: 10px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            z-index: 2;
-        }
-
-        .product-badge.verified {
-            background: var(--secondary);
-        }
-
-        .product-badge.featured {
-            background: var(--warning);
-            color: var(--dark);
-        }
-
-        .product-info {
-            padding: 10px;
-        }
-
-        .product-title {
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .product-price {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--danger);
-            margin-bottom: 2px;
-        }
-
-        .product-price small {
-            font-size: 11px;
-            font-weight: 400;
-            color: var(--gray-500);
-        }
-
-        .product-meta {
-            font-size: 11px;
-            color: var(--gray-500);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 4px 0;
-        }
-
-        .verified-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-            background: #EFF6FF;
-            color: var(--primary);
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-top: 4px;
-        }
-
-        .verified-badge i {
-            font-size: 10px;
-        }
-
-        /* NEW: Recommended Wholesalers Section */
-        .wholesaler-card-horizontal {
-            flex: 0 0 180px;
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius);
-            overflow: hidden;
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.2s;
-            padding: 16px 12px;
-        }
-
-        .wholesaler-card-horizontal:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-            border-color: var(--primary);
-        }
-
-        .wholesaler-avatar-container {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 12px;
-            position: relative;
-        }
-
-        .wholesaler-avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 28px;
-            overflow: hidden;
-        }
-
-        .wholesaler-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .wholesaler-verified {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: var(--secondary);
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            border: 2px solid white;
-        }
-
-        .wholesaler-name {
-            font-size: 15px;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .wholesaler-location {
-            font-size: 12px;
-            color: var(--gray-500);
-            text-align: center;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
-
-        .wholesaler-stats {
-            font-size: 13px;
-            color: var(--primary);
-            font-weight: 600;
-            text-align: center;
-            background: #EFF6FF;
-            padding: 4px 8px;
-            border-radius: 20px;
-            display: inline-block;
-            width: 100%;
-        }
-
-        /* Conducive Category Sections */
-        .conducive-section {
-            padding: 16px;
-            background: var(--white);
-            margin-bottom: 8px;
-        }
-
-        .conducive-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .conducive-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .conducive-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--gray-100);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: var(--primary);
-        }
-
-        .conducive-text h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 4px;
-        }
-
-        .conducive-text p {
-            font-size: 13px;
-            color: var(--gray-500);
-        }
-
-        .conducive-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .conducive-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        /* Grid Products */
-        .product-card {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius);
-            overflow: hidden;
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .product-card:active {
-            transform: scale(0.98);
-        }
-
-        .product-card .product-image {
-            width: 100%;
-            height: 140px;
-        }
-
-        .product-card .product-info {
-            padding: 12px;
-        }
-
-        .product-card .product-title {
-            font-size: 14px;
-            white-space: normal;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            height: 36px;
-            margin-bottom: 6px;
-        }
-
-        .product-card .product-price {
-            font-size: 16px;
-        }
-
-        /* Meta Categories Menu */
-        .meta-categories {
-            background: var(--white);
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--gray-200);
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .meta-categories::-webkit-scrollbar {
-            display: none;
-        }
-
-        .meta-category-btn {
-            background: var(--gray-100);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--gray-600);
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .meta-category-btn i {
-            color: var(--primary);
-        }
-
-        .meta-category-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .meta-category-btn.active i {
-            color: white;
-        }
-
-        /* Deals Banner */
-        .deals-banner {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            padding: 16px 20px;
-            margin: 8px 16px;
-            border-radius: var(--radius);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .deals-banner h3 {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .deals-banner p {
-            font-size: 13px;
-            opacity: 0.9;
-        }
-
-        .deals-banner button {
-            background: white;
-            color: var(--primary);
-            border: none;
-            padding: 8px 20px;
-            border-radius: 24px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        /* Bottom Navigation */
+        /* Bottom nav critical */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -701,133 +138,34 @@
             gap: 4px;
         }
 
-        .nav-item i {
-            font-size: 20px;
-        }
-
         .nav-item.active {
             color: var(--primary);
         }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 16px;
-            right: 16px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-size: 14px;
-            text-align: center;
-            z-index: 2000;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s;
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* Loading Skeleton */
-        .skeleton {
-            background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        .skeleton-image {
-            width: 100%;
-            height: 140px;
-            background: var(--gray-200);
-        }
-
-        .skeleton-text {
-            height: 16px;
-            background: var(--gray-200);
-            margin: 8px;
-            border-radius: 4px;
-        }
-
-        .skeleton-circle {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--gray-200);
-        }
-
-        /* Fade-in animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Responsive */
-        @media (min-width: 640px) {
-            .products-grid,
-            .conducive-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 16px;
-            }
-            
-            .product-card .product-image {
-                height: 180px;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .products-grid,
-            .conducive-grid {
-                grid-template-columns: repeat(6, 1fr);
-                gap: 20px;
-            }
-            
-            .main-content {
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-        }
-
-        /* Prevent content flash */
-        .content-hidden {
-            visibility: hidden;
-        }
-        
-        .content-visible {
-            visibility: visible;
-        }
     </style>
+    
+    <!-- Load full CSS asynchronously -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.css">
+    </noscript>
+    
+    <!-- Non-critical CSS will be added later via JavaScript -->
 </head>
 <body>
     <!-- Header -->
     <header class="header" id="mainHeader">
         <div class="header-top">
-            <!-- Logo with italic i in circle -->
             <a href="index.html" class="logo">
                 <div class="logo-circle">i</div>
                 <span class="logo-text">iBlue<span>UG</span></span>
             </a>
-            <!-- Search icon at the right of iBlueUG -->
             <div class="search-icon-header" id="headerSearchIcon">
                 <i class="fas fa-search"></i>
             </div>
         </div>
 
-        <!-- Location Bar -->
         <div class="location-bar" id="locationBar">
             <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
             <button class="location-btn" id="locationBtn">
@@ -851,9 +189,7 @@
             </div>
             
             <h4 style="margin: 10px 0; color: var(--gray-600);">Popular Regions</h4>
-            <ul class="region-list" id="regionList">
-                <!-- Populated dynamically -->
-            </ul>
+            <ul class="region-list" id="regionList"></ul>
         </div>
     </div>
 
@@ -870,11 +206,9 @@
         </div>
 
         <!-- Meta Categories Menu -->
-        <div class="meta-categories" id="metaCategories">
-            <!-- Will be populated from homepage_spotlights with updated links -->
-        </div>
+        <div class="meta-categories" id="metaCategories"></div>
 
-        <!-- Recommended Wholesalers Section (KEPT) -->
+        <!-- Recommended Wholesalers Section -->
         <section class="section">
             <div class="section-header">
                 <h2 class="section-title">
@@ -884,13 +218,11 @@
                 <a href="wholesalers.html" class="section-link">See All <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="horizontal-scroll" id="wholesalersScroll">
-                <div class="scroll-wrapper" id="wholesalersWrapper">
-                    <!-- Populated by JavaScript -->
-                </div>
+                <div class="scroll-wrapper" id="wholesalersWrapper"></div>
             </div>
         </section>
 
-        <!-- Conducive Category Sections (directly after wholesalers, Featured Deals removed) -->
+        <!-- Conducive Category Sections -->
         <div id="conduciveSections"></div>
 
         <!-- Deals Banner -->
@@ -930,36 +262,160 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Load scripts with defer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    
+    <!-- Main app script -->
     <script>
+        // ============================================
+        // PERFORMANCE MONITORING
+        // ============================================
+        const performanceMetrics = {};
+        
+        async function measurePerformance(name, fn) {
+            const start = performance.now();
+            await fn();
+            const end = performance.now();
+            performanceMetrics[name] = end - start;
+            
+            // Report slow operations (can be sent to analytics)
+            if (end - start > 1000) {
+                console.warn(`⚠️ Slow operation: ${name} took ${(end - start).toFixed(0)}ms`);
+            }
+            return end - start;
+        }
+
+        // ============================================
+        // INDEXEDDB CACHE IMPLEMENTATION
+        // ============================================
+        const dbCache = {
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open('iBlueCache', 2);
+                    
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains('pages')) {
+                            const store = db.createObjectStore('pages');
+                            store.createIndex('expiry', 'expiry', { unique: false });
+                        }
+                        if (!db.objectStoreNames.contains('images')) {
+                            db.createObjectStore('images');
+                        }
+                    };
+                    
+                    request.onsuccess = (e) => {
+                        this.db = e.target.result;
+                        resolve();
+                    };
+                    
+                    request.onerror = (e) => {
+                        console.error('IndexedDB error:', e);
+                        reject(e);
+                    };
+                });
+            },
+            
+            async get(storeName, key) {
+                if (!this.db) await this.init();
+                
+                return new Promise((resolve) => {
+                    const tx = this.db.transaction(storeName, 'readonly');
+                    const store = tx.objectStore(storeName);
+                    const request = store.get(key);
+                    
+                    request.onsuccess = () => {
+                        const data = request.result;
+                        if (data && data.expiry && data.expiry > Date.now()) {
+                            resolve(data.value);
+                        } else if (data && !data.expiry) {
+                            // Legacy data without expiry
+                            resolve(data);
+                        } else {
+                            resolve(null);
+                        }
+                    };
+                    
+                    request.onerror = () => resolve(null);
+                });
+            },
+            
+            async set(storeName, key, value, ttl = 300000) { // 5 minutes default
+                if (!this.db) await this.init();
+                
+                return new Promise((resolve) => {
+                    const tx = this.db.transaction(storeName, 'readwrite');
+                    const store = tx.objectStore(storeName);
+                    const request = store.put({
+                        value,
+                        expiry: Date.now() + ttl
+                    }, key);
+                    
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => resolve();
+                });
+            },
+            
+            async clearExpired() {
+                if (!this.db) await this.init();
+                
+                const tx = this.db.transaction('pages', 'readwrite');
+                const store = tx.objectStore('pages');
+                const index = store.index('expiry');
+                const range = IDBKeyRange.upperBound(Date.now());
+                
+                index.openCursor(range).onsuccess = (e) => {
+                    const cursor = e.target.result;
+                    if (cursor) {
+                        cursor.delete();
+                        cursor.continue();
+                    }
+                };
+            }
+        };
+
+        // ============================================
+        // CONNECTION AWARE LOADING
+        // ============================================
+        function getConnectionQuality() {
+            const connection = navigator.connection || 
+                              navigator.mozConnection || 
+                              navigator.webkitConnection;
+            
+            if (connection) {
+                if (connection.saveData) return 'economy';
+                if (connection.effectiveType) {
+                    if (connection.effectiveType.includes('2g')) return 'economy';
+                    if (connection.effectiveType.includes('3g')) return 'balanced';
+                    return 'performance';
+                }
+            }
+            return 'performance'; // Default to performance on desktop
+        }
+
         // ============================================
         // SUPABASE CONFIGURATION
         // ============================================
         const SUPABASE_URL = 'https://uufhvmmgwzkxvvdbqemz.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc';
         
-        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: true }
+        });
 
         // ============================================
-        // STATE MANAGEMENT WITH LOCALSTORAGE & SESSIONSTORAGE
+        // STATE MANAGEMENT
         // ============================================
         let currentUser = null;
         let lastScrollTop = 0;
         const scrollThreshold = 100;
+        const connectionQuality = getConnectionQuality();
         
-        // Cache for products data to prevent disappearance on back navigation
-        let productsCache = {
-            wholesalers: null,
-            categories: {},
-            lastUpdated: null
-        };
-        
-        // Load location from localStorage with proper defaults
+        // Location state
         let selectedRegion = localStorage.getItem('selectedRegion');
         let selectedDistrict = localStorage.getItem('selectedDistrict');
         
-        // If no location in localStorage, set defaults and save them
         if (!selectedRegion || !selectedDistrict) {
             selectedRegion = 'Central';
             selectedDistrict = 'Kampala';
@@ -967,36 +423,43 @@
             localStorage.setItem('selectedDistrict', selectedDistrict);
         }
 
-        // Try to load cached products from sessionStorage
-        function loadCachedProducts() {
-            try {
-                const cached = sessionStorage.getItem('homepageCache');
-                if (cached) {
-                    const parsed = JSON.parse(cached);
-                    // Check if cache is less than 5 minutes old
-                    if (parsed.lastUpdated && (Date.now() - parsed.lastUpdated < 300000)) {
-                        productsCache = parsed;
-                        return true;
+        // ============================================
+        // LAZY LOADING IMAGES WITH INTERSECTION OBSERVER
+        // ============================================
+        function setupLazyLoading() {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            // Show low-quality placeholder first
+                            img.src = img.dataset.src;
+                            img.classList.add('loaded');
+                            
+                            // Load high-quality version after
+                            if (img.dataset.highsrc) {
+                                const highResImg = new Image();
+                                highResImg.onload = () => {
+                                    img.src = img.dataset.highsrc;
+                                };
+                                highResImg.src = img.dataset.highsrc;
+                            }
+                        }
+                        observer.unobserve(img);
                     }
-                }
-            } catch (e) {
-                console.error('Error loading cache:', e);
-            }
-            return false;
-        }
+                });
+            }, {
+                rootMargin: '50px 0px',
+                threshold: 0.01
+            });
 
-        // Save products to sessionStorage
-        function saveProductsToCache() {
-            try {
-                productsCache.lastUpdated = Date.now();
-                sessionStorage.setItem('homepageCache', JSON.stringify(productsCache));
-            } catch (e) {
-                console.error('Error saving cache:', e);
-            }
+            document.querySelectorAll('img.lazy-image').forEach(img => {
+                imageObserver.observe(img);
+            });
         }
 
         // ============================================
-        // LOCATION MANAGEMENT FUNCTIONS
+        // LOCATION MANAGEMENT
         // ============================================
         function updateLocationDisplay() {
             const locationSpan = document.getElementById('currentLocation');
@@ -1013,28 +476,12 @@
             updateLocationDisplay();
             
             // Clear cache when location changes
-            productsCache = {
-                wholesalers: null,
-                categories: {},
-                lastUpdated: null
-            };
-            sessionStorage.removeItem('homepageCache');
+            dbCache.clearExpired();
+            forceReloadAllData();
         }
 
         // ============================================
-        // SEARCH - Header icon opens search.html
-        // ============================================
-        function setupSearch() {
-            const searchIcon = document.getElementById('headerSearchIcon');
-            if (searchIcon) {
-                searchIcon.addEventListener('click', () => {
-                    window.location.href = 'search.html?region=' + encodeURIComponent(selectedRegion) + '&district=' + encodeURIComponent(selectedDistrict);
-                });
-            }
-        }
-
-        // ============================================
-        // LOCATION SELECTION
+        // LOCATION SELECTOR
         // ============================================
         const ugandaRegions = [
             { region: 'Central', districts: ['Kampala', 'Wakiso', 'Mukono', 'Masaka', 'Entebbe'] },
@@ -1051,7 +498,6 @@
             const currentLocationBtn = document.getElementById('useCurrentLocation');
             const regionList = document.getElementById('regionList');
             
-            // Update display with saved location
             updateLocationDisplay();
 
             // Populate regions
@@ -1068,7 +514,6 @@
                 regionList.appendChild(li);
             });
 
-            // Open modal
             const openModal = () => modal.classList.add('show');
             if (locationBar) locationBar.addEventListener('click', openModal);
             if (locationBtn) {
@@ -1078,7 +523,6 @@
                 });
             }
 
-            // Close modal
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => modal.classList.remove('show'));
             }
@@ -1087,7 +531,6 @@
                 if (e.target === modal) modal.classList.remove('show');
             });
 
-            // Use current location (simulated)
             if (currentLocationBtn) {
                 currentLocationBtn.addEventListener('click', () => {
                     showToast('Getting your location...');
@@ -1095,9 +538,6 @@
                         saveLocation('Central', 'Kampala');
                         modal.classList.remove('show');
                         showToast('Location updated to Kampala');
-                        
-                        // Force reload all data
-                        forceReloadAllData();
                     }, 1500);
                 });
             }
@@ -1124,35 +564,35 @@
 
             document.getElementById('backBtn').addEventListener('click', () => {
                 modalContent.innerHTML = originalContent;
-                initLocationSelector(); // Reinitialize
+                initLocationSelector();
             });
 
             document.querySelectorAll('#districtList .region-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const district = item.dataset.district;
                     const region = item.dataset.region;
-                    
-                    // Save to localStorage
                     saveLocation(region, district);
-                    
                     document.getElementById('locationModal').classList.remove('show');
                     showToast(`Location set to ${district}, ${region}`);
-                    
-                    // Force reload all data
-                    forceReloadAllData();
                 });
             });
         }
 
         // ============================================
-        // LOAD META CATEGORIES FROM SPOTLIGHT
+        // META CATEGORIES (LIGHTWEIGHT)
         // ============================================
-        async function loadMetaCategories(useCache = true) {
+        async function loadMetaCategories() {
             const container = document.getElementById('metaCategories');
             if (!container) return;
             
             try {
-                // Get active spotlight types from homepage_spotlights
+                // Try cache first
+                const cached = await dbCache.get('pages', 'metaCategories');
+                if (cached) {
+                    container.innerHTML = cached;
+                    return;
+                }
+                
                 const { data: spotlights, error } = await sb
                     .from('homepage_spotlights')
                     .select('spotlight_type')
@@ -1162,7 +602,6 @@
                 
                 if (error) throw error;
                 
-                // Define meta category details with correct page links
                 const metaCategoryMap = {
                     'featured_deals': { icon: 'fa-star', name: 'Featured Deals', page: 'featured-deals.html' },
                     'trending_now': { icon: 'fa-fire', name: 'Trending Now', page: 'trending-now.html' },
@@ -1189,103 +628,83 @@
                     });
                 }
                 
-                // Add default meta categories if none in spotlight
                 if (metaButtons === '') {
-                    metaButtons = `
-                        <a href="featured-deals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                            <i class="fas fa-star"></i> Featured Deals
-                        </a>
-                        <a href="new-arrivals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                            <i class="fas fa-clock"></i> New Arrivals
-                        </a>
-                        <a href="budget-finds.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                            <i class="fas fa-wallet"></i> Budget Finds
-                        </a>
-                        <a href="verified-sellers.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                            <i class="fas fa-check-circle"></i> Verified Sellers
-                        </a>
-                    `;
+                    metaButtons = getDefaultMetaCategories();
                 }
                 
                 container.innerHTML = metaButtons;
+                await dbCache.set('pages', 'metaCategories', metaButtons, 3600000); // 1 hour cache
                 
             } catch (error) {
                 console.error('Error loading meta categories:', error);
-                // Fallback to default with location params
-                container.innerHTML = `
-                    <a href="featured-deals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                        <i class="fas fa-star"></i> Featured Deals
-                    </a>
-                    <a href="new-arrivals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                        <i class="fas fa-clock"></i> New Arrivals
-                    </a>
-                    <a href="budget-finds.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                        <i class="fas fa-wallet"></i> Budget Finds
-                    </a>
-                    <a href="verified-sellers.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                        <i class="fas fa-check-circle"></i> Verified Sellers
-                    </a>
-                `;
+                container.innerHTML = getDefaultMetaCategories();
             }
         }
 
+        function getDefaultMetaCategories() {
+            return `
+                <a href="featured-deals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                    <i class="fas fa-star"></i> Featured Deals
+                </a>
+                <a href="new-arrivals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                    <i class="fas fa-clock"></i> New Arrivals
+                </a>
+                <a href="budget-finds.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                    <i class="fas fa-wallet"></i> Budget Finds
+                </a>
+                <a href="verified-sellers.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                    <i class="fas fa-check-circle"></i> Verified Sellers
+                </a>
+            `;
+        }
+
         // ============================================
-        // LOAD RECOMMENDED WHOLESALERS (KEPT)
+        // WHOLESALERS WITH OPTIMIZED LOADING
         // ============================================
-        async function loadRecommendedWholesalers(useCache = true) {
+        async function loadRecommendedWholesalers() {
             const wrapper = document.getElementById('wholesalersWrapper');
             if (!wrapper) return;
             
-            // Check cache first
-            if (useCache && productsCache.wholesalers) {
-                wrapper.innerHTML = productsCache.wholesalers;
-                return;
-            }
-            
+            // Show skeleton immediately
             wrapper.innerHTML = getPlaceholderWholesalers();
             
+            // Adjust limits based on connection quality
+            const limit = connectionQuality === 'economy' ? 4 : 
+                         connectionQuality === 'balanced' ? 6 : 8;
+            
             try {
-                // Get sellers with most active ads
-                const { data: adsData, error: adsError } = await sb
-                    .from('ads')
-                    .select('seller_id')
-                    .eq('status', 'active');
-
-                if (adsError) throw adsError;
-                if (!adsData || adsData.length === 0) {
-                    wrapper.innerHTML = '<p style="padding: 20px;">No wholesalers found</p>';
+                // Try cache first
+                const cacheKey = `wholesalers_${selectedRegion}_${selectedDistrict}`;
+                const cached = await dbCache.get('pages', cacheKey);
+                if (cached) {
+                    wrapper.innerHTML = cached;
+                    setupLazyLoading();
                     return;
                 }
-
-                // Count ads per seller
-                const sellerCounts = {};
-                adsData.forEach(ad => {
-                    sellerCounts[ad.seller_id] = (sellerCounts[ad.seller_id] || 0) + 1;
-                });
-
-                // Get top 8 sellers with most ads
-                const topSellerIds = Object.keys(sellerCounts)
-                    .sort((a, b) => sellerCounts[b] - sellerCounts[a])
-                    .slice(0, 8);
-
-                if (topSellerIds.length === 0) {
-                    wrapper.innerHTML = '<p style="padding: 20px;">No wholesalers found</p>';
-                    return;
-                }
-
-                // Get seller profiles
-                const { data: sellers, error: sellersError } = await sb
+                
+                // Get sellers with active ads - optimized query
+                const { data: sellers, error } = await sb
                     .from('profiles')
-                    .select('id, full_name, avatar_url, location, district, is_verified')
-                    .in('id', topSellerIds);
-
-                if (sellersError) throw sellersError;
+                    .select(`
+                        id,
+                        full_name,
+                        avatar_url,
+                        location,
+                        district,
+                        is_verified,
+                        ads:ads!seller_id(count)
+                    `)
+                    .gt('ads.count', 0)
+                    .order('ads.count', { ascending: false, foreignTable: 'ads' })
+                    .limit(limit);
+                
+                if (error) throw error;
+                
                 if (!sellers || sellers.length === 0) {
                     wrapper.innerHTML = '<p style="padding: 20px;">No wholesalers found</p>';
                     return;
                 }
 
-                // Render wholesalers with location params
                 const wholesalersHtml = sellers.map(seller => {
                     const initials = seller.full_name
                         ?.split(' ')
@@ -1293,13 +712,18 @@
                         .join('')
                         .toUpperCase()
                         .substring(0, 2) || 'BS';
+                    
+                    const adCount = seller.ads?.[0]?.count || 0;
 
                     return `
                         <a href="seller-profile.html?id=${seller.id}&region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="wholesaler-card-horizontal">
                             <div class="wholesaler-avatar-container">
                                 <div class="wholesaler-avatar">
                                     ${seller.avatar_url ? 
-                                        `<img src="${seller.avatar_url}" alt="${seller.full_name}">` : 
+                                        `<img src="${seller.avatar_url}?width=80&height=80&quality=80" 
+                                              alt="${escapeHtml(seller.full_name)}"
+                                              class="lazy-image"
+                                              loading="lazy">` : 
                                         `<span>${initials}</span>`
                                     }
                                 </div>
@@ -1311,85 +735,55 @@
                             <div class="wholesaler-location">
                                 <i class="fas fa-map-marker-alt"></i> ${escapeHtml(seller.district || seller.location || 'Uganda')}
                             </div>
-                            <div class="wholesaler-stats">${sellerCounts[seller.id] || 0} active ads</div>
+                            <div class="wholesaler-stats">${adCount} active ads</div>
                         </a>
                     `;
                 }).join('');
                 
                 wrapper.innerHTML = wholesalersHtml;
+                await dbCache.set('pages', cacheKey, wholesalersHtml, 300000); // 5 minutes
+                setupLazyLoading();
                 
-                // Save to cache
-                productsCache.wholesalers = wholesalersHtml;
-                saveProductsToCache();
-
             } catch (error) {
                 console.error('Error loading wholesalers:', error);
                 wrapper.innerHTML = '<p style="padding: 20px;">Error loading wholesalers</p>';
             }
         }
 
-        function getPlaceholderWholesalers() {
-            let html = '';
-            for (let i = 0; i < 6; i++) {
-                html += `
-                    <div class="wholesaler-card-horizontal">
-                        <div class="wholesaler-avatar-container">
-                            <div class="wholesaler-avatar skeleton" style="border-radius: 50%;"></div>
-                        </div>
-                        <div class="skeleton-text" style="width: 80%; margin: 8px auto;"></div>
-                        <div class="skeleton-text" style="width: 60%; margin: 4px auto;"></div>
-                        <div class="skeleton-text" style="width: 70%; margin: 8px auto;"></div>
-                    </div>
-                `;
-            }
-            return html;
-        }
-
         // ============================================
-        // LOAD CONDUCIVE SECTIONS
+        // CONDUCIVE SECTIONS WITH BATCH LOADING
         // ============================================
-        async function loadConduciveSections(useCache = true) {
+        async function loadConduciveSections() {
             const container = document.getElementById('conduciveSections');
             if (!container) return;
             
-            // Check if we have all categories in cache
-            if (useCache && productsCache.categories && Object.keys(productsCache.categories).length > 0) {
-                // Check if we have HTML for all categories
-                const cachedHtml = Object.values(productsCache.categories).join('');
-                if (cachedHtml) {
-                    container.innerHTML = cachedHtml;
+            // Show skeleton immediately
+            const skeletonCount = connectionQuality === 'economy' ? 2 : 
+                                  connectionQuality === 'balanced' ? 3 : 4;
+            container.innerHTML = getSkeletonConduciveSections(skeletonCount);
+            
+            try {
+                // Try cache first
+                const cacheKey = `conducive_${selectedRegion}_${selectedDistrict}`;
+                const cached = await dbCache.get('pages', cacheKey);
+                if (cached) {
+                    container.innerHTML = cached;
+                    setupLazyLoading();
                     setupFadeInObserver();
                     return;
                 }
-            }
-            
-            container.innerHTML = getSkeletonConduciveSections(5);
-            
-            try {
-                // First get all active categories
-                const { data: categories, error: catError } = await sb
+                
+                // Batch load categories with their ads in one query
+                const { data: categories, error } = await sb
                     .from('categories')
-                    .select('id, name, display_name, conducive_tagline, conducive_icon, color_hex')
-                    .eq('is_active', true)
-                    .order('display_order', { ascending: true })
-                    .order('name', { ascending: true });
-                
-                if (catError) throw catError;
-                
-                if (!categories || categories.length === 0) {
-                    container.innerHTML = getEmptyConduciveSections();
-                    return;
-                }
-                
-                // For each category, get its ads
-                let html = '';
-                let categoriesHtml = {};
-                
-                for (const cat of categories) {
-                    // Filter by location if needed
-                    let query = sb
-                        .from('ads')
-                        .select(`
+                    .select(`
+                        id,
+                        name,
+                        display_name,
+                        conducive_tagline,
+                        conducive_icon,
+                        color_hex,
+                        ads!inner (
                             id,
                             title,
                             price,
@@ -1399,63 +793,34 @@
                             view_count,
                             region,
                             district,
-                            created_at,
                             profiles!ads_seller_id_fkey (is_verified)
-                        `)
-                        .eq('status', 'active')
-                        .eq('category_id', cat.id)
-                        .order('created_at', { ascending: false })
-                        .limit(4);
-                    
-                    const { data: ads, error: adsError } = await query;
-                    
-                    if (adsError) {
-                        console.error(`Error loading ads for category ${cat.name}:`, adsError);
-                        continue;
-                    }
-                    
-                    if (ads && ads.length > 0) {
-                        const displayName = cat.display_name || `Shop ${cat.name}`;
-                        const tagline = cat.conducive_tagline || `Best deals on ${cat.name}`;
-                        const icon = cat.conducive_icon || 'fa-tag';
-                        const color = cat.color_hex || '#2563EB';
-                        
-                        const categoryHtml = `
-                            <section class="conducive-section fade-in">
-                                <div class="conducive-header">
-                                    <div class="conducive-title">
-                                        <div class="conducive-icon" style="color: ${color}">
-                                            <i class="fas ${icon}"></i>
-                                        </div>
-                                        <div class="conducive-text">
-                                            <h3>${escapeHtml(displayName)}</h3>
-                                            <p>${escapeHtml(tagline)}</p>
-                                        </div>
-                                    </div>
-                                    <a href="category.html?category=${encodeURIComponent(cat.name)}&id=${cat.id}&region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="conducive-link">See all <i class="fas fa-chevron-right"></i></a>
-                                </div>
-                                <div class="conducive-grid">
-                                    ${ads.map(ad => createConduciveCard(ad)).join('')}
-                                </div>
-                            </section>
-                        `;
-                        
-                        html += categoryHtml;
-                        categoriesHtml[cat.id] = categoryHtml;
-                    }
+                        )
+                    `)
+                    .eq('is_active', true)
+                    .eq('ads.status', 'active')
+                    .order('display_order', { ascending: true })
+                    .limit(connectionQuality === 'economy' ? 2 : 
+                           connectionQuality === 'balanced' ? 4 : 6);
+                
+                if (error) throw error;
+                
+                if (!categories || categories.length === 0) {
+                    container.innerHTML = getEmptyConduciveSections();
+                    return;
                 }
                 
-                if (html === '') {
-                    container.innerHTML = getEmptyConduciveSections();
-                } else {
-                    container.innerHTML = html;
-                    
-                    // Save to cache
-                    productsCache.categories = categoriesHtml;
-                    saveProductsToCache();
-                    
-                    setupFadeInObserver();
-                }
+                // Render all sections
+                let html = '';
+                categories.forEach(cat => {
+                    if (cat.ads && cat.ads.length > 0) {
+                        html += renderCategorySection(cat);
+                    }
+                });
+                
+                container.innerHTML = html || getEmptyConduciveSections();
+                await dbCache.set('pages', cacheKey, html, 300000); // 5 minutes
+                setupLazyLoading();
+                setupFadeInObserver();
                 
             } catch (error) {
                 console.error('Error loading conducive sections:', error);
@@ -1463,35 +828,65 @@
             }
         }
 
-        function setupFadeInObserver() {
-            // Setup intersection observer for fade-in sections
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1, rootMargin: '50px' });
+        function renderCategorySection(category) {
+            const displayName = category.display_name || `Shop ${category.name}`;
+            const tagline = category.conducive_tagline || `Best deals on ${category.name}`;
+            const icon = category.conducive_icon || 'fa-tag';
+            const color = category.color_hex || '#2563EB';
             
-            document.querySelectorAll('.conducive-section').forEach(section => {
-                observer.observe(section);
-            });
+            // Limit ads based on connection quality
+            const adsToShow = connectionQuality === 'economy' ? 2 : 
+                             connectionQuality === 'balanced' ? 3 : 4;
+            const ads = category.ads.slice(0, adsToShow);
+            
+            return `
+                <section class="conducive-section fade-in">
+                    <div class="conducive-header">
+                        <div class="conducive-title">
+                            <div class="conducive-icon" style="color: ${color}">
+                                <i class="fas ${icon}"></i>
+                            </div>
+                            <div class="conducive-text">
+                                <h3>${escapeHtml(displayName)}</h3>
+                                <p>${escapeHtml(tagline)}</p>
+                            </div>
+                        </div>
+                        <a href="category.html?category=${encodeURIComponent(category.name)}&id=${category.id}&region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="conducive-link">See all <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                    <div class="conducive-grid">
+                        ${ads.map(ad => createOptimizedCard(ad)).join('')}
+                    </div>
+                </section>
+            `;
         }
 
-        // ============================================
-        // CARD CREATORS
-        // ============================================
-        function createConduciveCard(product) {
-            const imageUrl = product.image_urls?.[0] || 'https://via.placeholder.com/200?text=No+Image';
-            const price = product.price ? `UGX ${parseInt(product.price).toLocaleString()}` : 'Call for price';
+        function createOptimizedCard(product) {
+            // Use low-quality placeholder first
+            const lowQualityUrl = product.image_urls?.[0] ? 
+                `${product.image_urls[0]}?width=100&height=100&quality=30` : 
+                'https://via.placeholder.com/200?text=No+Image';
+            
+            const highQualityUrl = product.image_urls?.[0] ? 
+                `${product.image_urls[0]}?width=400&height=400&quality=80` : 
+                'https://via.placeholder.com/200?text=No+Image';
+            
+            const price = product.price ? 
+                `UGX ${parseInt(product.price).toLocaleString()}` : 
+                'Call for price';
             
             return `
                 <a href="ad-detail.html?id=${product.id}&region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="product-card" onclick="trackClick(${product.id})">
                     <div class="product-image">
-                        <img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy"
-                             onload="this.style.opacity=1" style="opacity:0; transition:opacity 0.3s"
-                             onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+                        <img 
+                            src="${lowQualityUrl}" 
+                            data-src="${lowQualityUrl}"
+                            data-highsrc="${highQualityUrl}"
+                            alt="${escapeHtml(product.title)}" 
+                            class="lazy-image"
+                            loading="lazy"
+                            onload="this.style.opacity=1"
+                            style="opacity:0; transition:opacity 0.3s"
+                            onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
                     </div>
                     <div class="product-info">
                         <div class="product-title">${escapeHtml(product.title.substring(0, 25))}${product.title.length > 25 ? '...' : ''}</div>
@@ -1510,9 +905,42 @@
         }
 
         // ============================================
-        // PLACEHOLDERS & EMPTY STATES
+        // FORCE RELOAD ALL DATA
         // ============================================
-        function getSkeletonConduciveSections(count = 3) {
+        async function forceReloadAllData() {
+            await Promise.all([
+                measurePerformance('metaCategories', loadMetaCategories),
+                measurePerformance('wholesalers', loadRecommendedWholesalers),
+                measurePerformance('conduciveSections', loadConduciveSections)
+            ]);
+            
+            // Log performance metrics
+            console.log('📊 Performance metrics:', performanceMetrics);
+        }
+
+        // ============================================
+        // SKELETON LOADERS
+        // ============================================
+        function getPlaceholderWholesalers() {
+            const count = connectionQuality === 'economy' ? 3 : 
+                         connectionQuality === 'balanced' ? 4 : 6;
+            let html = '';
+            for (let i = 0; i < count; i++) {
+                html += `
+                    <div class="wholesaler-card-horizontal">
+                        <div class="wholesaler-avatar-container">
+                            <div class="wholesaler-avatar skeleton" style="border-radius: 50%;"></div>
+                        </div>
+                        <div class="skeleton-text" style="width: 80%; margin: 8px auto;"></div>
+                        <div class="skeleton-text" style="width: 60%; margin: 4px auto;"></div>
+                        <div class="skeleton-text" style="width: 70%; margin: 8px auto;"></div>
+                    </div>
+                `;
+            }
+            return html;
+        }
+
+        function getSkeletonConduciveSections(count) {
             let html = '';
             for (let s = 0; s < count; s++) {
                 html += `
@@ -1528,7 +956,7 @@
                             <div class="skeleton-text" style="width: 60px;"></div>
                         </div>
                         <div class="conducive-grid">
-                            ${getSkeletonConducive()}
+                            ${getSkeletonCards()}
                         </div>
                     </section>
                 `;
@@ -1536,9 +964,11 @@
             return html;
         }
 
-        function getSkeletonConducive() {
+        function getSkeletonCards() {
+            const cardCount = connectionQuality === 'economy' ? 2 : 
+                             connectionQuality === 'balanced' ? 3 : 4;
             let html = '';
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < cardCount; i++) {
                 html += `
                     <div class="product-card">
                         <div class="skeleton-image"></div>
@@ -1573,26 +1003,39 @@
         }
 
         // ============================================
-        // FORCE RELOAD ALL DATA
+        // UTILITIES
         // ============================================
-        async function forceReloadAllData() {
-            // Clear cache
-            productsCache = {
-                wholesalers: null,
-                categories: {},
-                lastUpdated: null
-            };
-            sessionStorage.removeItem('homepageCache');
-            
-            // Reload all data without cache
-            await loadMetaCategories(false);
-            await loadRecommendedWholesalers(false);
-            await loadConduciveSections(false);
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
-        // ============================================
-        // HEADER SCROLL BEHAVIOR
-        // ============================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function setupFadeInObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '50px' });
+            
+            document.querySelectorAll('.conducive-section').forEach(section => {
+                observer.observe(section);
+            });
+        }
+
         function setupScrollBehavior() {
             const header = document.getElementById('mainHeader');
             
@@ -1615,25 +1058,26 @@
             });
         }
 
-        // ============================================
-        // HOME NAVIGATION
-        // ============================================
-        const homeNav = document.getElementById('homeNav');
-        if (homeNav) {
-            homeNav.addEventListener('click', (e) => {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+        function initializeSwiper() {
+            if (document.getElementById('bannerSwiper') && window.Swiper) {
+                new Swiper('#bannerSwiper', {
+                    autoplay: { delay: 3000 },
+                    pagination: { el: '.swiper-pagination', clickable: true },
+                    loop: true,
+                    speed: 500
+                });
+            }
         }
 
         // ============================================
-        // TRACK CLICK
+        // TRACKING
         // ============================================
         window.trackClick = async function(adId) {
             try {
                 const { data: { user } } = await sb.auth.getUser();
                 
-                await sb
+                // Fire and forget - don't await
+                sb
                     .from('ad_engagement')
                     .insert({
                         ad_id: adId,
@@ -1642,7 +1086,9 @@
                         user_agent: navigator.userAgent,
                         region: selectedRegion,
                         district: selectedDistrict
-                    });
+                    })
+                    .then()
+                    .catch(console.error);
                 
             } catch (error) {
                 console.error('Error tracking click:', error);
@@ -1650,142 +1096,148 @@
         };
 
         // ============================================
-        // UTILITIES
-        // ============================================
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            if (!toast) return;
-            
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-
-        // ============================================
-        // CHECK FOR RETURNING FROM OTHER PAGES
-        // ============================================
-        function checkForLocationFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const regionFromUrl = urlParams.get('region');
-            const districtFromUrl = urlParams.get('district');
-            
-            if (regionFromUrl && districtFromUrl) {
-                // Update from URL params
-                saveLocation(regionFromUrl, districtFromUrl);
-                return true;
-            }
-            return false;
-        }
-
-        // ============================================
-        // HANDLE PAGE VISIBILITY
+        // PAGE VISIBILITY HANDLING
         // ============================================
         function setupPageVisibilityHandling() {
-            // Handle page show event (when coming back via history)
-            window.addEventListener('pageshow', function(event) {
-                // Check if page was loaded from cache (like when using back button)
-                if (event.persisted) {
-                    console.log('Page loaded from cache, checking data...');
-                    
-                    // Check if we have cached data
-                    const hasCache = loadCachedProducts();
-                    
-                    if (hasCache && productsCache.categories && Object.keys(productsCache.categories).length > 0) {
-                        // Restore from cache
-                        const container = document.getElementById('conduciveSections');
-                        if (container) {
-                            const cachedHtml = Object.values(productsCache.categories).join('');
-                            if (cachedHtml) {
-                                container.innerHTML = cachedHtml;
-                                setupFadeInObserver();
-                            }
-                        }
-                        
-                        const wholesalersWrapper = document.getElementById('wholesalersWrapper');
-                        if (wholesalersWrapper && productsCache.wholesalers) {
-                            wholesalersWrapper.innerHTML = productsCache.wholesalers;
-                        }
-                    } else {
-                        // No cache, reload data
-                        forceReloadAllData();
-                    }
-                    
-                    // Always reload meta categories (they're light)
-                    loadMetaCategories();
-                }
-            });
-
-            // Handle visibility change (when switching tabs and coming back)
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden) {
-                    console.log('Tab became visible again');
-                    // Optionally refresh data if it's been a while
-                    if (productsCache.lastUpdated && (Date.now() - productsCache.lastUpdated > 300000)) {
-                        // Cache is older than 5 minutes, refresh
-                        forceReloadAllData();
-                    }
+                    // Check if we need to refresh data
+                    dbCache.get('pages', 'lastRefresh').then(lastRefresh => {
+                        if (!lastRefresh || Date.now() - lastRefresh > 300000) {
+                            // Refresh if more than 5 minutes old
+                            forceReloadAllData();
+                            dbCache.set('pages', 'lastRefresh', Date.now(), 3600000);
+                        }
+                    });
                 }
             });
+        }
+
+        // ============================================
+        // LOAD NON-CRITICAL CSS
+        // ============================================
+        function loadNonCriticalCSS() {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+            link.media = 'print';
+            link.onload = () => { link.media = 'all'; };
+            document.head.appendChild(link);
+            
+            const link2 = document.createElement('link');
+            link2.rel = 'stylesheet';
+            link2.href = 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.css';
+            link2.media = 'print';
+            link2.onload = () => { link2.media = 'all'; };
+            document.head.appendChild(link2);
         }
 
         // ============================================
         // INITIALIZATION
         // ============================================
         document.addEventListener('DOMContentLoaded', async () => {
-            // Check for location in URL first (when returning from other pages)
-            const locationChanged = checkForLocationFromURL();
+            // Load non-critical CSS
+            loadNonCriticalCSS();
             
-            // Try to load cached products
-            const hasCache = loadCachedProducts();
+            // Initialize core UI first
+            initializeSwiper();
+            setupScrollBehavior();
+            initLocationSelector();
+            setupPageVisibilityHandling();
             
-            // Initialize Swiper
-            if (document.getElementById('bannerSwiper')) {
-                new Swiper('#bannerSwiper', {
-                    autoplay: { delay: 3000 },
-                    pagination: { el: '.swiper-pagination', clickable: true },
-                    loop: true,
-                    speed: 500
+            // Setup search
+            const searchIcon = document.getElementById('headerSearchIcon');
+            if (searchIcon) {
+                searchIcon.addEventListener('click', () => {
+                    window.location.href = 'search.html?region=' + encodeURIComponent(selectedRegion) + '&district=' + encodeURIComponent(selectedDistrict);
                 });
             }
 
-            // Setup scroll behavior
-            setupScrollBehavior();
-
-            // Setup search (header icon opens search.html)
-            setupSearch();
-
-            // Initialize location selector
-            initLocationSelector();
-
-            // Setup page visibility handling
-            setupPageVisibilityHandling();
-
-            // Check authentication
-            try {
-                const { data: { user } } = await sb.auth.getUser();
-                if (user) {
-                    currentUser = user;
-                }
-            } catch (error) {
-                console.error('Error checking auth:', error);
+            // Home navigation
+            const homeNav = document.getElementById('homeNav');
+            if (homeNav) {
+                homeNav.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
             }
 
-            // Load meta categories from spotlight
-            await loadMetaCategories();
+            // Initialize IndexedDB and load data in parallel
+            try {
+                await dbCache.init();
+                
+                // Load all data in parallel with performance monitoring
+                await Promise.allSettled([
+                    measurePerformance('metaCategories', loadMetaCategories),
+                    measurePerformance('wholesalers', loadRecommendedWholesalers),
+                    measurePerformance('conduciveSections', loadConduciveSections)
+                ]);
+                
+                // Log final metrics
+                console.log('✅ All data loaded. Performance:', performanceMetrics);
+                
+            } catch (error) {
+                console.error('Error during initialization:', error);
+                // Fallback to loading without cache
+                await Promise.allSettled([
+                    loadMetaCategories(),
+                    loadRecommendedWholesalers(),
+                    loadConduciveSections()
+                ]);
+            }
 
-            // Load recommended wholesalers (use cache if available and location didn't change)
-            await loadRecommendedWholesalers(!locationChanged && hasCache);
-
-            // Load conducive sections (use cache if available and location didn't change)
-            await loadConduciveSections(!locationChanged && hasCache);
+            // Check authentication in background
+            sb.auth.getUser().then(({ data: { user } }) => {
+                if (user) currentUser = user;
+            }).catch(console.error);
         });
+
+        // Register service worker if supported
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
     </script>
+    
+    <!-- Add remaining non-critical styles -->
+    <style>
+        /* Non-critical styles loaded after page render */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show { display: flex; }
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .swiper { height: 160px; margin: 12px 16px; border-radius: var(--radius); overflow: hidden; }
+        .section { padding: 16px; background: var(--white); margin-bottom: 8px; }
+        .horizontal-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 -16px; padding: 4px 16px; }
+        .product-card-horizontal { flex: 0 0 160px; background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; text-decoration: none; color: inherit; }
+        .wholesaler-card-horizontal { flex: 0 0 180px; background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; text-decoration: none; color: inherit; padding: 16px 12px; }
+        .fade-in { opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+        .toast { position: fixed; bottom: 80px; left: 16px; right: 16px; background: rgba(0,0,0,0.8); color: white; padding: 12px 20px; border-radius: 30px; font-size: 14px; text-align: center; z-index: 2000; transform: translateY(100px); opacity: 0; transition: all 0.3s; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+    </style>
 </body>
 </html>
