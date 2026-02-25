@@ -822,7 +822,7 @@
         <div class="location-bar" id="locationBar">
             <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
             <button class="location-btn" id="locationBtn">
-                <span id="currentLocation">Kampala, Central</span>
+                <span id="currentLocation">Loading location...</span>
                 <i class="fas fa-chevron-down"></i>
             </button>
         </div>
@@ -933,24 +933,52 @@
         const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
-        // STATE MANAGEMENT
+        // STATE MANAGEMENT WITH LOCALSTORAGE
         // ============================================
         let currentUser = null;
         let lastScrollTop = 0;
         const scrollThreshold = 100;
-        let selectedRegion = localStorage.getItem('selectedRegion') || 'Kampala';
-        let selectedDistrict = localStorage.getItem('selectedDistrict') || 'Central';
+        
+        // Load location from localStorage with proper defaults
+        let selectedRegion = localStorage.getItem('selectedRegion');
+        let selectedDistrict = localStorage.getItem('selectedDistrict');
+        
+        // If no location in localStorage, set defaults and save them
+        if (!selectedRegion || !selectedDistrict) {
+            selectedRegion = 'Central';
+            selectedDistrict = 'Kampala';
+            localStorage.setItem('selectedRegion', selectedRegion);
+            localStorage.setItem('selectedDistrict', selectedDistrict);
+        }
+
+        // ============================================
+        // LOCATION MANAGEMENT FUNCTIONS
+        // ============================================
+        function updateLocationDisplay() {
+            const locationSpan = document.getElementById('currentLocation');
+            if (locationSpan) {
+                locationSpan.textContent = `${selectedDistrict}, ${selectedRegion}`;
+            }
+        }
+
+        function saveLocation(region, district) {
+            selectedRegion = region;
+            selectedDistrict = district;
+            localStorage.setItem('selectedRegion', region);
+            localStorage.setItem('selectedDistrict', district);
+            updateLocationDisplay();
+        }
 
         // ============================================
         // SEARCH - Header icon opens search.html
         // ============================================
         function setupSearch() {
             const searchIcon = document.getElementById('headerSearchIcon');
-
-            // Click on search icon opens search.html
-            searchIcon.addEventListener('click', () => {
-                window.location.href = 'search.html';
-            });
+            if (searchIcon) {
+                searchIcon.addEventListener('click', () => {
+                    window.location.href = 'search.html';
+                });
+            }
         }
 
         // ============================================
@@ -970,10 +998,9 @@
             const closeBtn = document.getElementById('closeModal');
             const currentLocationBtn = document.getElementById('useCurrentLocation');
             const regionList = document.getElementById('regionList');
-            const currentLocationSpan = document.getElementById('currentLocation');
-
-            // Set initial location
-            currentLocationSpan.textContent = `${selectedDistrict}, ${selectedRegion}`;
+            
+            // Update display with saved location
+            updateLocationDisplay();
 
             // Populate regions
             regionList.innerHTML = '';
@@ -991,35 +1018,38 @@
 
             // Open modal
             const openModal = () => modal.classList.add('show');
-            locationBar.addEventListener('click', openModal);
-            locationBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                openModal();
-            });
+            if (locationBar) locationBar.addEventListener('click', openModal);
+            if (locationBtn) {
+                locationBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openModal();
+                });
+            }
 
             // Close modal
-            closeBtn.addEventListener('click', () => modal.classList.remove('show'));
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => modal.classList.remove('show'));
+            }
+            
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) modal.classList.remove('show');
             });
 
             // Use current location (simulated)
-            currentLocationBtn.addEventListener('click', () => {
-                showToast('Getting your location...');
-                setTimeout(() => {
-                    selectedRegion = 'Central';
-                    selectedDistrict = 'Kampala';
-                    localStorage.setItem('selectedRegion', selectedRegion);
-                    localStorage.setItem('selectedDistrict', selectedDistrict);
-                    currentLocationSpan.textContent = `${selectedDistrict}, ${selectedRegion}`;
-                    modal.classList.remove('show');
-                    showToast('Location updated to Kampala');
-                    
-                    // Reload products with new location filter
-                    loadConduciveSections();
-                    loadRecommendedWholesalers();
-                }, 1500);
-            });
+            if (currentLocationBtn) {
+                currentLocationBtn.addEventListener('click', () => {
+                    showToast('Getting your location...');
+                    setTimeout(() => {
+                        saveLocation('Central', 'Kampala');
+                        modal.classList.remove('show');
+                        showToast('Location updated to Kampala');
+                        
+                        // Reload products with new location filter
+                        loadConduciveSections();
+                        loadRecommendedWholesalers();
+                    }, 1500);
+                });
+            }
         }
 
         function showDistricts(region, districts) {
@@ -1050,11 +1080,10 @@
                 item.addEventListener('click', () => {
                     const district = item.dataset.district;
                     const region = item.dataset.region;
-                    selectedRegion = region;
-                    selectedDistrict = district;
-                    localStorage.setItem('selectedRegion', region);
-                    localStorage.setItem('selectedDistrict', district);
-                    document.getElementById('currentLocation').textContent = `${district}, ${region}`;
+                    
+                    // Save to localStorage
+                    saveLocation(region, district);
+                    
                     document.getElementById('locationModal').classList.remove('show');
                     showToast(`Location set to ${district}, ${region}`);
                     
@@ -1070,6 +1099,7 @@
         // ============================================
         async function loadMetaCategories() {
             const container = document.getElementById('metaCategories');
+            if (!container) return;
             
             try {
                 // Get active spotlight types from homepage_spotlights
@@ -1101,7 +1131,7 @@
                         const meta = metaCategoryMap[spot.spotlight_type];
                         if (meta) {
                             metaButtons += `
-                                <a href="${meta.page}" class="meta-category-btn">
+                                <a href="${meta.page}?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
                                     <i class="fas ${meta.icon}"></i> ${meta.name}
                                 </a>
                             `;
@@ -1112,16 +1142,16 @@
                 // Add default meta categories if none in spotlight
                 if (metaButtons === '') {
                     metaButtons = `
-                        <a href="featured-deals.html" class="meta-category-btn">
+                        <a href="featured-deals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
                             <i class="fas fa-star"></i> Featured Deals
                         </a>
-                        <a href="new-arrivals.html" class="meta-category-btn">
+                        <a href="new-arrivals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
                             <i class="fas fa-clock"></i> New Arrivals
                         </a>
-                        <a href="budget-finds.html" class="meta-category-btn">
+                        <a href="budget-finds.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
                             <i class="fas fa-wallet"></i> Budget Finds
                         </a>
-                        <a href="verified-sellers.html" class="meta-category-btn">
+                        <a href="verified-sellers.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
                             <i class="fas fa-check-circle"></i> Verified Sellers
                         </a>
                     `;
@@ -1131,18 +1161,18 @@
                 
             } catch (error) {
                 console.error('Error loading meta categories:', error);
-                // Fallback to default
+                // Fallback to default with location params
                 container.innerHTML = `
-                    <a href="featured-deals.html" class="meta-category-btn">
+                    <a href="featured-deals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
                         <i class="fas fa-star"></i> Featured Deals
                     </a>
-                    <a href="new-arrivals.html" class="meta-category-btn">
+                    <a href="new-arrivals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
                         <i class="fas fa-clock"></i> New Arrivals
                     </a>
-                    <a href="budget-finds.html" class="meta-category-btn">
+                    <a href="budget-finds.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
                         <i class="fas fa-wallet"></i> Budget Finds
                     </a>
-                    <a href="verified-sellers.html" class="meta-category-btn">
+                    <a href="verified-sellers.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
                         <i class="fas fa-check-circle"></i> Verified Sellers
                     </a>
                 `;
@@ -1199,7 +1229,7 @@
                     return;
                 }
 
-                // Render wholesalers
+                // Render wholesalers with location params
                 wrapper.innerHTML = sellers.map(seller => {
                     const initials = seller.full_name
                         ?.split(' ')
@@ -1209,7 +1239,7 @@
                         .substring(0, 2) || 'BS';
 
                     return `
-                        <a href="seller-profile.html?id=${seller.id}" class="wholesaler-card-horizontal">
+                        <a href="seller-profile.html?id=${seller.id}&region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="wholesaler-card-horizontal">
                             <div class="wholesaler-avatar-container">
                                 <div class="wholesaler-avatar">
                                     ${seller.avatar_url ? 
@@ -1258,6 +1288,8 @@
         // ============================================
         async function loadConduciveSections() {
             const container = document.getElementById('conduciveSections');
+            if (!container) return;
+            
             container.innerHTML = getSkeletonConduciveSections(5);
             
             try {
@@ -1276,11 +1308,12 @@
                     return;
                 }
                 
-                // For each category, get its ads using the correct foreign key relationship
+                // For each category, get its ads
                 let html = '';
                 
                 for (const cat of categories) {
-                    const { data: ads, error: adsError } = await sb
+                    // Filter by location if needed
+                    let query = sb
                         .from('ads')
                         .select(`
                             id,
@@ -1299,6 +1332,13 @@
                         .eq('category_id', cat.id)
                         .order('created_at', { ascending: false })
                         .limit(4);
+                    
+                    // Optional: Filter by district if needed
+                    // if (selectedDistrict) {
+                    //     query = query.eq('district', selectedDistrict);
+                    // }
+                    
+                    const { data: ads, error: adsError } = await query;
                     
                     if (adsError) {
                         console.error(`Error loading ads for category ${cat.name}:`, adsError);
@@ -1323,7 +1363,7 @@
                                             <p>${escapeHtml(tagline)}</p>
                                         </div>
                                     </div>
-                                    <a href="category.html?category=${encodeURIComponent(cat.name)}&id=${cat.id}" class="conducive-link">See all <i class="fas fa-chevron-right"></i></a>
+                                    <a href="category.html?category=${encodeURIComponent(cat.name)}&id=${cat.id}&region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="conducive-link">See all <i class="fas fa-chevron-right"></i></a>
                                 </div>
                                 <div class="conducive-grid">
                                     ${ads.map(ad => createConduciveCard(ad)).join('')}
@@ -1367,7 +1407,7 @@
             const price = product.price ? `UGX ${parseInt(product.price).toLocaleString()}` : 'Call for price';
             
             return `
-                <a href="ad-detail.html?id=${product.id}" class="product-card" onclick="trackClick(${product.id})">
+                <a href="ad-detail.html?id=${product.id}&region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="product-card" onclick="trackClick(${product.id})">
                     <div class="product-image">
                         <img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy"
                              onload="this.style.opacity=1" style="opacity:0; transition:opacity 0.3s"
@@ -1480,12 +1520,13 @@
         // ============================================
         // HOME NAVIGATION
         // ============================================
-        document.getElementById('homeNav').addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        const homeNav = document.getElementById('homeNav');
+        if (homeNav) {
+            homeNav.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
 
         // ============================================
         // TRACK CLICK
@@ -1500,7 +1541,9 @@
                         ad_id: adId,
                         user_id: user?.id || null,
                         action: 'click',
-                        user_agent: navigator.userAgent
+                        user_agent: navigator.userAgent,
+                        region: selectedRegion,
+                        district: selectedDistrict
                     });
                 
             } catch (error) {
@@ -1520,22 +1563,46 @@
 
         function showToast(message) {
             const toast = document.getElementById('toast');
+            if (!toast) return;
+            
             toast.textContent = message;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2000);
         }
 
         // ============================================
+        // CHECK FOR RETURNING FROM OTHER PAGES
+        // ============================================
+        function checkForLocationFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const regionFromUrl = urlParams.get('region');
+            const districtFromUrl = urlParams.get('district');
+            
+            if (regionFromUrl && districtFromUrl) {
+                // Update from URL params
+                saveLocation(regionFromUrl, districtFromUrl);
+            } else {
+                // Just ensure display is correct
+                updateLocationDisplay();
+            }
+        }
+
+        // ============================================
         // INITIALIZATION
         // ============================================
         document.addEventListener('DOMContentLoaded', async () => {
+            // Check for location in URL first (when returning from other pages)
+            checkForLocationFromURL();
+            
             // Initialize Swiper
-            new Swiper('#bannerSwiper', {
-                autoplay: { delay: 3000 },
-                pagination: { el: '.swiper-pagination', clickable: true },
-                loop: true,
-                speed: 500
-            });
+            if (document.getElementById('bannerSwiper')) {
+                new Swiper('#bannerSwiper', {
+                    autoplay: { delay: 3000 },
+                    pagination: { el: '.swiper-pagination', clickable: true },
+                    loop: true,
+                    speed: 500
+                });
+            }
 
             // Setup scroll behavior
             setupScrollBehavior();
@@ -1547,19 +1614,34 @@
             initLocationSelector();
 
             // Check authentication
-            const { data: { user } } = await sb.auth.getUser();
-            if (user) {
-                currentUser = user;
+            try {
+                const { data: { user } } = await sb.auth.getUser();
+                if (user) {
+                    currentUser = user;
+                }
+            } catch (error) {
+                console.error('Error checking auth:', error);
             }
 
             // Load meta categories from spotlight
             await loadMetaCategories();
 
-            // Load recommended wholesalers (KEPT)
+            // Load recommended wholesalers
             await loadRecommendedWholesalers();
 
             // Load conducive sections (only categories with products)
             await loadConduciveSections();
+        });
+
+        // Listen for page show event (when coming back via history)
+        window.addEventListener('pageshow', function(event) {
+            // Check if page was loaded from cache (like when using back button)
+            if (event.persisted) {
+                checkForLocationFromURL();
+                loadConduciveSections();
+                loadRecommendedWholesalers();
+                loadMetaCategories();
+            }
         });
     </script>
 </body>
