@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Edit Ad | iBlue Uganda</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
+    /* Your existing CSS remains exactly the same */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     }
 
@@ -28,14 +29,12 @@
       --border: #cbd5e1;
       --radius: 12px;
       --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
 
     body {
       background: #f1f5f9;
       color: var(--dark);
-      min-height: 100vh;
-      line-height: 1.5;
+      padding-bottom: 20px;
     }
 
     /* Header */
@@ -44,7 +43,7 @@
       position: sticky;
       top: 0;
       z-index: 1000;
-      box-shadow: var(--shadow);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       padding: 16px;
       display: flex;
       align-items: center;
@@ -65,52 +64,6 @@
       font-weight: 600;
     }
 
-    .delete-btn {
-      background: none;
-      border: none;
-      color: var(--danger);
-      font-size: 1.1rem;
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 6px;
-    }
-
-    .delete-btn:hover {
-      background: #fee2e2;
-    }
-
-    /* Loading Overlay */
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-    }
-
-    .loading-overlay.active {
-      display: flex;
-    }
-
-    .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
     /* Main Container */
     .container {
       max-width: 700px;
@@ -118,8 +71,65 @@
       padding: 16px;
     }
 
-    /* Form Card */
-    .form-card {
+    /* Form Steps */
+    .form-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .form-steps::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 20px;
+      right: 20px;
+      height: 2px;
+      background: var(--light-gray);
+      z-index: 1;
+    }
+
+    .step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--light-gray);
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .step.active .step-circle {
+      background: var(--primary);
+      color: white;
+    }
+
+    .step-label {
+      font-size: 0.8rem;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+
+    .step.active .step-label {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    /* Form Sections */
+    .form-section {
       background: white;
       border-radius: var(--radius);
       padding: 20px;
@@ -193,6 +203,97 @@
       margin-top: 4px;
     }
 
+    /* Image Upload */
+    .image-upload {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 30px 20px;
+      text-align: center;
+      background: var(--light);
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 16px;
+    }
+
+    .image-upload:hover {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.05);
+    }
+
+    .upload-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .upload-text {
+      color: var(--dark);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .upload-subtext {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .image-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .preview-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    /* Add loading indicator for images */
+    .image-processing {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      border-radius: var(--radius);
+    }
+
+    .image-processing i {
+      animation: spin 1s linear infinite;
+    }
+
     /* Price Input */
     .price-input {
       position: relative;
@@ -209,6 +310,430 @@
 
     .price-input input {
       padding-left: 50px;
+    }
+
+    /* Checkbox and Switch */
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+    }
+
+    .form-check input:checked + .checkbox {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border);
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--success);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    .switch-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    /* Location Picker */
+    .location-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Navigation Buttons */
+    .form-navigation {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      position: sticky;
+      bottom: 0;
+      background: #f1f5f9;
+      padding: 16px 0;
+      z-index: 100;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: var(--light);
+      color: var(--dark);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--light-gray);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Tips Section */
+    .tips-section {
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    .tips-title {
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tips-list {
+      padding-left: 20px;
+    }
+
+    .tips-list li {
+      margin-bottom: 6px;
+      color: var(--secondary);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 400px;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .modal-body {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .modal-body i {
+      font-size: 3rem;
+      color: var(--success);
+      margin-bottom: 16px;
+    }
+
+    .modal-actions {
+      padding: 20px;
+      display: flex;
+      gap: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .location-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .container {
+        padding: 12px;
+      }
+      
+      .form-section {
+        padding: 16px;
+      }
+    }
+
+    /* Validation */
+    .error-message {
+      color: var(--danger);
+      font-size: 0.85rem;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .form-input.error,
+    .form-select.error,
+    .form-textarea.error {
+      border-color: var(--danger);
+    }
+
+    .form-input.error + .error-message,
+    .form-select.error + .error-message,
+    .form-textarea.error + .error-message {
+      display: block;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #475569;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --light-gray: #e2e8f0;
+      --border: #cbd5e1;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      background: #f1f5f9;
+      color: var(--dark);
+      padding-bottom: 20px;
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--dark);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .header-title {
+      flex: 1;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Form Sections */
+    .form-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title i {
+      color: var(--primary);
+    }
+
+    .required {
+      color: var(--danger);
+      margin-left: 4px;
+    }
+
+    /* Form Groups */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 0.95rem;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      color: var(--dark);
+      background: white;
+      transition: all 0.3s;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.5;
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-top: 4px;
     }
 
     /* Image Upload */
@@ -245,7 +770,6 @@
       font-size: 0.9rem;
     }
 
-    /* Image Preview */
     .image-preview {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -281,15 +805,61 @@
       justify-content: center;
       font-size: 0.8rem;
       cursor: pointer;
-      transition: all 0.2s;
     }
 
-    .remove-btn:hover {
-      background: var(--danger);
+    /* Existing image badge */
+    .existing-badge {
+      position: absolute;
+      bottom: 2px;
+      left: 2px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      z-index: 2;
     }
 
-    /* Checkbox */
-    .checkbox-group {
+    /* Image processing indicator */
+    .image-processing {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      border-radius: var(--radius);
+    }
+
+    .image-processing i {
+      animation: spin 1s linear infinite;
+    }
+
+    /* Price Input */
+    .price-input {
+      position: relative;
+    }
+
+    .currency {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .price-input input {
+      padding-left: 50px;
+    }
+
+    /* Checkbox and Switch */
+    .form-check {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -310,48 +880,9 @@
       transition: all 0.3s;
     }
 
-    .checkbox-group input:checked + .checkbox {
+    .form-check input:checked + .checkbox {
       background: var(--primary);
       border-color: var(--primary);
-    }
-
-    /* Status Badge */
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-bottom: 16px;
-    }
-
-    .status-active {
-      background: #dcfce7;
-      color: var(--success);
-    }
-
-    .status-sold {
-      background: #fee2e2;
-      color: var(--danger);
-    }
-
-    .status-expired {
-      background: #fef3c7;
-      color: var(--warning);
-    }
-
-    .status-draft {
-      background: #e0e7ff;
-      color: var(--primary);
-    }
-
-    /* Location Grid */
-    .location-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
     }
 
     /* Action Buttons */
@@ -414,53 +945,36 @@
       cursor: not-allowed;
     }
 
-    /* Alert */
-    .alert {
-      padding: 12px 16px;
-      border-radius: var(--radius);
-      margin-bottom: 16px;
-      font-size: 0.9rem;
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
       display: none;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
+      z-index: 2000;
     }
 
-    .alert-success {
-      background: #dcfce7;
-      color: var(--success);
-      border-left: 4px solid var(--success);
+    .loading-overlay.active {
+      display: flex;
     }
 
-    .alert-error {
-      background: #fee2e2;
-      color: var(--danger);
-      border-left: 4px solid var(--danger);
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
     }
 
-    .alert-info {
-      background: #e0f2fe;
-      color: var(--primary);
-      border-left: 4px solid var(--primary);
-    }
-
-    /* Validation */
-    .error-message {
-      color: var(--danger);
-      font-size: 0.85rem;
-      margin-top: 4px;
-      display: none;
-    }
-
-    .form-input.error,
-    .form-select.error,
-    .form-textarea.error {
-      border-color: var(--danger);
-    }
-
-    .form-input.error + .error-message,
-    .form-select.error + .error-message,
-    .form-textarea.error + .error-message {
-      display: block;
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     /* Modal */
@@ -475,7 +989,6 @@
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 16px;
     }
 
     .modal.active {
@@ -485,7 +998,7 @@
     .modal-content {
       background: white;
       border-radius: var(--radius);
-      width: 100%;
+      width: 90%;
       max-width: 400px;
       animation: slideUp 0.3s ease;
     }
@@ -508,18 +1021,11 @@
 
     .modal-body i {
       font-size: 3rem;
+      color: var(--success);
       margin-bottom: 16px;
     }
 
-    .modal-success i {
-      color: var(--success);
-    }
-
-    .modal-danger i {
-      color: var(--danger);
-    }
-
-    .modal-footer {
+    .modal-actions {
       padding: 20px;
       display: flex;
       gap: 12px;
@@ -527,21 +1033,37 @@
 
     /* Responsive */
     @media (max-width: 480px) {
-      .location-grid {
-        grid-template-columns: 1fr;
-      }
-      
       .container {
         padding: 12px;
       }
       
-      .form-card {
+      .form-section {
         padding: 16px;
       }
       
       .action-buttons {
         flex-direction: column;
       }
+    }
+
+    /* Validation */
+    .error-message {
+      color: var(--danger);
+      font-size: 0.85rem;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .form-input.error,
+    .form-select.error,
+    .form-textarea.error {
+      border-color: var(--danger);
+    }
+
+    .form-input.error + .error-message,
+    .form-select.error + .error-message,
+    .form-textarea.error + .error-message {
+      display: block;
     }
   </style>
 </head>
@@ -553,8 +1075,8 @@
     <i class="fas fa-arrow-left"></i>
   </button>
   <div class="header-title">Edit Ad</div>
-  <button class="delete-btn" onclick="confirmDelete()">
-    <i class="fas fa-trash-alt"></i>
+  <button class="btn-danger" style="padding: 8px 16px; font-size: 0.9rem;" onclick="showDeleteModal()">
+    <i class="fas fa-trash"></i>
   </button>
 </header>
 
@@ -567,18 +1089,18 @@
 <div class="modal" id="successModal">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Ad Updated Successfully!</h3>
+      <h2>Ad Updated Successfully!</h2>
     </div>
-    <div class="modal-body modal-success">
+    <div class="modal-body">
       <i class="fas fa-check-circle"></i>
-      <p>Your ad has been updated and is now live on the marketplace.</p>
+      <p>Your changes have been saved.</p>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="viewAd()">
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">
         View Ad
       </button>
-      <button class="btn btn-primary" onclick="goToMyAds()">
-        My Ads
+      <button class="btn btn-primary" onclick="goToDashboard()">
+        My Dashboard
       </button>
     </div>
   </div>
@@ -588,18 +1110,19 @@
 <div class="modal" id="deleteModal">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Delete Ad</h3>
+      <h2 style="color: var(--danger);">Delete Ad</h2>
     </div>
-    <div class="modal-body modal-danger">
-      <i class="fas fa-exclamation-triangle"></i>
-      <p>Are you sure you want to delete this ad? This action cannot be undone.</p>
+    <div class="modal-body">
+      <i class="fas fa-exclamation-triangle" style="color: var(--warning);"></i>
+      <p>Are you sure you want to delete this ad?</p>
+      <p style="color: var(--gray); font-size: 0.9rem;">This action cannot be undone.</p>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal()">
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeDeleteModal()">
         Cancel
       </button>
       <button class="btn btn-danger" onclick="deleteAd()">
-        Delete Ad
+        Delete
       </button>
     </div>
   </div>
@@ -607,15 +1130,9 @@
 
 <!-- Main Form -->
 <div class="container">
-  <!-- Alert Messages -->
-  <div class="alert" id="alertMessage"></div>
-
-  <!-- Ad Status -->
-  <div id="adStatus" style="display: none;"></div>
-
   <!-- Basic Details Section -->
-  <div class="form-card">
-    <h3 class="section-title"><i class="fas fa-info-circle"></i> Basic Details</h3>
+  <div class="form-section">
+    <h2 class="section-title"><i class="fas fa-info-circle"></i> Basic Details</h2>
     
     <div class="form-group">
       <label class="form-label">Title <span class="required">*</span></label>
@@ -635,7 +1152,6 @@
       <label class="form-label">Category <span class="required">*</span></label>
       <select class="form-select" id="category">
         <option value="">Select a category</option>
-        <!-- Categories will be populated dynamically -->
       </select>
       <div class="error-message" id="categoryError">Please select a category</div>
     </div>
@@ -656,11 +1172,6 @@
         <option value="refurbished">Refurbished</option>
       </select>
     </div>
-  </div>
-
-  <!-- Price Section -->
-  <div class="form-card">
-    <h3 class="section-title"><i class="fas fa-tag"></i> Pricing</h3>
     
     <div class="form-group">
       <label class="form-label">Price (UGX) <span class="required">*</span></label>
@@ -671,75 +1182,39 @@
       <div class="error-message" id="priceError">Please enter a valid price</div>
     </div>
     
-    <div class="checkbox-group">
-      <input type="checkbox" id="negotiable">
+    <div class="form-check">
+      <input type="checkbox" id="negotiable" checked>
       <span class="checkbox"><i class="fas fa-check"></i></span>
-      <label for="negotiable" style="cursor: pointer;">Price is negotiable</label>
+      <label for="negotiable">Price is negotiable</label>
     </div>
   </div>
 
   <!-- Location Section -->
-  <div class="form-card">
-    <h3 class="section-title"><i class="fas fa-map-marker-alt"></i> Location Details</h3>
+  <div class="form-section">
+    <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Location Details</h2>
     
-    <div class="location-grid">
-      <div class="form-group">
-        <label class="form-label">Region <span class="required">*</span></label>
-        <select class="form-select" id="region">
-          <option value="">Select region</option>
-          <option value="Central">Central</option>
-          <option value="Northern">Northern</option>
-          <option value="Eastern">Eastern</option>
-          <option value="Western">Western</option>
-        </select>
-        <div class="error-message" id="regionError">Please select a region</div>
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label">District <span class="required">*</span></label>
-        <input type="text" class="form-input" id="district" placeholder="e.g., Kampala">
-        <div class="error-message" id="districtError">Please enter your district</div>
-      </div>
+    <div class="form-group">
+      <label class="form-label">Region <span class="required">*</span></label>
+      <select class="form-select" id="region">
+        <option value="">Select region</option>
+        <option value="Central">Central</option>
+        <option value="Northern">Northern</option>
+        <option value="Eastern">Eastern</option>
+        <option value="Western">Western</option>
+      </select>
+      <div class="error-message" id="regionError">Please select a region</div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">District <span class="required">*</span></label>
+      <input type="text" class="form-input" id="district" placeholder="e.g., Kampala">
+      <div class="error-message" id="districtError">Please enter your district</div>
     </div>
     
     <div class="form-group">
       <label class="form-label">Specific Location</label>
       <input type="text" class="form-input" id="specificLocation" placeholder="e.g., Ntinda, Kampala">
     </div>
-  </div>
-
-  <!-- Photos Section -->
-  <div class="form-card">
-    <h3 class="section-title"><i class="fas fa-camera"></i> Photos</h3>
-    <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 16px;">
-      First photo will be the main image. You can upload up to 10 photos.
-    </p>
-    
-    <div class="image-upload" id="imageUpload">
-      <div class="upload-icon">
-        <i class="fas fa-cloud-upload-alt"></i>
-      </div>
-      <div class="upload-text">Tap to add more photos</div>
-      <div class="upload-subtext">JPEG, PNG (max 5MB each)</div>
-      <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
-    </div>
-    
-    <div class="image-preview" id="imagePreview">
-      <!-- Preview images will appear here -->
-    </div>
-    
-    <div class="form-group" style="margin-top: 20px;">
-      <label class="form-label">Video URL (Optional)</label>
-      <input type="url" class="form-input" id="videoUrl" placeholder="https://youtube.com/watch?v=...">
-      <div style="font-size: 0.85rem; color: var(--gray); margin-top: 4px;">
-        Paste YouTube or other video link
-      </div>
-    </div>
-  </div>
-
-  <!-- Contact Section -->
-  <div class="form-card">
-    <h3 class="section-title"><i class="fas fa-phone"></i> Contact Information</h3>
     
     <div class="form-group">
       <label class="form-label">Contact Phone</label>
@@ -752,12 +1227,46 @@
     <div class="form-group">
       <label class="form-label">WhatsApp Number (Optional)</label>
       <input type="tel" class="form-input" id="whatsapp" placeholder="+256 XXX XXX XXX">
+      <div style="font-size: 0.85rem; color: var(--gray); margin-top: 4px;">
+        Buyers can contact you on WhatsApp
+      </div>
     </div>
     
-    <div class="checkbox-group">
-      <input type="checkbox" id="showProfilePhone">
+    <div class="form-check">
+      <input type="checkbox" id="showProfilePhone" checked>
       <span class="checkbox"><i class="fas fa-check"></i></span>
-      <label for="showProfilePhone" style="cursor: pointer;">Show my profile phone number</label>
+      <label for="showProfilePhone">Show my profile phone number</label>
+    </div>
+  </div>
+
+  <!-- Photos Section -->
+  <div class="form-section">
+    <h2 class="section-title"><i class="fas fa-camera"></i> Photos</h2>
+    
+    <div class="image-upload" id="imageUpload">
+      <div class="upload-icon">
+        <i class="fas fa-cloud-upload-alt"></i>
+      </div>
+      <div class="upload-text">Tap to add more photos</div>
+      <div class="upload-subtext">Add up to 10 photos total (auto-compressed to ~300KB)</div>
+      <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+    </div>
+    
+    <div class="image-preview" id="imagePreview">
+      <!-- Preview images will appear here -->
+    </div>
+    
+    <div class="tips-section" style="background: #e0f2fe; border: 1px solid #bae6fd; border-radius: var(--radius); padding: 16px; margin-top: 16px;">
+      <div class="tips-title" style="color: var(--primary); font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-lightbulb"></i> Photo Tips
+      </div>
+      <ul class="tips-list" style="padding-left: 20px;">
+        <li style="margin-bottom: 6px; color: var(--secondary); font-size: 0.9rem;">Use clear, well-lit photos</li>
+        <li style="margin-bottom: 6px; color: var(--secondary); font-size: 0.9rem;">Show the item from different angles</li>
+        <li style="margin-bottom: 6px; color: var(--secondary); font-size: 0.9rem;">Include photos of any flaws or damage</li>
+        <li style="margin-bottom: 6px; color: var(--secondary); font-size: 0.9rem;">First photo will be the thumbnail</li>
+        <li style="margin-bottom: 6px; color: var(--secondary); font-size: 0.9rem;">New images are automatically compressed</li>
+      </ul>
     </div>
   </div>
 
@@ -766,7 +1275,7 @@
     <button class="btn btn-secondary" onclick="goBack()">
       <i class="fas fa-times"></i> Cancel
     </button>
-    <button class="btn btn-primary" onclick="saveAd()">
+    <button class="btn btn-primary" onclick="updateAd()">
       <i class="fas fa-save"></i> Save Changes
     </button>
   </div>
@@ -781,88 +1290,288 @@
   const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
 
   // Global variables
-  let adId = null;
-  let adData = null;
   let categories = [];
   let subcategories = [];
-  let existingImages = [];
-  let newImages = [];
-  let removedImages = [];
-  let currentUser = null;
+  let existingImages = []; // URLs of existing images
+  let newImages = []; // New compressed images to upload
+  let removedImages = []; // URLs of images to delete
+  let adId = null;
+  let adData = null;
+  let userData = null;
 
   // DOM Elements
   const loadingOverlay = document.getElementById('loadingOverlay');
-  const alertMessage = document.getElementById('alertMessage');
-  const adStatus = document.getElementById('adStatus');
 
-  // Get ad ID from URL
-  function getAdIdFromUrl() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('id');
+  // ========== Image Compression Function (Same as post-ad.html) ==========
+  async function compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          
+          const MAX_WIDTH = 1000;
+          const MAX_HEIGHT = 1000;
+          
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          
+          width = Math.max(width, 200);
+          height = Math.max(height, 200);
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                reject(new Error("Compression failed"));
+                return;
+              }
+              
+              const compressedFile = new File(
+                [blob], 
+                file.name.replace(/\.[^/.]+$/, "") + ".jpg", 
+                { type: "image/jpeg", lastModified: Date.now() }
+              );
+              
+              console.log("📸 Image compression:", {
+                original: {
+                  name: file.name,
+                  size: (file.size / 1024).toFixed(1) + "KB",
+                  dimensions: img.width + "x" + img.height
+                },
+                compressed: {
+                  name: compressedFile.name,
+                  size: (blob.size / 1024).toFixed(1) + "KB",
+                  dimensions: width + "x" + height,
+                  savings: ((1 - blob.size/file.size) * 100).toFixed(1) + "%"
+                }
+              });
+              
+              const previewUrl = URL.createObjectURL(blob);
+              
+              resolve({ 
+                file: compressedFile, 
+                dataUrl: previewUrl,
+                originalName: file.name
+              });
+            }, 
+            "image/jpeg", 
+            0.7
+          );
+        };
+        
+        img.onerror = () => {
+          reject(new Error("Failed to load image for compression"));
+        };
+      };
+      
+      reader.onerror = () => {
+        reject(new Error("Failed to read file"));
+      };
+    });
   }
 
-  // Initialize page
-  document.addEventListener('DOMContentLoaded', async function() {
-    adId = getAdIdFromUrl();
+  // ========== Handle Image Upload with Compression ==========
+  async function handleImageUpload(event) {
+    const files = Array.from(event.target.files);
     
-    if (!adId) {
-      showAlert('Ad ID not found in URL', 'error');
-      setTimeout(() => window.location.href = 'my-ads.html', 2000);
+    // Check total images limit (existing + new)
+    if (existingImages.length + newImages.length + files.length > 10) {
+      showError('Maximum 10 images allowed total');
+      event.target.value = '';
       return;
     }
+    
+    // Show processing indicator
+    const uploadBtn = document.getElementById('imageUpload');
+    const originalText = uploadBtn.innerHTML;
+    uploadBtn.innerHTML = `
+      <div class="upload-icon">
+        <i class="fas fa-spinner fa-pulse"></i>
+      </div>
+      <div class="upload-text">Processing images...</div>
+      <div class="upload-subtext">This may take a moment</div>
+    `;
+    uploadBtn.style.pointerEvents = 'none';
+    
+    let processedCount = 0;
+    let errorCount = 0;
+    
+    for (const file of files) {
+      if (!file.type.match('image.*')) {
+        showError(`${file.name} is not an image. Skipping.`);
+        errorCount++;
+        continue;
+      }
+      
+      if (file.size > 10 * 1024 * 1024) {
+        showError(`${file.name} is too large (max 10MB before compression)`);
+        errorCount++;
+        continue;
+      }
+      
+      try {
+        // Show temporary processing indicator
+        const tempId = 'temp-' + Date.now() + '-' + Math.random();
+        const preview = document.getElementById('imagePreview');
+        const tempItem = document.createElement('div');
+        tempItem.className = 'preview-item';
+        tempItem.id = tempId;
+        tempItem.innerHTML = `
+          <div class="image-processing">
+            <i class="fas fa-spinner fa-pulse"></i> Processing...
+          </div>
+        `;
+        preview.appendChild(tempItem);
+        
+        // Compress the image
+        const compressed = await compressImage(file);
+        
+        // Remove temporary item
+        document.getElementById(tempId)?.remove();
+        
+        // Add to new images
+        newImages.push(compressed);
+        processedCount++;
+        
+        // Update preview
+        updateImagePreview();
+        
+      } catch (error) {
+        console.error(`Compression error for ${file.name}:`, error);
+        showError(`Failed to process ${file.name}`);
+        errorCount++;
+        
+        const tempItem = document.getElementById(tempId);
+        if (tempItem) tempItem.remove();
+      }
+    }
+    
+    // Restore upload button
+    uploadBtn.innerHTML = originalText;
+    uploadBtn.style.pointerEvents = 'auto';
+    
+    if (processedCount > 0) {
+      showSuccess(`✅ ${processedCount} image(s) processed successfully`);
+    }
+    if (errorCount > 0) {
+      showError(`❌ ${errorCount} image(s) failed to process`);
+    }
+    
+    event.target.value = '';
+  }
 
-    await checkAuth();
-    await loadAdData();
+  // ========== Update Image Preview ==========
+  function updateImagePreview() {
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+    
+    // Show existing images first
+    existingImages.forEach((url, index) => {
+      const previewItem = document.createElement('div');
+      previewItem.className = 'preview-item';
+      
+      previewItem.innerHTML = `
+        <img src="${url}" class="preview-image" alt="Existing image" loading="lazy">
+        <div class="existing-badge">Existing</div>
+        <button class="remove-btn" onclick="removeExistingImage(${index})">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      
+      preview.appendChild(previewItem);
+    });
+    
+    // Show new compressed images
+    newImages.forEach((image, index) => {
+      const previewItem = document.createElement('div');
+      previewItem.className = 'preview-item';
+      
+      const size = (image.file.size / 1024).toFixed(0);
+      
+      previewItem.innerHTML = `
+        <img src="${image.dataUrl}" class="preview-image" alt="New image" loading="lazy">
+        <div style="position: absolute; bottom: 2px; left: 2px; background: rgba(0,0,0,0.7); color: white; font-size: 10px; padding: 2px 4px; border-radius: 4px;">
+          ${size}KB
+        </div>
+        <button class="remove-btn" onclick="removeNewImage(${index})">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      
+      preview.appendChild(previewItem);
+    });
+  }
+
+  // ========== Remove Existing Image ==========
+  function removeExistingImage(index) {
+    const url = existingImages[index];
+    removedImages.push(url); // Mark for deletion from storage
+    existingImages.splice(index, 1);
+    updateImagePreview();
+  }
+
+  // ========== Remove New Image ==========
+  function removeNewImage(index) {
+    // Clean up object URL
+    if (newImages[index] && newImages[index].dataUrl) {
+      URL.revokeObjectURL(newImages[index].dataUrl);
+    }
+    newImages.splice(index, 1);
+    updateImagePreview();
+  }
+
+  // ========== Initialize Page ==========
+  document.addEventListener('DOMContentLoaded', async function() {
+    // Get ad ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    adId = urlParams.get('id');
+    
+    if (!adId) {
+      showError('No ad specified');
+      setTimeout(() => {
+        window.location.href = 'my-ads.html';
+      }, 2000);
+      return;
+    }
+    
+    // Check authentication
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) {
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+      return;
+    }
+    
+    userData = user;
+    
     await loadCategories();
+    await loadAdData();
     setupEventListeners();
   });
 
-  // Check authentication
-  async function checkAuth() {
-    const { data: { user }, error } = await sb.auth.getUser();
-    
-    if (error || !user) {
-      window.location.href = 'login.html';
-      return;
-    }
-    
-    currentUser = user;
-  }
-
-  // Load ad data
-  async function loadAdData() {
-    try {
-      loadingOverlay.classList.add('active');
-      
-      const { data: ad, error } = await sb
-        .from('ads')
-        .select('*')
-        .eq('id', adId)
-        .single();
-      
-      if (error) throw error;
-      
-      // Check if user owns this ad
-      if (ad.seller_id !== currentUser.id) {
-        showAlert('You do not have permission to edit this ad', 'error');
-        setTimeout(() => window.location.href = 'my-ads.html', 2000);
-        return;
-      }
-      
-      adData = ad;
-      populateForm(ad);
-      updateAdStatus(ad.status);
-      
-    } catch (error) {
-      console.error('Error loading ad:', error);
-      showAlert('Error loading ad data', 'error');
-      setTimeout(() => window.location.href = 'my-ads.html', 2000);
-    } finally {
-      loadingOverlay.classList.remove('active');
-    }
-  }
-
-  // Load categories
+  // ========== Load Categories ==========
   async function loadCategories() {
     try {
       const { data, error } = await sb
@@ -883,116 +1592,119 @@
         categorySelect.appendChild(option);
       });
       
-      // Set selected category
-      if (adData) {
-        categorySelect.value = adData.category_id;
-        updateSubcategories();
-      }
-      
     } catch (error) {
       console.error('Error loading categories:', error);
-      showAlert('Failed to load categories', 'error');
+      showError('Failed to load categories');
     }
   }
 
-  // Update subcategories based on selected category
-  function updateSubcategories() {
-    const categoryId = parseInt(document.getElementById('category').value);
-    const subcategorySelect = document.getElementById('subcategory');
-    subcategorySelect.innerHTML = '<option value="">Select a subcategory</option>';
-    
-    if (categoryId) {
-      const filteredSubcategories = subcategories.filter(s => s.parent_id === categoryId);
+  // ========== Load Ad Data ==========
+  async function loadAdData() {
+    try {
+      loadingOverlay.classList.add('active');
       
-      if (filteredSubcategories.length > 0) {
-        subcategorySelect.disabled = false;
-        filteredSubcategories.forEach(sub => {
-          const option = document.createElement('option');
-          option.value = sub.id;
-          option.textContent = sub.name;
-          subcategorySelect.appendChild(option);
-        });
+      const { data, error } = await sb
+        .from('ads')
+        .select('*')
+        .eq('id', adId)
+        .single();
+      
+      if (error) throw error;
+      
+      // Check if user owns this ad
+      if (data.seller_id !== userData.id) {
+        showError('You do not have permission to edit this ad');
+        setTimeout(() => {
+          window.location.href = 'my-ads.html';
+        }, 2000);
+        return;
+      }
+      
+      adData = data;
+      
+      // Populate form fields
+      document.getElementById('title').value = data.title || '';
+      document.getElementById('description').value = data.description || '';
+      document.getElementById('category').value = data.category_id || '';
+      document.getElementById('price').value = data.price || '';
+      document.getElementById('negotiable').checked = data.is_negotiable || false;
+      document.getElementById('region').value = data.region || '';
+      document.getElementById('district').value = data.district || '';
+      document.getElementById('specificLocation').value = data.specific_location || '';
+      document.getElementById('contactPhone').value = data.contact_phone || '';
+      document.getElementById('whatsapp').value = data.contact_whatsapp || '';
+      document.getElementById('showProfilePhone').checked = data.show_profile_phone || false;
+      
+      // Set condition
+      if (data.condition) {
+        document.getElementById('condition').value = data.condition;
+      }
+      
+      // Load existing images
+      if (data.image_urls && Array.isArray(data.image_urls)) {
+        existingImages = data.image_urls.filter(url => url && url.trim() !== '');
+      }
+      
+      // Trigger category change to load subcategories
+      document.getElementById('category').dispatchEvent(new Event('change'));
+      
+      // Set subcategory if exists
+      if (data.subcategory_id) {
+        setTimeout(() => {
+          document.getElementById('subcategory').value = data.subcategory_id;
+        }, 100);
+      }
+      
+      // Update character counts
+      document.getElementById('titleCount').textContent = (data.title || '').length;
+      document.getElementById('descriptionCount').textContent = (data.description || '').length;
+      
+      // Update image preview
+      updateImagePreview();
+      
+      loadingOverlay.classList.remove('active');
+      
+    } catch (error) {
+      loadingOverlay.classList.remove('active');
+      console.error('Error loading ad:', error);
+      showError('Failed to load ad data');
+    }
+  }
+
+  // ========== Setup Event Listeners ==========
+  function setupEventListeners() {
+    document.getElementById('title').addEventListener('input', function() {
+      document.getElementById('titleCount').textContent = this.value.length;
+    });
+    
+    document.getElementById('description').addEventListener('input', function() {
+      document.getElementById('descriptionCount').textContent = this.value.length;
+    });
+    
+    document.getElementById('category').addEventListener('change', function() {
+      const subcategorySelect = document.getElementById('subcategory');
+      subcategorySelect.innerHTML = '<option value="">Select a subcategory</option>';
+      
+      if (this.value) {
+        const parentId = parseInt(this.value);
+        const filteredSubcategories = subcategories.filter(s => s.parent_id === parentId);
         
-        // Set selected subcategory if exists
-        if (adData.subcategory_id) {
-          subcategorySelect.value = adData.subcategory_id;
+        if (filteredSubcategories.length > 0) {
+          subcategorySelect.disabled = false;
+          filteredSubcategories.forEach(sub => {
+            const option = document.createElement('option');
+            option.value = sub.id;
+            option.textContent = sub.name;
+            subcategorySelect.appendChild(option);
+          });
+        } else {
+          subcategorySelect.disabled = true;
         }
       } else {
         subcategorySelect.disabled = true;
       }
-    } else {
-      subcategorySelect.disabled = true;
-    }
-  }
-
-  // Populate form with ad data
-  function populateForm(ad) {
-    // Basic details
-    document.getElementById('title').value = ad.title;
-    document.getElementById('description').value = ad.description;
-    document.getElementById('condition').value = ad.condition || 'unknown';
-    document.getElementById('price').value = ad.price;
-    document.getElementById('negotiable').checked = ad.is_negotiable || false;
-    
-    // Location
-    document.getElementById('region').value = ad.region || '';
-    document.getElementById('district').value = ad.district || '';
-    document.getElementById('specificLocation').value = ad.specific_location || '';
-    
-    // Contact
-    document.getElementById('contactPhone').value = ad.contact_phone || '';
-    document.getElementById('whatsapp').value = ad.contact_whatsapp || '';
-    document.getElementById('showProfilePhone').checked = ad.show_profile_phone || false;
-    
-    // Video
-    document.getElementById('videoUrl').value = ad.video_url || '';
-    
-    // Update character counts
-    updateCharCount('title');
-    updateCharCount('description');
-    
-    // Load existing images
-    existingImages = ad.image_urls || [];
-    updateImagePreview();
-  }
-
-  // Update ad status badge
-  function updateAdStatus(status) {
-    const statusMap = {
-      'active': { class: 'status-active', label: 'Active', icon: 'check-circle' },
-      'sold': { class: 'status-sold', label: 'Sold', icon: 'check-circle' },
-      'expired': { class: 'status-expired', label: 'Expired', icon: 'clock' },
-      'draft': { class: 'status-draft', label: 'Draft', icon: 'edit' },
-      'banned': { class: 'status-sold', label: 'Banned', icon: 'ban' }
-    };
-    
-    const statusInfo = statusMap[status] || { class: 'status-draft', label: 'Unknown', icon: 'question-circle' };
-    
-    adStatus.innerHTML = `
-      <div class="status-badge ${statusInfo.class}">
-        <i class="fas fa-${statusInfo.icon}"></i>
-        ${statusInfo.label}
-      </div>
-    `;
-    adStatus.style.display = 'block';
-  }
-
-  // Setup event listeners
-  function setupEventListeners() {
-    // Title character count
-    document.getElementById('title').addEventListener('input', function() {
-      updateCharCount('title');
     });
     
-    // Description character count
-    document.getElementById('description').addEventListener('input', function() {
-      updateCharCount('description');
-    });
-    
-    // Category change
-    document.getElementById('category').addEventListener('change', updateSubcategories);
-    
-    // Image upload
     document.getElementById('imageUpload').addEventListener('click', () => {
       document.getElementById('imageInput').click();
     });
@@ -1000,109 +1712,10 @@
     document.getElementById('imageInput').addEventListener('change', handleImageUpload);
   }
 
-  // Update character count
-  function updateCharCount(fieldId) {
-    const field = document.getElementById(fieldId);
-    const countElement = document.getElementById(fieldId + 'Count');
-    if (field && countElement) {
-      countElement.textContent = field.value.length;
-    }
-  }
-
-  // Handle image upload
-  function handleImageUpload(event) {
-    const files = Array.from(event.target.files);
-    
-    // Check total images
-    if (existingImages.length + newImages.length + files.length > 10) {
-      showAlert('Maximum 10 images allowed', 'error');
-      return;
-    }
-    
-    for (const file of files) {
-      // Check file type
-      if (!file.type.match('image.*')) {
-        showAlert('Please upload only images', 'error');
-        continue;
-      }
-      
-      // Check file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        showAlert(`Image ${file.name} is too large (max 5MB)`, 'error');
-        continue;
-      }
-      
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        newImages.push({
-          file: file,
-          dataUrl: e.target.result
-        });
-        updateImagePreview();
-      };
-      reader.readAsDataURL(file);
-    }
-    
-    // Reset input
-    event.target.value = '';
-  }
-
-  // Update image preview
-  function updateImagePreview() {
-    const preview = document.getElementById('imagePreview');
-    preview.innerHTML = '';
-    
-    // Display existing images
-    existingImages.forEach((imageUrl, index) => {
-      if (removedImages.includes(index)) return;
-      
-      const previewItem = document.createElement('div');
-      previewItem.className = 'preview-item';
-      
-      previewItem.innerHTML = `
-        <img src="${imageUrl}" class="preview-image" alt="Preview">
-        <button class="remove-btn" onclick="removeExistingImage(${index})">
-          <i class="fas fa-times"></i>
-        </button>
-      `;
-      
-      preview.appendChild(previewItem);
-    });
-    
-    // Display new images
-    newImages.forEach((image, index) => {
-      const previewItem = document.createElement('div');
-      previewItem.className = 'preview-item';
-      
-      previewItem.innerHTML = `
-        <img src="${image.dataUrl}" class="preview-image" alt="Preview">
-        <button class="remove-btn" onclick="removeNewImage(${index})">
-          <i class="fas fa-times"></i>
-        </button>
-      `;
-      
-      preview.appendChild(previewItem);
-    });
-  }
-
-  // Remove existing image
-  function removeExistingImage(index) {
-    removedImages.push(index);
-    updateImagePreview();
-  }
-
-  // Remove new image
-  function removeNewImage(index) {
-    newImages.splice(index, 1);
-    updateImagePreview();
-  }
-
-  // Validate form
+  // ========== Validate Form ==========
   function validateForm() {
     let isValid = true;
     
-    // Clear previous errors
     document.querySelectorAll('.error-message').forEach(el => {
       el.style.display = 'none';
     });
@@ -1110,7 +1723,6 @@
       el.classList.remove('error');
     });
     
-    // Validate required fields
     const title = document.getElementById('title').value.trim();
     const description = document.getElementById('description').value.trim();
     const category = document.getElementById('category').value;
@@ -1157,15 +1769,29 @@
     return isValid;
   }
 
-  // Save ad
-  async function saveAd() {
+  // ========== Update Ad ==========
+  async function updateAd() {
     if (!validateForm()) return;
     
     try {
       loadingOverlay.classList.add('active');
       
+      // Upload new images
+      let newImageUrls = [];
+      if (newImages.length > 0) {
+        newImageUrls = await uploadNewImages();
+      }
+      
+      // Combine existing and new images
+      const allImageUrls = [...existingImages, ...newImageUrls];
+      
+      // Delete removed images from storage
+      if (removedImages.length > 0) {
+        await deleteRemovedImages();
+      }
+      
       // Get form values
-      const updates = {
+      const updatedData = {
         title: document.getElementById('title').value.trim(),
         description: document.getElementById('description').value.trim(),
         price: parseFloat(document.getElementById('price').value),
@@ -1179,60 +1805,46 @@
         contact_phone: document.getElementById('contactPhone').value.trim() || null,
         contact_whatsapp: document.getElementById('whatsapp').value.trim() || null,
         show_profile_phone: document.getElementById('showProfilePhone').checked,
-        video_url: document.getElementById('videoUrl').value.trim() || null,
+        image_urls: allImageUrls,
         updated_at: new Date().toISOString()
       };
-      
-      // Upload new images
-      const newImageUrls = await uploadNewImages();
-      
-      // Combine images (existing not removed + new)
-      const finalImages = [];
-      existingImages.forEach((url, index) => {
-        if (!removedImages.includes(index)) {
-          finalImages.push(url);
-        }
-      });
-      finalImages.push(...newImageUrls);
-      
-      updates.image_urls = finalImages;
       
       // Update ad in database
       const { error } = await sb
         .from('ads')
-        .update(updates)
-        .eq('id', adId)
-        .eq('seller_id', currentUser.id);
+        .update(updatedData)
+        .eq('id', adId);
       
       if (error) throw error;
       
-      // Show success message
+      loadingOverlay.classList.remove('active');
       document.getElementById('successModal').classList.add('active');
       
     } catch (error) {
-      console.error('Error updating ad:', error);
-      showAlert('Failed to update ad. Please try again.', 'error');
-    } finally {
       loadingOverlay.classList.remove('active');
+      console.error('Error updating ad:', error);
+      showError('Failed to update ad. Please try again.');
     }
   }
 
-  // Upload new images
+  // ========== Upload New Images ==========
   async function uploadNewImages() {
     const imageUrls = [];
     
     for (let i = 0; i < newImages.length; i++) {
       const image = newImages[i];
-      const fileName = `ad-${adId}-${Date.now()}-${i}-${image.file.name.replace(/\s+/g, '-')}`;
+      const fileName = `ad-${Date.now()}-${i}-${Math.random().toString(36).substring(7)}.jpg`;
       
       try {
         const { error: uploadError } = await sb.storage
           .from('ad-images')
           .upload(fileName, image.file);
         
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          continue;
+        }
         
-        // Get public URL
         const { data: { publicUrl } } = sb.storage
           .from('ad-images')
           .getPublicUrl(fileName);
@@ -1241,79 +1853,187 @@
         
       } catch (error) {
         console.error('Error uploading image:', error);
-        // Use data URL as fallback
-        imageUrls.push(image.dataUrl);
       }
     }
     
     return imageUrls;
   }
 
-  // Confirm delete
-  function confirmDelete() {
-    document.getElementById('deleteModal').classList.add('active');
+  // ========== Delete Removed Images ==========
+  async function deleteRemovedImages() {
+    for (const url of removedImages) {
+      try {
+        // Extract filename from URL
+        const fileName = url.split('/').pop();
+        if (fileName) {
+          await sb.storage
+            .from('ad-images')
+            .remove([fileName]);
+        }
+      } catch (error) {
+        console.error('Error deleting image:', error);
+      }
+    }
   }
 
-  // Delete ad
+  // ========== Delete Ad ==========
   async function deleteAd() {
     try {
+      closeDeleteModal();
       loadingOverlay.classList.add('active');
       
+      // Delete images from storage
+      if (existingImages.length > 0) {
+        for (const url of existingImages) {
+          const fileName = url.split('/').pop();
+          if (fileName) {
+            await sb.storage
+              .from('ad-images')
+              .remove([fileName]);
+          }
+        }
+      }
+      
+      // Delete ad from database
       const { error } = await sb
         .from('ads')
         .delete()
-        .eq('id', adId)
-        .eq('seller_id', currentUser.id);
+        .eq('id', adId);
       
       if (error) throw error;
       
-      showAlert('Ad deleted successfully', 'success');
-      setTimeout(() => window.location.href = 'my-ads.html', 1500);
+      loadingOverlay.classList.remove('active');
+      window.location.href = 'my-ads.html?deleted=1';
       
     } catch (error) {
-      console.error('Error deleting ad:', error);
-      showAlert('Failed to delete ad', 'error');
-    } finally {
       loadingOverlay.classList.remove('active');
-      closeModal();
+      console.error('Error deleting ad:', error);
+      showError('Failed to delete ad');
     }
   }
 
-  // Show alert
-  function showAlert(message, type) {
-    alertMessage.textContent = message;
-    alertMessage.className = `alert alert-${type}`;
-    alertMessage.style.display = 'flex';
+  // ========== Utility Functions ==========
+  function showError(message) {
+    const existingErrors = document.querySelectorAll('.error-notification');
+    existingErrors.forEach(el => el.remove());
     
-    // Auto-hide success alerts
-    if (type === 'success') {
+    const errorEl = document.createElement('div');
+    errorEl.className = 'error-notification';
+    errorEl.style.cssText = `
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      left: 20px;
+      background: var(--danger);
+      color: white;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 3000;
+      animation: slideIn 0.3s ease;
+      text-align: center;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    `;
+    
+    errorEl.innerHTML = `<i class="fas fa-exclamation-circle"></i>${message}`;
+    document.body.appendChild(errorEl);
+    
+    setTimeout(() => {
+      errorEl.style.animation = 'slideOut 0.3s ease';
       setTimeout(() => {
-        alertMessage.style.display = 'none';
-      }, 5000);
-    }
+        if (errorEl.parentNode) {
+          document.body.removeChild(errorEl);
+        }
+      }, 300);
+    }, 5000);
   }
 
-  // Close modal
-  function closeModal() {
-    document.querySelectorAll('.modal').forEach(modal => {
-      modal.classList.remove('active');
-    });
+  function showSuccess(message) {
+    const successEl = document.createElement('div');
+    successEl.className = 'success-notification';
+    successEl.style.cssText = `
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      left: 20px;
+      background: var(--success);
+      color: white;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 3000;
+      animation: slideIn 0.3s ease;
+      text-align: center;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    `;
+    
+    successEl.innerHTML = `<i class="fas fa-check-circle"></i>${message}`;
+    document.body.appendChild(successEl);
+    
+    setTimeout(() => {
+      successEl.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => {
+        if (successEl.parentNode) {
+          document.body.removeChild(successEl);
+        }
+      }, 300);
+    }, 3000);
   }
 
-  // Go back
   function goBack() {
     window.history.back();
   }
 
-  // View ad
-  function viewAd() {
+  function closeModal() {
+    document.getElementById('successModal').classList.remove('active');
     window.location.href = `ad-detail.html?id=${adId}`;
   }
 
-  // Go to my ads
-  function goToMyAds() {
+  function goToDashboard() {
     window.location.href = 'my-ads.html';
   }
+
+  function showDeleteModal() {
+    document.getElementById('deleteModal').classList.add('active');
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('active');
+  }
+
+  // Add CSS for animations
+  if (!document.querySelector('#notification-styles')) {
+    const style = document.createElement('style');
+    style.id = 'notification-styles';
+    style.textContent = `
+      @keyframes slideIn {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes slideOut {
+        from { transform: translateY(0); opacity: 1; }
+        to { transform: translateY(-20px); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Clean up object URLs
+  window.addEventListener('beforeunload', function() {
+    newImages.forEach(image => {
+      if (image.dataUrl && image.dataUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(image.dataUrl);
+      }
+    });
+  });
 </script>
 </body>
 </html>
