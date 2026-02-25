@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
+    /* Your existing CSS remains exactly the same */
     * {
       margin: 0;
       padding: 0;
@@ -271,6 +272,26 @@
       justify-content: center;
       font-size: 0.8rem;
       cursor: pointer;
+    }
+
+    /* Add loading indicator for images */
+    .image-processing {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      border-radius: var(--radius);
+    }
+
+    .image-processing i {
+      animation: spin 1s linear infinite;
     }
 
     /* Price Input */
@@ -760,7 +781,7 @@
         <i class="fas fa-cloud-upload-alt"></i>
       </div>
       <div class="upload-text">Tap to upload photos</div>
-      <div class="upload-subtext">Add up to 10 photos (JPEG, PNG)</div>
+      <div class="upload-subtext">Add up to 10 photos (auto-compressed to ~300KB)</div>
       <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
     </div>
     
@@ -777,6 +798,7 @@
         <li>Show the item from different angles</li>
         <li>Include photos of any flaws or damage</li>
         <li>First photo will be the thumbnail</li>
+        <li>Images are automatically compressed for faster loading</li>
       </ul>
     </div>
   </div>
@@ -832,6 +854,7 @@
   let subcategories = [];
   let selectedImages = [];
   let userData = null;
+  let isUploading = false; // Track if images are being processed
 
   // DOM Elements
   const stepElements = [null, document.getElementById('step1'), document.getElementById('step2'), 
@@ -842,7 +865,275 @@
   const nextBtn = document.getElementById('nextBtn');
   const loadingOverlay = document.getElementById('loadingOverlay');
 
-  // Initialize page
+  // ========== NEW: Image Compression Function ==========
+  async function compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        
+        img.onload = () => {
+          // Create canvas for compression
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          
+          // Max dimensions for marketplace images
+          const MAX_WIDTH = 1000;
+          const MAX_HEIGHT = 1000;
+          
+          // Calculate new dimensions while maintaining aspect ratio
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          
+          // Ensure minimum dimensions (optional)
+          width = Math.max(width, 200);
+          height = Math.max(height, 200);
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          // Draw image on canvas
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convert to blob with 70% quality
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                reject(new Error("Compression failed"));
+                return;
+              }
+              
+              // Create new file with .jpg extension
+              const compressedFile = new File(
+                [blob], 
+                file.name.replace(/\.[^/.]+$/, "") + ".jpg", 
+                { type: "image/jpeg", lastModified: Date.now() }
+              );
+              
+              // Log compression stats for debugging
+              console.log("📸 Image compression:", {
+                original: {
+                  name: file.name,
+                  size: (file.size / 1024).toFixed(1) + "KB",
+                  dimensions: img.width + "x" + img.height
+                },
+                compressed: {
+                  name: compressedFile.name,
+                  size: (blob.size / 1024).toFixed(1) + "KB",
+                  dimensions: width + "x" + height,
+                  savings: ((1 - blob.size/file.size) * 100).toFixed(1) + "%"
+                }
+              });
+              
+              // Create object URL for preview (more efficient than dataUrl)
+              const previewUrl = URL.createObjectURL(blob);
+              
+              resolve({ 
+                file: compressedFile, 
+                dataUrl: previewUrl,
+                originalName: file.name
+              });
+            }, 
+            "image/jpeg", 
+            0.7 // 70% quality - good balance for marketplace
+          );
+        };
+        
+        img.onerror = () => {
+          reject(new Error("Failed to load image for compression"));
+        };
+      };
+      
+      reader.onerror = () => {
+        reject(new Error("Failed to read file"));
+      };
+    });
+  }
+
+  // ========== UPDATED: Handle Image Upload with Compression ==========
+  async function handleImageUpload(event) {
+    const files = Array.from(event.target.files);
+    
+    // Check total images limit
+    if (selectedImages.length + files.length > 10) {
+      showError('Maximum 10 images allowed');
+      event.target.value = '';
+      return;
+    }
+    
+    // Show processing indicator on upload button
+    const uploadBtn = document.getElementById('imageUpload');
+    const originalText = uploadBtn.innerHTML;
+    uploadBtn.innerHTML = `
+      <div class="upload-icon">
+        <i class="fas fa-spinner fa-pulse"></i>
+      </div>
+      <div class="upload-text">Processing images...</div>
+      <div class="upload-subtext">This may take a moment</div>
+    `;
+    uploadBtn.style.pointerEvents = 'none';
+    
+    let processedCount = 0;
+    let errorCount = 0;
+    
+    for (const file of files) {
+      // Validate file type
+      if (!file.type.match('image.*')) {
+        showError(`${file.name} is not an image. Skipping.`);
+        errorCount++;
+        continue;
+      }
+      
+      // Optional: Reject files larger than 10MB before compression
+      if (file.size > 10 * 1024 * 1024) {
+        showError(`${file.name} is too large (max 10MB before compression)`);
+        errorCount++;
+        continue;
+      }
+      
+      try {
+        // Create a temporary preview item with loading state
+        const tempId = 'temp-' + Date.now() + '-' + Math.random();
+        const preview = document.getElementById('imagePreview');
+        const tempItem = document.createElement('div');
+        tempItem.className = 'preview-item';
+        tempItem.id = tempId;
+        tempItem.innerHTML = `
+          <div class="image-processing">
+            <i class="fas fa-spinner fa-pulse"></i> Processing...
+          </div>
+        `;
+        preview.appendChild(tempItem);
+        
+        // Compress the image
+        const compressed = await compressImage(file);
+        
+        // Remove temporary item
+        document.getElementById(tempId)?.remove();
+        
+        // Add to selected images
+        selectedImages.push(compressed);
+        processedCount++;
+        
+        // Update preview
+        updateImagePreview();
+        
+      } catch (error) {
+        console.error(`Compression error for ${file.name}:`, error);
+        showError(`Failed to process ${file.name}`);
+        errorCount++;
+        
+        // Remove temporary item if it exists
+        const tempItem = document.getElementById(tempId);
+        if (tempItem) tempItem.remove();
+      }
+    }
+    
+    // Restore upload button
+    uploadBtn.innerHTML = originalText;
+    uploadBtn.style.pointerEvents = 'auto';
+    
+    // Show summary
+    if (processedCount > 0) {
+      showSuccess(`✅ ${processedCount} image(s) processed successfully`);
+    }
+    if (errorCount > 0) {
+      showError(`❌ ${errorCount} image(s) failed to process`);
+    }
+    
+    // Reset file input
+    event.target.value = '';
+  }
+
+  // ========== UPDATED: Update Image Preview ==========
+  function updateImagePreview() {
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+    
+    selectedImages.forEach((image, index) => {
+      const previewItem = document.createElement('div');
+      previewItem.className = 'preview-item';
+      
+      // Add small badge for compressed images
+      const size = (image.file.size / 1024).toFixed(0);
+      
+      previewItem.innerHTML = `
+        <img src="${image.dataUrl}" class="preview-image" alt="Preview" loading="lazy">
+        <div style="position: absolute; bottom: 2px; left: 2px; background: rgba(0,0,0,0.7); color: white; font-size: 10px; padding: 2px 4px; border-radius: 4px;">
+          ${size}KB
+        </div>
+        <button class="remove-btn" onclick="removeImage(${index})">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      
+      preview.appendChild(previewItem);
+    });
+  }
+
+  // ========== UPDATED: Remove Image ==========
+  function removeImage(index) {
+    // Clean up object URL to prevent memory leaks
+    if (selectedImages[index] && selectedImages[index].dataUrl) {
+      URL.revokeObjectURL(selectedImages[index].dataUrl);
+    }
+    selectedImages.splice(index, 1);
+    updateImagePreview();
+  }
+
+  // ========== NEW: Show Success Message ==========
+  function showSuccess(message) {
+    const successEl = document.createElement('div');
+    successEl.className = 'success-notification';
+    successEl.style.cssText = `
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      left: 20px;
+      background: var(--success);
+      color: white;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 3000;
+      animation: slideIn 0.3s ease;
+      text-align: center;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    `;
+    
+    successEl.innerHTML = `<i class="fas fa-check-circle"></i>${message}`;
+    document.body.appendChild(successEl);
+    
+    setTimeout(() => {
+      successEl.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => {
+        if (successEl.parentNode) {
+          document.body.removeChild(successEl);
+        }
+      }, 300);
+    }, 3000);
+  }
+
+  // ========== UPDATED: Initialize page with compression-ready setup ==========
   document.addEventListener('DOMContentLoaded', async function() {
     // Check authentication
     const { data: { user } } = await sb.auth.getUser();
@@ -975,77 +1266,12 @@
       }
     });
     
-    // Image upload
+    // Image upload - now using our enhanced compression function
     document.getElementById('imageUpload').addEventListener('click', () => {
       document.getElementById('imageInput').click();
     });
     
     document.getElementById('imageInput').addEventListener('change', handleImageUpload);
-  }
-
-  // Handle image upload
-  async function handleImageUpload(event) {
-    const files = Array.from(event.target.files);
-    
-    // Check total images
-    if (selectedImages.length + files.length > 10) {
-      showError('Maximum 10 images allowed');
-      return;
-    }
-    
-    for (const file of files) {
-      // Check file type
-      if (!file.type.match('image.*')) {
-        showError('Please upload only images');
-        continue;
-      }
-      
-      // Check file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        showError(`Image ${file.name} is too large (max 5MB)`);
-        continue;
-      }
-      
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        selectedImages.push({
-          file: file,
-          dataUrl: e.target.result
-        });
-        updateImagePreview();
-      };
-      reader.readAsDataURL(file);
-    }
-    
-    // Reset input
-    event.target.value = '';
-  }
-
-  // Update image preview
-  function updateImagePreview() {
-    const preview = document.getElementById('imagePreview');
-    preview.innerHTML = '';
-    
-    selectedImages.forEach((image, index) => {
-      const previewItem = document.createElement('div');
-      previewItem.className = 'preview-item';
-      
-      previewItem.innerHTML = `
-        <img src="${image.dataUrl}" class="preview-image" alt="Preview">
-        <button class="remove-btn" onclick="removeImage(${index})">
-          <i class="fas fa-times"></i>
-        </button>
-      `;
-      
-      preview.appendChild(previewItem);
-    });
-  }
-
-  // Remove image
-  function removeImage(index) {
-    selectedImages.splice(index, 1);
-    updateImagePreview();
   }
 
   // Navigate to next step
@@ -1252,7 +1478,7 @@
         seller_id: userData.id
       };
       
-      // Upload images to Supabase Storage
+      // Upload images to Supabase Storage (now using compressed files)
       const imageUrls = await uploadImages();
       
       // Try stored procedure first, but use the original version without whatsapp parameter
@@ -1360,13 +1586,14 @@
     }
   }
 
-  // Upload images to Supabase Storage
+  // Upload images to Supabase Storage (now using compressed files)
   async function uploadImages() {
     const imageUrls = [];
     
     for (let i = 0; i < selectedImages.length; i++) {
       const image = selectedImages[i];
-      const fileName = `ad-${Date.now()}-${i}-${image.file.name.replace(/\s+/g, '-')}`;
+      // Generate unique filename with .jpg extension
+      const fileName = `ad-${Date.now()}-${i}-${Date.now()}.jpg`;
       
       try {
         const { error: uploadError } = await sb.storage
@@ -1475,6 +1702,15 @@
   function goToDashboard() {
     window.location.href = 'my-ads.html';
   }
+
+  // Clean up object URLs when page unloads
+  window.addEventListener('beforeunload', function() {
+    selectedImages.forEach(image => {
+      if (image.dataUrl && image.dataUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(image.dataUrl);
+      }
+    });
+  });
 </script>
 </body>
 </html>
