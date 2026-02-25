@@ -105,6 +105,7 @@
             font-size: 14px;
             font-weight: 500;
             text-decoration: none;
+            cursor: pointer;
         }
 
         .recent-item {
@@ -186,11 +187,45 @@
             margin: 0 auto 8px;
             color: var(--primary);
             font-size: 24px;
+            transition: all 0.2s;
+        }
+
+        .category-item:hover .category-icon {
+            background: var(--primary);
+            color: white;
         }
 
         .category-name {
             font-size: 12px;
             font-weight: 500;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+        }
+
+        .loading-spinner i {
+            font-size: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: #dc2626;
+        }
+
+        .view-all-link {
+            color: var(--primary);
+            font-size: 14px;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -221,21 +256,22 @@
     <!-- Trending Searches -->
     <div class="trending-section">
         <div class="section-title">Trending Now</div>
-        <div class="trending-tags">
-            <a href="search-results.html?query=electronics" class="trending-tag">📱 Electronics</a>
-            <a href="search-results.html?query=fashion" class="trending-tag">👕 Fashion</a>
-            <a href="search-results.html?query=furniture" class="trending-tag">🪑 Furniture</a>
-            <a href="search-results.html?query=phones" class="trending-tag">📞 Phones</a>
-            <a href="search-results.html?query=cars" class="trending-tag">🚗 Cars</a>
-            <a href="search-results.html?query=land" class="trending-tag">🏠 Land</a>
+        <div class="trending-tags" id="trendingTags">
+            <!-- Populated by JS -->
         </div>
     </div>
 
     <!-- Browse Categories -->
     <div class="categories-section">
-        <div class="section-title">Browse Categories</div>
+        <div class="section-title">
+            Browse Categories
+            <a href="all-categories.html" class="view-all-link">View All</a>
+        </div>
         <div class="category-grid" id="categoryGrid">
-            <!-- Populated by JS -->
+            <div class="loading-spinner">
+                <i class="fas fa-circle-notch"></i>
+                <p>Loading categories...</p>
+            </div>
         </div>
     </div>
 
@@ -248,6 +284,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadRecentSearches();
             loadCategories();
+            loadTrendingSearches();
             setupSearch();
         });
 
@@ -255,10 +292,11 @@
             const searchInput = document.getElementById('searchInput');
             const searchBtn = document.getElementById('searchBtn');
 
-            function performSearch() {
+            async function performSearch() {
                 const query = searchInput.value.trim();
                 if (query) {
                     saveRecentSearch(query);
+                    await saveSearchHistory(query);
                     window.location.href = `search-results.html?query=${encodeURIComponent(query)}`;
                 }
             }
@@ -304,6 +342,26 @@
             localStorage.setItem('recentSearches', JSON.stringify(trimmed));
         }
 
+        async function saveSearchHistory(query) {
+            try {
+                // Get current user
+                const { data: { user } } = await sb.auth.getUser();
+                
+                if (user) {
+                    // Save to search_history table for logged-in users
+                    await sb
+                        .from('search_history')
+                        .insert({
+                            user_id: user.id,
+                            query: query,
+                            searched_at: new Date().toISOString()
+                        });
+                }
+            } catch (error) {
+                console.error('Error saving search history:', error);
+            }
+        }
+
         function clearRecentSearches() {
             localStorage.removeItem('recentSearches');
             loadRecentSearches();
@@ -313,9 +371,11 @@
             try {
                 const { data, error } = await sb
                     .from('categories')
-                    .select('id, name, icon, conducive_icon')
+                    .select('id, name, slug, icon, conducive_icon, color_hex')
                     .eq('is_active', true)
-                    .order('display_order')
+                    .is('parent_id', null) // Get only parent categories
+                    .order('display_order', { ascending: true })
+                    .order('name', { ascending: true })
                     .limit(8);
 
                 if (error) throw error;
@@ -324,17 +384,7 @@
                 renderCategories(categories);
             } catch (error) {
                 console.error('Error loading categories:', error);
-                // Fallback categories
-                renderCategories([
-                    { id: 1, name: 'Electronics', conducive_icon: 'fa-mobile-alt' },
-                    { id: 2, name: 'Fashion', conducive_icon: 'fa-tshirt' },
-                    { id: 3, name: 'Home', conducive_icon: 'fa-home' },
-                    { id: 4, name: 'Vehicles', conducive_icon: 'fa-car' },
-                    { id: 5, name: 'Health', conducive_icon: 'fa-heartbeat' },
-                    { id: 6, name: 'Agriculture', conducive_icon: 'fa-seedling' },
-                    { id: 7, name: 'Services', conducive_icon: 'fa-tools' },
-                    { id: 8, name: 'Pets', conducive_icon: 'fa-dog' }
-                ]);
+                renderCategories([]);
             }
         }
 
@@ -342,14 +392,92 @@
             const grid = document.getElementById('categoryGrid');
             if (!grid) return;
 
-            grid.innerHTML = categories.map(cat => `
-                <a href="search-results.html?category=${cat.id}" class="category-item">
-                    <div class="category-icon">
-                        <i class="fas ${cat.conducive_icon || cat.icon || 'fa-tag'}"></i>
+            if (categories.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: span 4; text-align: center; padding: 20px; color: var(--gray);">
+                        <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 8px;"></i>
+                        <p>No categories available</p>
                     </div>
-                    <div class="category-name">${escapeHtml(cat.name)}</div>
-                </a>
-            `).join('');
+                `;
+                return;
+            }
+
+            grid.innerHTML = categories.map(cat => {
+                // Map database icons to Font Awesome icons
+                const iconMap = {
+                    'electronics': 'fa-mobile-alt',
+                    'fashion': 'fa-tshirt',
+                    'home': 'fa-home',
+                    'vehicles': 'fa-car',
+                    'health': 'fa-heartbeat',
+                    'agriculture': 'fa-seedling',
+                    'services': 'fa-tools',
+                    'pets': 'fa-dog',
+                    'real-estate': 'fa-building',
+                    'jobs': 'fa-briefcase',
+                    'education': 'fa-graduation-cap',
+                    'sports': 'fa-futbol',
+                    'entertainment': 'fa-film',
+                    'food': 'fa-utensils',
+                    'beauty': 'fa-spa',
+                    'baby': 'fa-baby',
+                    'books': 'fa-book',
+                    'music': 'fa-music'
+                };
+
+                // Use conducive_icon if available, otherwise fallback to icon, or default
+                const iconName = cat.conducive_icon || cat.icon || 'fa-tag';
+                // If it's already a full Font Awesome class, use it, otherwise map it
+                const iconClass = iconName.startsWith('fa-') ? iconName : (iconMap[iconName] || 'fa-tag');
+
+                return `
+                    <a href="search-results.html?category=${cat.id}" class="category-item">
+                        <div class="category-icon" ${cat.color_hex ? `style="color: ${cat.color_hex};"` : ''}>
+                            <i class="fas ${iconClass}"></i>
+                        </div>
+                        <div class="category-name">${escapeHtml(cat.name)}</div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        async function loadTrendingSearches() {
+            try {
+                // Get trending searches from search_history (last 30 days)
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+                const { data, error } = await sb
+                    .from('search_history')
+                    .select('query, count')
+                    .gte('searched_at', thirtyDaysAgo.toISOString())
+                    .order('count', { ascending: false })
+                    .limit(6);
+
+                if (error) throw error;
+
+                const trendingTags = document.getElementById('trendingTags');
+                
+                if (data && data.length > 0) {
+                    trendingTags.innerHTML = data.map(item => `
+                        <a href="search-results.html?query=${encodeURIComponent(item.query)}" class="trending-tag">
+                            🔥 ${escapeHtml(item.query)}
+                        </a>
+                    `).join('');
+                } else {
+                    // Fallback trending tags
+                    trendingTags.innerHTML = `
+                        <a href="search-results.html?query=electronics" class="trending-tag">📱 Electronics</a>
+                        <a href="search-results.html?query=fashion" class="trending-tag">👕 Fashion</a>
+                        <a href="search-results.html?query=furniture" class="trending-tag">🪑 Furniture</a>
+                        <a href="search-results.html?query=phones" class="trending-tag">📞 Phones</a>
+                        <a href="search-results.html?query=cars" class="trending-tag">🚗 Cars</a>
+                        <a href="search-results.html?query=land" class="trending-tag">🏠 Land</a>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading trending searches:', error);
+            }
         }
 
         function escapeHtml(text) {
