@@ -4,14 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>iBlue Uganda - Buy & Sell Everything</title>
-    
-    <!-- Preload critical resources -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.css" as="style">
-    
-    <!-- Critical CSS inline (above the fold) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.css">
     <style>
-        /* Critical path CSS - only what's needed for first paint */
+        /* Alibaba-inspired styling with blue theme */
         :root {
             --primary: #2563EB;
             --primary-dark: #1D4ED8;
@@ -48,7 +44,7 @@
             padding-bottom: 70px;
         }
 
-        /* Critical header styles */
+        /* Header with scroll behavior */
         .header {
             position: sticky;
             top: 0;
@@ -84,6 +80,7 @@
             text-decoration: none;
         }
 
+        /* Logo with italic i in circle */
         .logo-circle {
             width: 36px;
             height: 36px;
@@ -102,6 +99,7 @@
             color: var(--primary);
         }
 
+        /* Search icon at the right of iBlueUG */
         .search-icon-header {
             color: var(--gray-600);
             font-size: 20px;
@@ -113,6 +111,7 @@
             color: var(--primary);
         }
 
+        /* Location Bar */
         .location-bar {
             display: flex;
             align-items: center;
@@ -138,39 +137,547 @@
             padding: 4px 8px;
         }
 
-        /* Minimal skeleton styles */
-        .skeleton {
-            background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
+        /* Location Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
         }
 
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        .modal.show {
+            display: flex;
         }
 
-        .skeleton-image {
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray-500);
+        }
+
+        .region-list {
+            list-style: none;
+        }
+
+        .region-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gray-100);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .region-item:hover {
+            background: var(--gray-100);
+        }
+
+        .region-item i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .region-name {
+            flex: 1;
+        }
+
+        .region-check {
+            color: var(--primary);
+        }
+
+        .current-location {
+            padding: 12px 16px;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .current-location i {
+            color: var(--primary);
+        }
+
+        /* Banner */
+        .swiper {
+            height: 160px;
+            margin: 12px 16px;
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .swiper-slide {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* Section Headers */
+        .section {
+            padding: 16px;
+            background: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .section-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Horizontal Scroll Products */
+        .horizontal-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            margin: 0 -16px;
+            padding: 4px 16px;
+            scroll-behavior: smooth;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scroll-wrapper {
+            display: flex;
+            gap: 12px;
+        }
+
+        .product-card-horizontal {
+            flex: 0 0 160px;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s;
+        }
+
+        .product-card-horizontal:active {
+            transform: scale(0.98);
+        }
+
+        .product-image {
+            width: 160px;
+            height: 160px;
+            background: var(--gray-100);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image img {
             width: 100%;
-            height: 140px;
-            background: var(--gray-200);
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
         }
 
-        .skeleton-text {
-            height: 16px;
-            background: var(--gray-200);
-            margin: 8px;
+        .product-card-horizontal:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--danger);
+            color: white;
+            font-size: 10px;
+            padding: 4px 8px;
             border-radius: 4px;
+            font-weight: 600;
+            z-index: 2;
         }
 
-        .skeleton-circle {
+        .product-badge.verified {
+            background: var(--secondary);
+        }
+
+        .product-badge.featured {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .product-info {
+            padding: 10px;
+        }
+
+        .product-title {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 2px;
+        }
+
+        .product-price small {
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--gray-500);
+        }
+
+        .product-meta {
+            font-size: 11px;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            background: #EFF6FF;
+            color: var(--primary);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+
+        .verified-badge i {
+            font-size: 10px;
+        }
+
+        /* NEW: Recommended Wholesalers Section */
+        .wholesaler-card-horizontal {
+            flex: 0 0 180px;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s;
+            padding: 16px 12px;
+        }
+
+        .wholesaler-card-horizontal:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .wholesaler-avatar-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 12px;
+            position: relative;
+        }
+
+        .wholesaler-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 28px;
+            overflow: hidden;
+        }
+
+        .wholesaler-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .wholesaler-verified {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--secondary);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            border: 2px solid white;
+        }
+
+        .wholesaler-name {
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wholesaler-location {
+            font-size: 12px;
+            color: var(--gray-500);
+            text-align: center;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .wholesaler-stats {
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 600;
+            text-align: center;
+            background: #EFF6FF;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* Conducive Category Sections */
+        .conducive-section {
+            padding: 16px;
+            background: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .conducive-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .conducive-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .conducive-icon {
             width: 48px;
             height: 48px;
+            background: var(--gray-100);
             border-radius: 50%;
-            background: var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary);
         }
 
-        /* Bottom nav critical */
+        .conducive-text h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .conducive-text p {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .conducive-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .conducive-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        /* Grid Products */
+        .product-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .product-card:active {
+            transform: scale(0.98);
+        }
+
+        .product-card .product-image {
+            width: 100%;
+            height: 140px;
+        }
+
+        .product-card .product-info {
+            padding: 12px;
+        }
+
+        .product-card .product-title {
+            font-size: 14px;
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            height: 36px;
+            margin-bottom: 6px;
+        }
+
+        .product-card .product-price {
+            font-size: 16px;
+        }
+
+        /* Meta Categories Menu */
+        .meta-categories {
+            background: var(--white);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .meta-categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .meta-category-btn {
+            background: var(--gray-100);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-600);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .meta-category-btn i {
+            color: var(--primary);
+        }
+
+        .meta-category-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .meta-category-btn.active i {
+            color: white;
+        }
+
+        /* Deals Banner */
+        .deals-banner {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 16px 20px;
+            margin: 8px 16px;
+            border-radius: var(--radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .deals-banner h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .deals-banner p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .deals-banner button {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 24px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -202,32 +709,99 @@
             color: var(--primary);
         }
 
-        /* Swiper minimal */
-        .swiper {
-            height: 160px;
-            margin: 12px 16px;
-            border-radius: var(--radius);
-            overflow: hidden;
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 16px;
+            right: 16px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            text-align: center;
+            z-index: 2000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
         }
 
-        .swiper-slide {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 18px;
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-image {
+            width: 100%;
+            height: 140px;
+            background: var(--gray-200);
+        }
+
+        .skeleton-text {
+            height: 16px;
+            background: var(--gray-200);
+            margin: 8px;
+            border-radius: 4px;
+        }
+
+        .skeleton-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gray-200);
+        }
+
+        /* Fade-in animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (min-width: 640px) {
+            .products-grid,
+            .conducive-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 16px;
+            }
+            
+            .product-card .product-image {
+                height: 180px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .products-grid,
+            .conducive-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 20px;
+            }
+            
+            .main-content {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
         }
     </style>
-    
-    <!-- Load full CSS asynchronously -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.css">
-    </noscript>
 </head>
 <body>
     <!-- Header -->
@@ -338,159 +912,16 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <!-- Load scripts with defer -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-    
-    <!-- Main app script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.2.0/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ============================================
-        // PERFORMANCE MONITORING
-        // ============================================
-        const performanceMetrics = {};
-        
-        async function measurePerformance(name, fn) {
-            const start = performance.now();
-            await fn();
-            const end = performance.now();
-            performanceMetrics[name] = end - start;
-            
-            if (end - start > 1000) {
-                console.warn(`⚠️ Slow operation: ${name} took ${(end - start).toFixed(0)}ms`);
-            }
-            return end - start;
-        }
-
-        // ============================================
-        // INDEXEDDB CACHE IMPLEMENTATION
-        // ============================================
-        const dbCache = {
-            db: null,
-            
-            async init() {
-                return new Promise((resolve, reject) => {
-                    const request = indexedDB.open('iBlueCache', 2);
-                    
-                    request.onupgradeneeded = (e) => {
-                        const db = e.target.result;
-                        if (!db.objectStoreNames.contains('pages')) {
-                            const store = db.createObjectStore('pages');
-                            store.createIndex('expiry', 'expiry', { unique: false });
-                        }
-                        if (!db.objectStoreNames.contains('images')) {
-                            db.createObjectStore('images');
-                        }
-                    };
-                    
-                    request.onsuccess = (e) => {
-                        this.db = e.target.result;
-                        resolve();
-                    };
-                    
-                    request.onerror = (e) => {
-                        console.error('IndexedDB error:', e);
-                        reject(e);
-                    };
-                });
-            },
-            
-            async get(storeName, key) {
-                if (!this.db) await this.init();
-                
-                return new Promise((resolve) => {
-                    try {
-                        const tx = this.db.transaction(storeName, 'readonly');
-                        const store = tx.objectStore(storeName);
-                        const request = store.get(key);
-                        
-                        request.onsuccess = () => {
-                            const data = request.result;
-                            if (data && data.expiry && data.expiry > Date.now()) {
-                                resolve(data.value);
-                            } else if (data && !data.expiry) {
-                                resolve(data);
-                            } else {
-                                resolve(null);
-                            }
-                        };
-                        
-                        request.onerror = () => resolve(null);
-                    } catch (e) {
-                        resolve(null);
-                    }
-                });
-            },
-            
-            async set(storeName, key, value, ttl = 300000) {
-                if (!this.db) await this.init();
-                
-                return new Promise((resolve) => {
-                    try {
-                        const tx = this.db.transaction(storeName, 'readwrite');
-                        const store = tx.objectStore(storeName);
-                        const request = store.put({
-                            value,
-                            expiry: Date.now() + ttl
-                        }, key);
-                        
-                        request.onsuccess = () => resolve();
-                        request.onerror = () => resolve();
-                    } catch (e) {
-                        resolve();
-                    }
-                });
-            },
-            
-            async clearExpired() {
-                if (!this.db) await this.init();
-                
-                try {
-                    const tx = this.db.transaction('pages', 'readwrite');
-                    const store = tx.objectStore('pages');
-                    const index = store.index('expiry');
-                    const range = IDBKeyRange.upperBound(Date.now());
-                    
-                    index.openCursor(range).onsuccess = (e) => {
-                        const cursor = e.target.result;
-                        if (cursor) {
-                            cursor.delete();
-                            cursor.continue();
-                        }
-                    };
-                } catch (e) {
-                    console.error('Error clearing expired cache:', e);
-                }
-            }
-        };
-
-        // ============================================
-        // CONNECTION AWARE LOADING
-        // ============================================
-        function getConnectionQuality() {
-            const connection = navigator.connection || 
-                              navigator.mozConnection || 
-                              navigator.webkitConnection;
-            
-            if (connection) {
-                if (connection.saveData) return 'economy';
-                if (connection.effectiveType) {
-                    if (connection.effectiveType.includes('2g')) return 'economy';
-                    if (connection.effectiveType.includes('3g')) return 'balanced';
-                    return 'performance';
-                }
-            }
-            return 'performance';
-        }
-
         // ============================================
         // SUPABASE CONFIGURATION
         // ============================================
         const SUPABASE_URL = 'https://uufhvmmgwzkxvvdbqemz.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc';
         
-        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: { persistSession: true }
-        });
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
         // STATE MANAGEMENT
@@ -498,11 +929,8 @@
         let currentUser = null;
         let lastScrollTop = 0;
         const scrollThreshold = 100;
-        const connectionQuality = getConnectionQuality();
         
-        console.log(`📡 Connection quality: ${connectionQuality}`);
-        
-        // Location state
+        // Load location from localStorage
         let selectedRegion = localStorage.getItem('selectedRegion');
         let selectedDistrict = localStorage.getItem('selectedDistrict');
         
@@ -514,40 +942,7 @@
         }
 
         // ============================================
-        // LAZY LOADING IMAGES WITH INTERSECTION OBSERVER
-        // ============================================
-        function setupLazyLoading() {
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                            img.classList.add('loaded');
-                            
-                            if (img.dataset.highsrc) {
-                                const highResImg = new Image();
-                                highResImg.onload = () => {
-                                    img.src = img.dataset.highsrc;
-                                };
-                                highResImg.src = img.dataset.highsrc;
-                            }
-                        }
-                        observer.unobserve(img);
-                    }
-                });
-            }, {
-                rootMargin: '50px 0px',
-                threshold: 0.01
-            });
-
-            document.querySelectorAll('img.lazy-image').forEach(img => {
-                imageObserver.observe(img);
-            });
-        }
-
-        // ============================================
-        // LOCATION MANAGEMENT
+        // FIX 1: LOAD ALL DATA IN PARALLEL
         // ============================================
         function updateLocationDisplay() {
             const locationSpan = document.getElementById('currentLocation');
@@ -563,8 +958,8 @@
             localStorage.setItem('selectedDistrict', district);
             updateLocationDisplay();
             
-            dbCache.clearExpired();
-            forceReloadAllData();
+            // Reload all data when location changes
+            loadAllData();
         }
 
         // ============================================
@@ -665,19 +1060,13 @@
         }
 
         // ============================================
-        // META CATEGORIES
+        // FIX 2: META CATEGORIES (unchanged but optimized)
         // ============================================
         async function loadMetaCategories() {
             const container = document.getElementById('metaCategories');
             if (!container) return;
             
             try {
-                const cached = await dbCache.get('pages', 'metaCategories');
-                if (cached) {
-                    container.innerHTML = cached;
-                    return;
-                }
-                
                 const { data: spotlights, error } = await sb
                     .from('homepage_spotlights')
                     .select('spotlight_type')
@@ -714,75 +1103,87 @@
                 }
                 
                 if (metaButtons === '') {
-                    metaButtons = getDefaultMetaCategories();
+                    metaButtons = `
+                        <a href="featured-deals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                            <i class="fas fa-star"></i> Featured Deals
+                        </a>
+                        <a href="new-arrivals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                            <i class="fas fa-clock"></i> New Arrivals
+                        </a>
+                        <a href="budget-finds.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                            <i class="fas fa-wallet"></i> Budget Finds
+                        </a>
+                        <a href="verified-sellers.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                            <i class="fas fa-check-circle"></i> Verified Sellers
+                        </a>
+                    `;
                 }
                 
                 container.innerHTML = metaButtons;
-                await dbCache.set('pages', 'metaCategories', metaButtons, 3600000);
                 
             } catch (error) {
                 console.error('Error loading meta categories:', error);
-                container.innerHTML = getDefaultMetaCategories();
+                container.innerHTML = `
+                    <a href="featured-deals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                        <i class="fas fa-star"></i> Featured Deals
+                    </a>
+                    <a href="new-arrivals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                        <i class="fas fa-clock"></i> New Arrivals
+                    </a>
+                    <a href="budget-finds.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                        <i class="fas fa-wallet"></i> Budget Finds
+                    </a>
+                    <a href="verified-sellers.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
+                        <i class="fas fa-check-circle"></i> Verified Sellers
+                    </a>
+                `;
             }
         }
 
-        function getDefaultMetaCategories() {
-            return `
-                <a href="featured-deals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                    <i class="fas fa-star"></i> Featured Deals
-                </a>
-                <a href="new-arrivals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                    <i class="fas fa-clock"></i> New Arrivals
-                </a>
-                <a href="budget-finds.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                    <i class="fas fa-wallet"></i> Budget Finds
-                </a>
-                <a href="verified-sellers.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
-                    <i class="fas fa-check-circle"></i> Verified Sellers
-                </a>
-            `;
-        }
-
         // ============================================
-        // WHOLESALERS WITH OPTIMIZED LOADING
+        // FIX 3: WHOLESALERS - SHOW SKELETON FIRST
         // ============================================
         async function loadRecommendedWholesalers() {
             const wrapper = document.getElementById('wholesalersWrapper');
             if (!wrapper) return;
             
+            // Show skeleton immediately
             wrapper.innerHTML = getPlaceholderWholesalers();
             
-            const limit = connectionQuality === 'economy' ? 4 : 
-                         connectionQuality === 'balanced' ? 6 : 8;
-            
             try {
-                const cacheKey = `wholesalers_${selectedRegion}_${selectedDistrict}`;
-                const cached = await dbCache.get('pages', cacheKey);
-                if (cached) {
-                    wrapper.innerHTML = cached;
-                    setupLazyLoading();
+                const { data: adsData, error: adsError } = await sb
+                    .from('ads')
+                    .select('seller_id')
+                    .eq('status', 'active');
+
+                if (adsError) throw adsError;
+                if (!adsData || adsData.length === 0) {
+                    wrapper.innerHTML = '<p style="padding: 20px;">No wholesalers found</p>';
                     return;
                 }
-                
-                const { data: sellers, error } = await sb
+
+                const sellerCounts = {};
+                adsData.forEach(ad => {
+                    sellerCounts[ad.seller_id] = (sellerCounts[ad.seller_id] || 0) + 1;
+                });
+
+                const topSellerIds = Object.keys(sellerCounts)
+                    .sort((a, b) => sellerCounts[b] - sellerCounts[a])
+                    .slice(0, 8);
+
+                if (topSellerIds.length === 0) {
+                    wrapper.innerHTML = '<p style="padding: 20px;">No wholesalers found</p>';
+                    return;
+                }
+
+                const { data: sellers, error: sellersError } = await sb
                     .from('profiles')
-                    .select(`
-                        id,
-                        full_name,
-                        avatar_url,
-                        location,
-                        district,
-                        is_verified,
-                        ads:ads(count)
-                    `)
-                    .gt('ads.count', 0)
-                    .order('ads.count', { ascending: false, foreignTable: 'ads' })
-                    .limit(limit);
-                
-                if (error) throw error;
-                
+                    .select('id, full_name, avatar_url, location, district, is_verified')
+                    .in('id', topSellerIds);
+
+                if (sellersError) throw sellersError;
                 if (!sellers || sellers.length === 0) {
-                    wrapper.innerHTML = '<p style="padding: 20px; text-align: center;">No wholesalers found</p>';
+                    wrapper.innerHTML = '<p style="padding: 20px;">No wholesalers found</p>';
                     return;
                 }
 
@@ -793,19 +1194,13 @@
                         .join('')
                         .toUpperCase()
                         .substring(0, 2) || 'BS';
-                    
-                    const adCount = seller.ads?.[0]?.count || 0;
 
                     return `
                         <a href="seller-profile.html?id=${seller.id}&region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="wholesaler-card-horizontal">
                             <div class="wholesaler-avatar-container">
                                 <div class="wholesaler-avatar">
                                     ${seller.avatar_url ? 
-                                        `<img src="${seller.avatar_url}?width=80&height=80&quality=30" 
-                                              data-src="${seller.avatar_url}?width=80&height=80&quality=80"
-                                              alt="${escapeHtml(seller.full_name)}"
-                                              class="lazy-image"
-                                              loading="lazy">` : 
+                                        `<img src="${seller.avatar_url}" alt="${escapeHtml(seller.full_name)}" loading="lazy">` : 
                                         `<span>${initials}</span>`
                                     }
                                 </div>
@@ -817,52 +1212,64 @@
                             <div class="wholesaler-location">
                                 <i class="fas fa-map-marker-alt"></i> ${escapeHtml(seller.district || seller.location || 'Uganda')}
                             </div>
-                            <div class="wholesaler-stats">${adCount} active ads</div>
+                            <div class="wholesaler-stats">${sellerCounts[seller.id] || 0} active ads</div>
                         </a>
                     `;
                 }).join('');
                 
                 wrapper.innerHTML = wholesalersHtml;
-                await dbCache.set('pages', cacheKey, wholesalersHtml, 300000);
-                setupLazyLoading();
-                
+
             } catch (error) {
                 console.error('Error loading wholesalers:', error);
-                wrapper.innerHTML = '<p style="padding: 20px; text-align: center;">Error loading wholesalers</p>';
+                wrapper.innerHTML = '<p style="padding: 20px;">Error loading wholesalers</p>';
             }
         }
 
+        function getPlaceholderWholesalers() {
+            let html = '';
+            for (let i = 0; i < 6; i++) {
+                html += `
+                    <div class="wholesaler-card-horizontal">
+                        <div class="wholesaler-avatar-container">
+                            <div class="wholesaler-avatar skeleton" style="border-radius: 50%;"></div>
+                        </div>
+                        <div class="skeleton-text" style="width: 80%; margin: 8px auto;"></div>
+                        <div class="skeleton-text" style="width: 60%; margin: 4px auto;"></div>
+                        <div class="skeleton-text" style="width: 70%; margin: 8px auto;"></div>
+                    </div>
+                `;
+            }
+            return html;
+        }
+
         // ============================================
-        // CONDUCIVE SECTIONS WITH BATCH LOADING
+        // FIX 4: CONDUCIVE SECTIONS - LOAD IN PARALLEL WITH PROMISE.ALL
         // ============================================
         async function loadConduciveSections() {
             const container = document.getElementById('conduciveSections');
             if (!container) return;
             
-            const skeletonCount = connectionQuality === 'economy' ? 2 : 
-                                  connectionQuality === 'balanced' ? 3 : 4;
-            container.innerHTML = getSkeletonConduciveSections(skeletonCount);
+            container.innerHTML = getSkeletonConduciveSections(3);
             
             try {
-                const cacheKey = `conducive_${selectedRegion}_${selectedDistrict}`;
-                const cached = await dbCache.get('pages', cacheKey);
-                if (cached) {
-                    container.innerHTML = cached;
-                    setupLazyLoading();
-                    setupFadeInObserver();
+                const { data: categories, error: catError } = await sb
+                    .from('categories')
+                    .select('id, name, display_name, conducive_tagline, conducive_icon, color_hex')
+                    .eq('is_active', true)
+                    .order('display_order', { ascending: true });
+                
+                if (catError) throw catError;
+                
+                if (!categories || categories.length === 0) {
+                    container.innerHTML = getEmptyConduciveSections();
                     return;
                 }
                 
-                const { data: categories, error } = await sb
-                    .from('categories')
-                    .select(`
-                        id,
-                        name,
-                        display_name,
-                        conducive_tagline,
-                        conducive_icon,
-                        color_hex,
-                        ads!inner (
+                // FIX: Load all category ads in parallel
+                const adsPromises = categories.map(cat => 
+                    sb
+                        .from('ads')
+                        .select(`
                             id,
                             title,
                             price,
@@ -873,32 +1280,59 @@
                             region,
                             district,
                             profiles!ads_seller_id_fkey (is_verified)
-                        )
-                    `)
-                    .eq('is_active', true)
-                    .eq('ads.status', 'active')
-                    .order('display_order', { ascending: true })
-                    .limit(connectionQuality === 'economy' ? 2 : 
-                           connectionQuality === 'balanced' ? 4 : 6);
+                        `)
+                        .eq('status', 'active')
+                        .eq('category_id', cat.id)
+                        .order('created_at', { ascending: false })
+                        .limit(4)
+                );
                 
-                if (error) throw error;
-                
-                if (!categories || categories.length === 0) {
-                    container.innerHTML = getEmptyConduciveSections();
-                    return;
-                }
+                const adsResults = await Promise.all(adsPromises);
                 
                 let html = '';
-                categories.forEach(cat => {
-                    if (cat.ads && cat.ads.length > 0) {
-                        html += renderCategorySection(cat);
+                
+                categories.forEach((cat, index) => {
+                    const { data: ads, error: adsError } = adsResults[index];
+                    
+                    if (adsError) {
+                        console.error(`Error loading ads for category ${cat.name}:`, adsError);
+                        return;
+                    }
+                    
+                    if (ads && ads.length > 0) {
+                        const displayName = cat.display_name || `Shop ${cat.name}`;
+                        const tagline = cat.conducive_tagline || `Best deals on ${cat.name}`;
+                        const icon = cat.conducive_icon || 'fa-tag';
+                        const color = cat.color_hex || '#2563EB';
+                        
+                        html += `
+                            <section class="conducive-section fade-in">
+                                <div class="conducive-header">
+                                    <div class="conducive-title">
+                                        <div class="conducive-icon" style="color: ${color}">
+                                            <i class="fas ${icon}"></i>
+                                        </div>
+                                        <div class="conducive-text">
+                                            <h3>${escapeHtml(displayName)}</h3>
+                                            <p>${escapeHtml(tagline)}</p>
+                                        </div>
+                                    </div>
+                                    <a href="category.html?category=${encodeURIComponent(cat.name)}&id=${cat.id}&region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="conducive-link">See all <i class="fas fa-chevron-right"></i></a>
+                                </div>
+                                <div class="conducive-grid">
+                                    ${ads.map(ad => createConduciveCard(ad)).join('')}
+                                </div>
+                            </section>
+                        `;
                     }
                 });
                 
-                container.innerHTML = html || getEmptyConduciveSections();
-                await dbCache.set('pages', cacheKey, html, 300000);
-                setupLazyLoading();
-                setupFadeInObserver();
+                if (html === '') {
+                    container.innerHTML = getEmptyConduciveSections();
+                } else {
+                    container.innerHTML = html;
+                    setupFadeInObserver();
+                }
                 
             } catch (error) {
                 console.error('Error loading conducive sections:', error);
@@ -906,63 +1340,16 @@
             }
         }
 
-        function renderCategorySection(category) {
-            const displayName = category.display_name || `Shop ${category.name}`;
-            const tagline = category.conducive_tagline || `Best deals on ${category.name}`;
-            const icon = category.conducive_icon || 'fa-tag';
-            const color = category.color_hex || '#2563EB';
-            
-            const adsToShow = connectionQuality === 'economy' ? 2 : 
-                             connectionQuality === 'balanced' ? 3 : 4;
-            const ads = category.ads.slice(0, adsToShow);
-            
-            return `
-                <section class="conducive-section fade-in">
-                    <div class="conducive-header">
-                        <div class="conducive-title">
-                            <div class="conducive-icon" style="color: ${color}">
-                                <i class="fas ${icon}"></i>
-                            </div>
-                            <div class="conducive-text">
-                                <h3>${escapeHtml(displayName)}</h3>
-                                <p>${escapeHtml(tagline)}</p>
-                            </div>
-                        </div>
-                        <a href="category.html?category=${encodeURIComponent(category.name)}&id=${category.id}&region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="conducive-link">See all <i class="fas fa-chevron-right"></i></a>
-                    </div>
-                    <div class="conducive-grid">
-                        ${ads.map(ad => createOptimizedCard(ad)).join('')}
-                    </div>
-                </section>
-            `;
-        }
-
-        function createOptimizedCard(product) {
-            const lowQualityUrl = product.image_urls?.[0] ? 
-                `${product.image_urls[0]}?width=100&height=100&quality=30` : 
-                'https://via.placeholder.com/200?text=No+Image';
-            
-            const highQualityUrl = product.image_urls?.[0] ? 
-                `${product.image_urls[0]}?width=400&height=400&quality=80` : 
-                'https://via.placeholder.com/200?text=No+Image';
-            
-            const price = product.price ? 
-                `UGX ${parseInt(product.price).toLocaleString()}` : 
-                'Call for price';
+        function createConduciveCard(product) {
+            const imageUrl = product.image_urls?.[0] || 'https://via.placeholder.com/200?text=No+Image';
+            const price = product.price ? `UGX ${parseInt(product.price).toLocaleString()}` : 'Call for price';
             
             return `
                 <a href="ad-detail.html?id=${product.id}&region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="product-card" onclick="trackClick(${product.id})">
                     <div class="product-image">
-                        <img 
-                            src="${lowQualityUrl}" 
-                            data-src="${lowQualityUrl}"
-                            data-highsrc="${highQualityUrl}"
-                            alt="${escapeHtml(product.title)}" 
-                            class="lazy-image"
-                            loading="lazy"
-                            onload="this.style.opacity=1"
-                            style="opacity:0; transition:opacity 0.3s"
-                            onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+                        <img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy"
+                             onload="this.style.opacity=1" style="opacity:0; transition:opacity 0.3s"
+                             onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
                     </div>
                     <div class="product-info">
                         <div class="product-title">${escapeHtml(product.title.substring(0, 25))}${product.title.length > 25 ? '...' : ''}</div>
@@ -980,41 +1367,6 @@
             `;
         }
 
-        // ============================================
-        // FORCE RELOAD ALL DATA
-        // ============================================
-        async function forceReloadAllData() {
-            await Promise.allSettled([
-                measurePerformance('metaCategories', loadMetaCategories),
-                measurePerformance('wholesalers', loadRecommendedWholesalers),
-                measurePerformance('conduciveSections', loadConduciveSections)
-            ]);
-            
-            console.log('📊 Performance metrics:', performanceMetrics);
-        }
-
-        // ============================================
-        // SKELETON LOADERS
-        // ============================================
-        function getPlaceholderWholesalers() {
-            const count = connectionQuality === 'economy' ? 3 : 
-                         connectionQuality === 'balanced' ? 4 : 6;
-            let html = '';
-            for (let i = 0; i < count; i++) {
-                html += `
-                    <div class="wholesaler-card-horizontal">
-                        <div class="wholesaler-avatar-container">
-                            <div class="wholesaler-avatar skeleton" style="border-radius: 50%;"></div>
-                        </div>
-                        <div class="skeleton-text" style="width: 80%; margin: 8px auto; height: 16px;"></div>
-                        <div class="skeleton-text" style="width: 60%; margin: 4px auto; height: 12px;"></div>
-                        <div class="skeleton-text" style="width: 70%; margin: 8px auto; height: 20px;"></div>
-                    </div>
-                `;
-            }
-            return html;
-        }
-
         function getSkeletonConduciveSections(count) {
             let html = '';
             for (let s = 0; s < count; s++) {
@@ -1024,11 +1376,11 @@
                             <div class="conducive-title">
                                 <div class="conducive-icon skeleton-circle"></div>
                                 <div class="conducive-text">
-                                    <div class="skeleton-text" style="width: 200px; height: 20px; margin: 0 0 8px 0;"></div>
-                                    <div class="skeleton-text" style="width: 150px; height: 16px; margin: 0;"></div>
+                                    <div class="skeleton-text" style="width: 200px; height: 20px;"></div>
+                                    <div class="skeleton-text" style="width: 150px; height: 16px;"></div>
                                 </div>
                             </div>
-                            <div class="skeleton-text" style="width: 60px; height: 16px;"></div>
+                            <div class="skeleton-text" style="width: 60px;"></div>
                         </div>
                         <div class="conducive-grid">
                             ${getSkeletonCards()}
@@ -1040,16 +1392,14 @@
         }
 
         function getSkeletonCards() {
-            const cardCount = connectionQuality === 'economy' ? 2 : 
-                             connectionQuality === 'balanced' ? 3 : 4;
             let html = '';
-            for (let i = 0; i < cardCount; i++) {
+            for (let i = 0; i < 4; i++) {
                 html += `
                     <div class="product-card">
                         <div class="skeleton-image"></div>
                         <div class="product-info">
-                            <div class="skeleton-text" style="width: 90%; height: 14px; margin: 8px 8px 4px 8px;"></div>
-                            <div class="skeleton-text" style="width: 60%; height: 16px; margin: 4px 8px;"></div>
+                            <div class="skeleton-text" style="width: 90%"></div>
+                            <div class="skeleton-text" style="width: 60%"></div>
                         </div>
                     </div>
                 `;
@@ -1077,6 +1427,33 @@
             `;
         }
 
+        function setupFadeInObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '50px' });
+            
+            document.querySelectorAll('.conducive-section').forEach(section => {
+                observer.observe(section);
+            });
+        }
+
+        // ============================================
+        // FIX 5: LOAD ALL DATA IN PARALLEL
+        // ============================================
+        async function loadAllData() {
+            // Start all loads simultaneously
+            await Promise.all([
+                loadMetaCategories(),
+                loadRecommendedWholesalers(),
+                loadConduciveSections()
+            ]);
+        }
+
         // ============================================
         // UTILITIES
         // ============================================
@@ -1094,21 +1471,6 @@
             toast.textContent = message;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-
-        function setupFadeInObserver() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1, rootMargin: '50px' });
-            
-            document.querySelectorAll('.conducive-section').forEach(section => {
-                observer.observe(section);
-            });
         }
 
         function setupScrollBehavior() {
@@ -1133,17 +1495,6 @@
             });
         }
 
-        function initializeSwiper() {
-            if (document.getElementById('bannerSwiper') && window.Swiper) {
-                new Swiper('#bannerSwiper', {
-                    autoplay: { delay: 3000 },
-                    pagination: { el: '.swiper-pagination', clickable: true },
-                    loop: true,
-                    speed: 500
-                });
-            }
-        }
-
         // ============================================
         // TRACKING
         // ============================================
@@ -1151,7 +1502,7 @@
             try {
                 const { data: { user } } = await sb.auth.getUser();
                 
-                sb
+                await sb
                     .from('ad_engagement')
                     .insert({
                         ad_id: adId,
@@ -1160,9 +1511,7 @@
                         user_agent: navigator.userAgent,
                         region: selectedRegion,
                         district: selectedDistrict
-                    })
-                    .then()
-                    .catch(console.error);
+                    });
                 
             } catch (error) {
                 console.error('Error tracking click:', error);
@@ -1170,435 +1519,22 @@
         };
 
         // ============================================
-        // PAGE VISIBILITY HANDLING
-        // ============================================
-        function setupPageVisibilityHandling() {
-            document.addEventListener('visibilitychange', () => {
-                if (!document.hidden) {
-                    dbCache.get('pages', 'lastRefresh').then(lastRefresh => {
-                        if (!lastRefresh || Date.now() - lastRefresh > 300000) {
-                            forceReloadAllData();
-                            dbCache.set('pages', 'lastRefresh', Date.now(), 3600000);
-                        }
-                    });
-                }
-            });
-        }
-
-        // ============================================
-        // LOAD NON-CRITICAL CSS
-        // ============================================
-        function loadNonCriticalCSS() {
-            const style = document.createElement('style');
-            style.textContent = `
-                /* Non-critical styles */
-                .modal {
-                    display: none;
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0,0,0,0.5);
-                    z-index: 2000;
-                    align-items: center;
-                    justify-content: center;
-                }
-                
-                .modal.show { display: flex; }
-                
-                .modal-content {
-                    background: white;
-                    border-radius: var(--radius);
-                    width: 90%;
-                    max-width: 400px;
-                    max-height: 80vh;
-                    overflow-y: auto;
-                    padding: 20px;
-                }
-                
-                .modal-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 20px;
-                    padding-bottom: 10px;
-                    border-bottom: 1px solid var(--gray-200);
-                }
-                
-                .modal-title { font-size: 18px; font-weight: 600; }
-                .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--gray-500); }
-                
-                .region-list { list-style: none; }
-                .region-item {
-                    padding: 12px 16px;
-                    border-bottom: 1px solid var(--gray-100);
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                }
-                
-                .region-item:hover { background: var(--gray-100); }
-                .region-item i { color: var(--primary); width: 20px; }
-                .region-name { flex: 1; }
-                
-                .current-location {
-                    padding: 12px 16px;
-                    background: var(--gray-100);
-                    border-radius: var(--radius);
-                    margin-bottom: 16px;
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    cursor: pointer;
-                }
-                
-                .section {
-                    padding: 16px;
-                    background: var(--white);
-                    margin-bottom: 8px;
-                }
-                
-                .section-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 16px;
-                }
-                
-                .section-title {
-                    font-size: 18px;
-                    font-weight: 700;
-                    color: var(--dark);
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                }
-                
-                .section-title i { color: var(--primary); }
-                .section-link { color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 500; }
-                
-                .horizontal-scroll {
-                    overflow-x: auto;
-                    -webkit-overflow-scrolling: touch;
-                    scrollbar-width: none;
-                    margin: 0 -16px;
-                    padding: 4px 16px;
-                }
-                
-                .horizontal-scroll::-webkit-scrollbar { display: none; }
-                .scroll-wrapper { display: flex; gap: 12px; }
-                
-                .product-card-horizontal {
-                    flex: 0 0 160px;
-                    background: var(--white);
-                    border: 1px solid var(--gray-200);
-                    border-radius: var(--radius);
-                    overflow: hidden;
-                    text-decoration: none;
-                    color: inherit;
-                }
-                
-                .wholesaler-card-horizontal {
-                    flex: 0 0 180px;
-                    background: var(--white);
-                    border: 1px solid var(--gray-200);
-                    border-radius: var(--radius);
-                    overflow: hidden;
-                    text-decoration: none;
-                    color: inherit;
-                    padding: 16px 12px;
-                }
-                
-                .wholesaler-avatar-container {
-                    width: 80px;
-                    height: 80px;
-                    margin: 0 auto 12px;
-                    position: relative;
-                }
-                
-                .wholesaler-avatar {
-                    width: 100%;
-                    height: 100%;
-                    border-radius: 50%;
-                    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-weight: bold;
-                    font-size: 28px;
-                    overflow: hidden;
-                }
-                
-                .wholesaler-avatar img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-                
-                .wholesaler-verified {
-                    position: absolute;
-                    bottom: 0;
-                    right: 0;
-                    background: var(--secondary);
-                    width: 22px;
-                    height: 22px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-size: 12px;
-                    border: 2px solid white;
-                }
-                
-                .wholesaler-name {
-                    font-size: 15px;
-                    font-weight: 600;
-                    text-align: center;
-                    margin-bottom: 6px;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-                
-                .wholesaler-location {
-                    font-size: 12px;
-                    color: var(--gray-500);
-                    text-align: center;
-                    margin-bottom: 8px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 4px;
-                }
-                
-                .wholesaler-stats {
-                    font-size: 13px;
-                    color: var(--primary);
-                    font-weight: 600;
-                    text-align: center;
-                    background: #EFF6FF;
-                    padding: 4px 8px;
-                    border-radius: 20px;
-                    display: inline-block;
-                    width: 100%;
-                }
-                
-                .conducive-section {
-                    padding: 16px;
-                    background: var(--white);
-                    margin-bottom: 8px;
-                }
-                
-                .conducive-header {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    margin-bottom: 16px;
-                }
-                
-                .conducive-title { display: flex; align-items: center; gap: 12px; }
-                
-                .conducive-icon {
-                    width: 48px;
-                    height: 48px;
-                    background: var(--gray-100);
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 24px;
-                }
-                
-                .conducive-text h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-                .conducive-text p { font-size: 13px; color: var(--gray-500); }
-                
-                .conducive-grid {
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 12px;
-                }
-                
-                .product-card {
-                    background: var(--white);
-                    border: 1px solid var(--gray-200);
-                    border-radius: var(--radius);
-                    overflow: hidden;
-                    text-decoration: none;
-                    color: inherit;
-                }
-                
-                .product-card .product-image {
-                    width: 100%;
-                    height: 140px;
-                    overflow: hidden;
-                }
-                
-                .product-card .product-image img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    transition: transform 0.3s;
-                }
-                
-                .product-card:hover .product-image img { transform: scale(1.05); }
-                
-                .product-card .product-info { padding: 12px; }
-                
-                .product-card .product-title {
-                    font-size: 14px;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    height: 36px;
-                    margin-bottom: 6px;
-                }
-                
-                .product-price {
-                    font-size: 16px;
-                    font-weight: 700;
-                    color: var(--danger);
-                    margin-bottom: 2px;
-                }
-                
-                .product-meta {
-                    font-size: 11px;
-                    color: var(--gray-500);
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    margin: 4px 0;
-                }
-                
-                .verified-badge {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 2px;
-                    background: #EFF6FF;
-                    color: var(--primary);
-                    font-size: 10px;
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    margin-top: 4px;
-                }
-                
-                .meta-categories {
-                    background: var(--white);
-                    padding: 12px 16px;
-                    border-bottom: 1px solid var(--gray-200);
-                    display: flex;
-                    gap: 16px;
-                    overflow-x: auto;
-                    scrollbar-width: none;
-                }
-                
-                .meta-categories::-webkit-scrollbar { display: none; }
-                
-                .meta-category-btn {
-                    background: var(--gray-100);
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: 20px;
-                    font-size: 13px;
-                    font-weight: 500;
-                    color: var(--gray-600);
-                    white-space: nowrap;
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                    cursor: pointer;
-                    text-decoration: none;
-                }
-                
-                .meta-category-btn i { color: var(--primary); }
-                .meta-category-btn.active { background: var(--primary); color: white; }
-                .meta-category-btn.active i { color: white; }
-                
-                .deals-banner {
-                    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-                    color: white;
-                    padding: 16px 20px;
-                    margin: 8px 16px;
-                    border-radius: var(--radius);
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-                
-                .deals-banner h3 { font-size: 16px; font-weight: 600; }
-                .deals-banner p { font-size: 13px; opacity: 0.9; }
-                .deals-banner button {
-                    background: white;
-                    color: var(--primary);
-                    border: none;
-                    padding: 8px 20px;
-                    border-radius: 24px;
-                    font-weight: 600;
-                    font-size: 13px;
-                    cursor: pointer;
-                }
-                
-                .fade-in {
-                    opacity: 0;
-                    transform: translateY(10px);
-                    transition: opacity 0.5s ease, transform 0.5s ease;
-                }
-                
-                .fade-in.visible {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-                
-                .toast {
-                    position: fixed;
-                    bottom: 80px;
-                    left: 16px;
-                    right: 16px;
-                    background: rgba(0,0,0,0.8);
-                    color: white;
-                    padding: 12px 20px;
-                    border-radius: 30px;
-                    font-size: 14px;
-                    text-align: center;
-                    z-index: 2000;
-                    transform: translateY(100px);
-                    opacity: 0;
-                    transition: all 0.3s;
-                }
-                
-                .toast.show {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
-                
-                @media (min-width: 640px) {
-                    .conducive-grid { grid-template-columns: repeat(4, 1fr); }
-                }
-                
-                @media (min-width: 1024px) {
-                    .conducive-grid { grid-template-columns: repeat(6, 1fr); }
-                    .main-content { max-width: 1200px; margin: 0 auto; }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-
-        // ============================================
         // INITIALIZATION
         // ============================================
         document.addEventListener('DOMContentLoaded', async () => {
-            // Load non-critical CSS
-            loadNonCriticalCSS();
-            
-            // Initialize core UI first
-            initializeSwiper();
+            // Initialize Swiper
+            if (document.getElementById('bannerSwiper')) {
+                new Swiper('#bannerSwiper', {
+                    autoplay: { delay: 3000 },
+                    pagination: { el: '.swiper-pagination', clickable: true },
+                    loop: true,
+                    speed: 500
+                });
+            }
+
+            // Setup scroll behavior
             setupScrollBehavior();
-            initLocationSelector();
-            setupPageVisibilityHandling();
-            
+
             // Setup search
             const searchIcon = document.getElementById('headerSearchIcon');
             if (searchIcon) {
@@ -1606,6 +1542,9 @@
                     window.location.href = 'search.html?region=' + encodeURIComponent(selectedRegion) + '&district=' + encodeURIComponent(selectedDistrict);
                 });
             }
+
+            // Initialize location selector
+            initLocationSelector();
 
             // Home navigation
             const homeNav = document.getElementById('homeNav');
@@ -1616,41 +1555,19 @@
                 });
             }
 
-            // Initialize IndexedDB and load data in parallel
+            // Check authentication
             try {
-                await dbCache.init();
-                
-                await Promise.allSettled([
-                    measurePerformance('metaCategories', loadMetaCategories),
-                    measurePerformance('wholesalers', loadRecommendedWholesalers),
-                    measurePerformance('conduciveSections', loadConduciveSections)
-                ]);
-                
-                console.log('✅ All data loaded. Performance:', performanceMetrics);
-                
+                const { data: { user } } = await sb.auth.getUser();
+                if (user) {
+                    currentUser = user;
+                }
             } catch (error) {
-                console.error('Error during initialization:', error);
-                await Promise.allSettled([
-                    loadMetaCategories(),
-                    loadRecommendedWholesalers(),
-                    loadConduciveSections()
-                ]);
+                console.error('Error checking auth:', error);
             }
 
-            // Check authentication in background
-            sb.auth.getUser().then(({ data: { user } }) => {
-                if (user) currentUser = user;
-            }).catch(console.error);
+            // FIX: Load all data in parallel
+            await loadAllData();
         });
-
-        // Register service worker if supported
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(err => {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
-            });
-        }
     </script>
 </body>
 </html>
