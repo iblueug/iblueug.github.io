@@ -801,6 +801,15 @@
                 margin: 0 auto;
             }
         }
+
+        /* Prevent content flash */
+        .content-hidden {
+            visibility: hidden;
+        }
+        
+        .content-visible {
+            visibility: visible;
+        }
     </style>
 </head>
 <body>
@@ -849,7 +858,7 @@
     </div>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main-content" id="mainContent">
         <!-- Banner -->
         <div class="swiper" id="bannerSwiper">
             <div class="swiper-wrapper" id="bannerWrapper">
@@ -933,11 +942,18 @@
         const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
-        // STATE MANAGEMENT WITH LOCALSTORAGE
+        // STATE MANAGEMENT WITH LOCALSTORAGE & SESSIONSTORAGE
         // ============================================
         let currentUser = null;
         let lastScrollTop = 0;
         const scrollThreshold = 100;
+        
+        // Cache for products data to prevent disappearance on back navigation
+        let productsCache = {
+            wholesalers: null,
+            categories: {},
+            lastUpdated: null
+        };
         
         // Load location from localStorage with proper defaults
         let selectedRegion = localStorage.getItem('selectedRegion');
@@ -949,6 +965,34 @@
             selectedDistrict = 'Kampala';
             localStorage.setItem('selectedRegion', selectedRegion);
             localStorage.setItem('selectedDistrict', selectedDistrict);
+        }
+
+        // Try to load cached products from sessionStorage
+        function loadCachedProducts() {
+            try {
+                const cached = sessionStorage.getItem('homepageCache');
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    // Check if cache is less than 5 minutes old
+                    if (parsed.lastUpdated && (Date.now() - parsed.lastUpdated < 300000)) {
+                        productsCache = parsed;
+                        return true;
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading cache:', e);
+            }
+            return false;
+        }
+
+        // Save products to sessionStorage
+        function saveProductsToCache() {
+            try {
+                productsCache.lastUpdated = Date.now();
+                sessionStorage.setItem('homepageCache', JSON.stringify(productsCache));
+            } catch (e) {
+                console.error('Error saving cache:', e);
+            }
         }
 
         // ============================================
@@ -967,6 +1011,14 @@
             localStorage.setItem('selectedRegion', region);
             localStorage.setItem('selectedDistrict', district);
             updateLocationDisplay();
+            
+            // Clear cache when location changes
+            productsCache = {
+                wholesalers: null,
+                categories: {},
+                lastUpdated: null
+            };
+            sessionStorage.removeItem('homepageCache');
         }
 
         // ============================================
@@ -976,7 +1028,7 @@
             const searchIcon = document.getElementById('headerSearchIcon');
             if (searchIcon) {
                 searchIcon.addEventListener('click', () => {
-                    window.location.href = 'search.html';
+                    window.location.href = 'search.html?region=' + encodeURIComponent(selectedRegion) + '&district=' + encodeURIComponent(selectedDistrict);
                 });
             }
         }
@@ -1044,9 +1096,8 @@
                         modal.classList.remove('show');
                         showToast('Location updated to Kampala');
                         
-                        // Reload products with new location filter
-                        loadConduciveSections();
-                        loadRecommendedWholesalers();
+                        // Force reload all data
+                        forceReloadAllData();
                     }, 1500);
                 });
             }
@@ -1087,9 +1138,8 @@
                     document.getElementById('locationModal').classList.remove('show');
                     showToast(`Location set to ${district}, ${region}`);
                     
-                    // Reload products with new location filter
-                    loadConduciveSections();
-                    loadRecommendedWholesalers();
+                    // Force reload all data
+                    forceReloadAllData();
                 });
             });
         }
@@ -1097,7 +1147,7 @@
         // ============================================
         // LOAD META CATEGORIES FROM SPOTLIGHT
         // ============================================
-        async function loadMetaCategories() {
+        async function loadMetaCategories(useCache = true) {
             const container = document.getElementById('metaCategories');
             if (!container) return;
             
@@ -1182,9 +1232,15 @@
         // ============================================
         // LOAD RECOMMENDED WHOLESALERS (KEPT)
         // ============================================
-        async function loadRecommendedWholesalers() {
+        async function loadRecommendedWholesalers(useCache = true) {
             const wrapper = document.getElementById('wholesalersWrapper');
             if (!wrapper) return;
+            
+            // Check cache first
+            if (useCache && productsCache.wholesalers) {
+                wrapper.innerHTML = productsCache.wholesalers;
+                return;
+            }
             
             wrapper.innerHTML = getPlaceholderWholesalers();
             
@@ -1230,7 +1286,7 @@
                 }
 
                 // Render wholesalers with location params
-                wrapper.innerHTML = sellers.map(seller => {
+                const wholesalersHtml = sellers.map(seller => {
                     const initials = seller.full_name
                         ?.split(' ')
                         .map(n => n[0])
@@ -1259,6 +1315,12 @@
                         </a>
                     `;
                 }).join('');
+                
+                wrapper.innerHTML = wholesalersHtml;
+                
+                // Save to cache
+                productsCache.wholesalers = wholesalersHtml;
+                saveProductsToCache();
 
             } catch (error) {
                 console.error('Error loading wholesalers:', error);
@@ -1286,9 +1348,20 @@
         // ============================================
         // LOAD CONDUCIVE SECTIONS
         // ============================================
-        async function loadConduciveSections() {
+        async function loadConduciveSections(useCache = true) {
             const container = document.getElementById('conduciveSections');
             if (!container) return;
+            
+            // Check if we have all categories in cache
+            if (useCache && productsCache.categories && Object.keys(productsCache.categories).length > 0) {
+                // Check if we have HTML for all categories
+                const cachedHtml = Object.values(productsCache.categories).join('');
+                if (cachedHtml) {
+                    container.innerHTML = cachedHtml;
+                    setupFadeInObserver();
+                    return;
+                }
+            }
             
             container.innerHTML = getSkeletonConduciveSections(5);
             
@@ -1310,6 +1383,7 @@
                 
                 // For each category, get its ads
                 let html = '';
+                let categoriesHtml = {};
                 
                 for (const cat of categories) {
                     // Filter by location if needed
@@ -1333,11 +1407,6 @@
                         .order('created_at', { ascending: false })
                         .limit(4);
                     
-                    // Optional: Filter by district if needed
-                    // if (selectedDistrict) {
-                    //     query = query.eq('district', selectedDistrict);
-                    // }
-                    
                     const { data: ads, error: adsError } = await query;
                     
                     if (adsError) {
@@ -1351,7 +1420,7 @@
                         const icon = cat.conducive_icon || 'fa-tag';
                         const color = cat.color_hex || '#2563EB';
                         
-                        html += `
+                        const categoryHtml = `
                             <section class="conducive-section fade-in">
                                 <div class="conducive-header">
                                     <div class="conducive-title">
@@ -1370,6 +1439,9 @@
                                 </div>
                             </section>
                         `;
+                        
+                        html += categoryHtml;
+                        categoriesHtml[cat.id] = categoryHtml;
                     }
                 }
                 
@@ -1378,25 +1450,33 @@
                 } else {
                     container.innerHTML = html;
                     
-                    // Setup intersection observer for fade-in sections
-                    const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                entry.target.classList.add('visible');
-                                observer.unobserve(entry.target);
-                            }
-                        });
-                    }, { threshold: 0.1, rootMargin: '50px' });
+                    // Save to cache
+                    productsCache.categories = categoriesHtml;
+                    saveProductsToCache();
                     
-                    document.querySelectorAll('.conducive-section').forEach(section => {
-                        observer.observe(section);
-                    });
+                    setupFadeInObserver();
                 }
                 
             } catch (error) {
                 console.error('Error loading conducive sections:', error);
                 container.innerHTML = getErrorConduciveSections();
             }
+        }
+
+        function setupFadeInObserver() {
+            // Setup intersection observer for fade-in sections
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '50px' });
+            
+            document.querySelectorAll('.conducive-section').forEach(section => {
+                observer.observe(section);
+            });
         }
 
         // ============================================
@@ -1493,6 +1573,24 @@
         }
 
         // ============================================
+        // FORCE RELOAD ALL DATA
+        // ============================================
+        async function forceReloadAllData() {
+            // Clear cache
+            productsCache = {
+                wholesalers: null,
+                categories: {},
+                lastUpdated: null
+            };
+            sessionStorage.removeItem('homepageCache');
+            
+            // Reload all data without cache
+            await loadMetaCategories(false);
+            await loadRecommendedWholesalers(false);
+            await loadConduciveSections(false);
+        }
+
+        // ============================================
         // HEADER SCROLL BEHAVIOR
         // ============================================
         function setupScrollBehavior() {
@@ -1581,10 +1679,60 @@
             if (regionFromUrl && districtFromUrl) {
                 // Update from URL params
                 saveLocation(regionFromUrl, districtFromUrl);
-            } else {
-                // Just ensure display is correct
-                updateLocationDisplay();
+                return true;
             }
+            return false;
+        }
+
+        // ============================================
+        // HANDLE PAGE VISIBILITY
+        // ============================================
+        function setupPageVisibilityHandling() {
+            // Handle page show event (when coming back via history)
+            window.addEventListener('pageshow', function(event) {
+                // Check if page was loaded from cache (like when using back button)
+                if (event.persisted) {
+                    console.log('Page loaded from cache, checking data...');
+                    
+                    // Check if we have cached data
+                    const hasCache = loadCachedProducts();
+                    
+                    if (hasCache && productsCache.categories && Object.keys(productsCache.categories).length > 0) {
+                        // Restore from cache
+                        const container = document.getElementById('conduciveSections');
+                        if (container) {
+                            const cachedHtml = Object.values(productsCache.categories).join('');
+                            if (cachedHtml) {
+                                container.innerHTML = cachedHtml;
+                                setupFadeInObserver();
+                            }
+                        }
+                        
+                        const wholesalersWrapper = document.getElementById('wholesalersWrapper');
+                        if (wholesalersWrapper && productsCache.wholesalers) {
+                            wholesalersWrapper.innerHTML = productsCache.wholesalers;
+                        }
+                    } else {
+                        // No cache, reload data
+                        forceReloadAllData();
+                    }
+                    
+                    // Always reload meta categories (they're light)
+                    loadMetaCategories();
+                }
+            });
+
+            // Handle visibility change (when switching tabs and coming back)
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    console.log('Tab became visible again');
+                    // Optionally refresh data if it's been a while
+                    if (productsCache.lastUpdated && (Date.now() - productsCache.lastUpdated > 300000)) {
+                        // Cache is older than 5 minutes, refresh
+                        forceReloadAllData();
+                    }
+                }
+            });
         }
 
         // ============================================
@@ -1592,7 +1740,10 @@
         // ============================================
         document.addEventListener('DOMContentLoaded', async () => {
             // Check for location in URL first (when returning from other pages)
-            checkForLocationFromURL();
+            const locationChanged = checkForLocationFromURL();
+            
+            // Try to load cached products
+            const hasCache = loadCachedProducts();
             
             // Initialize Swiper
             if (document.getElementById('bannerSwiper')) {
@@ -1613,6 +1764,9 @@
             // Initialize location selector
             initLocationSelector();
 
+            // Setup page visibility handling
+            setupPageVisibilityHandling();
+
             // Check authentication
             try {
                 const { data: { user } } = await sb.auth.getUser();
@@ -1626,22 +1780,11 @@
             // Load meta categories from spotlight
             await loadMetaCategories();
 
-            // Load recommended wholesalers
-            await loadRecommendedWholesalers();
+            // Load recommended wholesalers (use cache if available and location didn't change)
+            await loadRecommendedWholesalers(!locationChanged && hasCache);
 
-            // Load conducive sections (only categories with products)
-            await loadConduciveSections();
-        });
-
-        // Listen for page show event (when coming back via history)
-        window.addEventListener('pageshow', function(event) {
-            // Check if page was loaded from cache (like when using back button)
-            if (event.persisted) {
-                checkForLocationFromURL();
-                loadConduciveSections();
-                loadRecommendedWholesalers();
-                loadMetaCategories();
-            }
+            // Load conducive sections (use cache if available and location didn't change)
+            await loadConduciveSections(!locationChanged && hasCache);
         });
     </script>
 </body>
