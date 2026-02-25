@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
-    /* Your existing CSS remains exactly the same */
     * {
       margin: 0;
       padding: 0;
@@ -272,26 +271,63 @@
       justify-content: center;
       font-size: 0.8rem;
       cursor: pointer;
+      z-index: 10;
     }
 
-    /* Add loading indicator for images */
+    /* Image processing placeholder */
     .image-processing {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 0.8rem;
-      border-radius: var(--radius);
+      color: var(--gray);
     }
 
-    .image-processing i {
-      animation: spin 1s linear infinite;
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    /* Progress Bar */
+    .upload-progress {
+      position: fixed;
+      top: 70px;
+      left: 20px;
+      right: 20px;
+      background: white;
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      z-index: 3000;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-100%); opacity: 0; }
+    }
+
+    .progress-bar-container {
+      height: 8px;
+      background: var(--light-gray);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.3s ease;
     }
 
     /* Price Input */
@@ -332,6 +368,10 @@
       color: white;
       font-size: 0.8rem;
       transition: all 0.3s;
+    }
+
+    .form-check input {
+      display: none;
     }
 
     .form-check input:checked + .checkbox {
@@ -536,11 +576,6 @@
       animation: slideUp 0.3s ease;
     }
 
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
     .modal-header {
       padding: 20px;
       border-bottom: 1px solid var(--border);
@@ -597,6 +632,45 @@
     .form-select.error + .error-message,
     .form-textarea.error + .error-message {
       display: block;
+    }
+
+    /* Notifications */
+    .success-notification,
+    .error-notification {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      left: 20px;
+      color: white;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 3000;
+      animation: slideIn 0.3s ease;
+      text-align: center;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .success-notification {
+      background: var(--success);
+    }
+
+    .error-notification {
+      background: var(--danger);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-20px); opacity: 0; }
     }
   </style>
 </head>
@@ -781,7 +855,7 @@
         <i class="fas fa-cloud-upload-alt"></i>
       </div>
       <div class="upload-text">Tap to upload photos</div>
-      <div class="upload-subtext">Add up to 10 photos (auto-compressed to ~300KB)</div>
+      <div class="upload-subtext">Add up to 10 photos (auto-compressed for fast upload)</div>
       <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
     </div>
     
@@ -798,7 +872,7 @@
         <li>Show the item from different angles</li>
         <li>Include photos of any flaws or damage</li>
         <li>First photo will be the thumbnail</li>
-        <li>Images are automatically compressed for faster loading</li>
+        <li>Images are compressed in parallel for fastest upload</li>
       </ul>
     </div>
   </div>
@@ -824,7 +898,7 @@
     <div class="form-check" style="margin-top: 20px;">
       <input type="checkbox" id="terms" required>
       <span class="checkbox"><i class="fas fa-check"></i></span>
-      <label for="terms">I agree to the <a href="terms.html" style="color: var(--primary);">Terms of Service</a></label>
+      <label for="terms">I agree to the <a href="#" style="color: var(--primary);">Terms of Service</a></label>
     </div>
     <div class="error-message" id="termsError" style="margin-top: 8px;">You must agree to the terms</div>
   </div>
@@ -854,7 +928,6 @@
   let subcategories = [];
   let selectedImages = [];
   let userData = null;
-  let isUploading = false; // Track if images are being processed
 
   // DOM Elements
   const stepElements = [null, document.getElementById('step1'), document.getElementById('step2'), 
@@ -865,8 +938,17 @@
   const nextBtn = document.getElementById('nextBtn');
   const loadingOverlay = document.getElementById('loadingOverlay');
 
-  // ========== NEW: Image Compression Function ==========
+  // ========== FAST IMAGE COMPRESSION ==========
   async function compressImage(file) {
+    // Skip compression for small images
+    if (file.size < 300 * 1024) { // Less than 300KB
+      return {
+        file: file,
+        dataUrl: URL.createObjectURL(file),
+        originalName: file.name
+      };
+    }
+
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -876,15 +958,20 @@
         img.src = event.target.result;
         
         img.onload = () => {
-          // Create canvas for compression
-          const canvas = document.createElement("canvas");
+          // Use OffscreenCanvas for better performance if available
+          let canvas;
+          if (typeof OffscreenCanvas !== 'undefined') {
+            canvas = new OffscreenCanvas(img.width, img.height);
+          } else {
+            canvas = document.createElement("canvas");
+          }
+          
           const ctx = canvas.getContext("2d");
           
-          // Max dimensions for marketplace images
-          const MAX_WIDTH = 1000;
-          const MAX_HEIGHT = 1000;
+          // Optimized dimensions for speed
+          const MAX_WIDTH = 800; // Reduced from 1000 for faster processing
+          const MAX_HEIGHT = 800;
           
-          // Calculate new dimensions while maintaining aspect ratio
           let width = img.width;
           let height = img.height;
           
@@ -900,17 +987,12 @@
             }
           }
           
-          // Ensure minimum dimensions (optional)
-          width = Math.max(width, 200);
-          height = Math.max(height, 200);
-          
           canvas.width = width;
           canvas.height = height;
           
-          // Draw image on canvas
           ctx.drawImage(img, 0, 0, width, height);
           
-          // Convert to blob with 70% quality
+          // Use lower quality for faster processing
           canvas.toBlob(
             (blob) => {
               if (!blob) {
@@ -918,177 +1000,230 @@
                 return;
               }
               
-              // Create new file with .jpg extension
               const compressedFile = new File(
                 [blob], 
                 file.name.replace(/\.[^/.]+$/, "") + ".jpg", 
                 { type: "image/jpeg", lastModified: Date.now() }
               );
               
-              // Log compression stats for debugging
-              console.log("📸 Image compression:", {
-                original: {
-                  name: file.name,
-                  size: (file.size / 1024).toFixed(1) + "KB",
-                  dimensions: img.width + "x" + img.height
-                },
-                compressed: {
-                  name: compressedFile.name,
-                  size: (blob.size / 1024).toFixed(1) + "KB",
-                  dimensions: width + "x" + height,
-                  savings: ((1 - blob.size/file.size) * 100).toFixed(1) + "%"
-                }
-              });
-              
-              // Create object URL for preview (more efficient than dataUrl)
-              const previewUrl = URL.createObjectURL(blob);
-              
               resolve({ 
                 file: compressedFile, 
-                dataUrl: previewUrl,
+                dataUrl: URL.createObjectURL(blob),
                 originalName: file.name
               });
             }, 
             "image/jpeg", 
-            0.7 // 70% quality - good balance for marketplace
+            0.6 // 60% quality - faster, still good for marketplace
           );
         };
         
-        img.onerror = () => {
-          reject(new Error("Failed to load image for compression"));
-        };
+        img.onerror = () => reject(new Error("Failed to load image"));
       };
       
-      reader.onerror = () => {
-        reject(new Error("Failed to read file"));
-      };
+      reader.onerror = () => reject(new Error("Failed to read file"));
     });
   }
 
-  // ========== UPDATED: Handle Image Upload with Compression ==========
+  // ========== PROGRESS BAR UI ==========
+  function showUploadProgress(total) {
+    // Remove existing progress bar
+    const existing = document.getElementById('uploadProgress');
+    if (existing) existing.remove();
+    
+    const progressDiv = document.createElement('div');
+    progressDiv.id = 'uploadProgress';
+    progressDiv.className = 'upload-progress';
+    
+    progressDiv.innerHTML = `
+      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+        <span style="font-weight: 600;"><i class="fas fa-images"></i> Processing Images</span>
+        <span id="progressCount">0/${total}</span>
+      </div>
+      <div class="progress-bar-container">
+        <div id="progressBar" class="progress-bar-fill" style="width: 0%;"></div>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--gray); display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+        <i class="fas fa-spinner fa-pulse"></i>
+        <span id="progressMessage">Compressing images in parallel...</span>
+      </div>
+    `;
+    
+    document.body.appendChild(progressDiv);
+  }
+
+  function updateProgress(current, total, message) {
+    const progressBar = document.getElementById('progressBar');
+    const progressCount = document.getElementById('progressCount');
+    const progressMessage = document.getElementById('progressMessage');
+    
+    if (progressBar && progressCount) {
+      const percentage = (current / total) * 100;
+      progressBar.style.width = `${percentage}%`;
+      progressCount.textContent = `${current}/${total}`;
+    }
+    
+    if (progressMessage && message) {
+      progressMessage.textContent = message;
+    }
+  }
+
+  function hideUploadProgress() {
+    const progressDiv = document.getElementById('uploadProgress');
+    if (progressDiv) {
+      progressDiv.style.animation = 'slideUp 0.3s ease';
+      setTimeout(() => progressDiv.remove(), 300);
+    }
+  }
+
+  // ========== PREVIEW PLACEHOLDERS ==========
+  function addPreviewPlaceholder(id) {
+    const preview = document.getElementById('imagePreview');
+    const placeholder = document.createElement('div');
+    placeholder.className = 'preview-item';
+    placeholder.id = `placeholder-${id}`;
+    placeholder.innerHTML = `
+      <div class="image-processing">
+        <i class="fas fa-spinner fa-pulse"></i>
+      </div>
+    `;
+    preview.appendChild(placeholder);
+  }
+
+  function removePreviewPlaceholder(id) {
+    const placeholder = document.getElementById(`placeholder-${id}`);
+    if (placeholder) placeholder.remove();
+  }
+
+  // ========== PARALLEL IMAGE UPLOAD ==========
   async function handleImageUpload(event) {
     const files = Array.from(event.target.files);
     
-    // Check total images limit
     if (selectedImages.length + files.length > 10) {
       showError('Maximum 10 images allowed');
       event.target.value = '';
       return;
     }
     
-    // Show processing indicator on upload button
-    const uploadBtn = document.getElementById('imageUpload');
-    const originalText = uploadBtn.innerHTML;
-    uploadBtn.innerHTML = `
-      <div class="upload-icon">
-        <i class="fas fa-spinner fa-pulse"></i>
-      </div>
-      <div class="upload-text">Processing images...</div>
-      <div class="upload-subtext">This may take a moment</div>
-    `;
-    uploadBtn.style.pointerEvents = 'none';
+    // Show progress bar
+    showUploadProgress(files.length);
     
+    // Add placeholders immediately
+    files.forEach((file, index) => {
+      const placeholderId = `img-${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`;
+      addPreviewPlaceholder(placeholderId);
+      file.placeholderId = placeholderId; // Store for later removal
+    });
+    
+    // Process in batches of 3 for parallel processing
+    const batchSize = 3;
+    const results = [];
     let processedCount = 0;
     let errorCount = 0;
     
-    for (const file of files) {
-      // Validate file type
-      if (!file.type.match('image.*')) {
-        showError(`${file.name} is not an image. Skipping.`);
-        errorCount++;
-        continue;
-      }
+    for (let i = 0; i < files.length; i += batchSize) {
+      const batch = files.slice(i, i + batchSize);
       
-      // Optional: Reject files larger than 10MB before compression
-      if (file.size > 10 * 1024 * 1024) {
-        showError(`${file.name} is too large (max 10MB before compression)`);
-        errorCount++;
-        continue;
-      }
+      // Process batch in parallel
+      const batchPromises = batch.map(async (file) => {
+        try {
+          // Validate file
+          if (!file.type.match('image.*')) {
+            showError(`${file.name} is not an image`);
+            errorCount++;
+            removePreviewPlaceholder(file.placeholderId);
+            return null;
+          }
+          
+          if (file.size > 10 * 1024 * 1024) {
+            showError(`${file.name} is too large (max 10MB)`);
+            errorCount++;
+            removePreviewPlaceholder(file.placeholderId);
+            return null;
+          }
+          
+          // Compress image
+          const compressed = await compressImage(file);
+          
+          // Add to selected images
+          selectedImages.push(compressed);
+          
+          // Update UI
+          processedCount++;
+          updateProgress(processedCount, files.length, `Processing ${processedCount}/${files.length}`);
+          
+          // Remove placeholder and show actual image
+          removePreviewPlaceholder(file.placeholderId);
+          updateImagePreview();
+          
+          return compressed;
+        } catch (error) {
+          console.error('Compression error:', error);
+          showError(`Failed to process ${file.name}`);
+          errorCount++;
+          removePreviewPlaceholder(file.placeholderId);
+          return null;
+        }
+      });
       
-      try {
-        // Create a temporary preview item with loading state
-        const tempId = 'temp-' + Date.now() + '-' + Math.random();
-        const preview = document.getElementById('imagePreview');
-        const tempItem = document.createElement('div');
-        tempItem.className = 'preview-item';
-        tempItem.id = tempId;
-        tempItem.innerHTML = `
-          <div class="image-processing">
-            <i class="fas fa-spinner fa-pulse"></i> Processing...
-          </div>
-        `;
-        preview.appendChild(tempItem);
-        
-        // Compress the image
-        const compressed = await compressImage(file);
-        
-        // Remove temporary item
-        document.getElementById(tempId)?.remove();
-        
-        // Add to selected images
-        selectedImages.push(compressed);
-        processedCount++;
-        
-        // Update preview
-        updateImagePreview();
-        
-      } catch (error) {
-        console.error(`Compression error for ${file.name}:`, error);
-        showError(`Failed to process ${file.name}`);
-        errorCount++;
-        
-        // Remove temporary item if it exists
-        const tempItem = document.getElementById(tempId);
-        if (tempItem) tempItem.remove();
-      }
+      // Wait for current batch to complete
+      await Promise.all(batchPromises);
     }
     
-    // Restore upload button
-    uploadBtn.innerHTML = originalText;
-    uploadBtn.style.pointerEvents = 'auto';
+    // Hide progress
+    hideUploadProgress();
     
     // Show summary
     if (processedCount > 0) {
-      showSuccess(`✅ ${processedCount} image(s) processed successfully`);
-    }
-    if (errorCount > 0) {
-      showError(`❌ ${errorCount} image(s) failed to process`);
+      showSuccess(`✅ ${processedCount} images ready${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
     }
     
-    // Reset file input
+    // Reset input
     event.target.value = '';
   }
 
-  // ========== UPDATED: Update Image Preview ==========
+  // ========== UPDATE IMAGE PREVIEW ==========
   function updateImagePreview() {
     const preview = document.getElementById('imagePreview');
-    preview.innerHTML = '';
     
+    // Keep only placeholders, remove all actual images
+    Array.from(preview.children).forEach(child => {
+      if (!child.id.startsWith('placeholder-')) {
+        child.remove();
+      }
+    });
+    
+    // Add all processed images
     selectedImages.forEach((image, index) => {
-      const previewItem = document.createElement('div');
-      previewItem.className = 'preview-item';
+      // Check if already exists
+      const existing = Array.from(preview.children).find(
+        child => child.dataset.index === index.toString()
+      );
       
-      // Add small badge for compressed images
-      const size = (image.file.size / 1024).toFixed(0);
-      
-      previewItem.innerHTML = `
-        <img src="${image.dataUrl}" class="preview-image" alt="Preview" loading="lazy">
-        <div style="position: absolute; bottom: 2px; left: 2px; background: rgba(0,0,0,0.7); color: white; font-size: 10px; padding: 2px 4px; border-radius: 4px;">
-          ${size}KB
-        </div>
-        <button class="remove-btn" onclick="removeImage(${index})">
-          <i class="fas fa-times"></i>
-        </button>
-      `;
-      
-      preview.appendChild(previewItem);
+      if (!existing) {
+        const previewItem = document.createElement('div');
+        previewItem.className = 'preview-item';
+        previewItem.dataset.index = index;
+        
+        const sizeKB = (image.file.size / 1024).toFixed(0);
+        
+        previewItem.innerHTML = `
+          <img src="${image.dataUrl}" class="preview-image" alt="Preview" loading="lazy">
+          <div style="position: absolute; bottom: 2px; left: 2px; background: rgba(0,0,0,0.7); color: white; font-size: 10px; padding: 2px 4px; border-radius: 4px;">
+            ${sizeKB}KB
+          </div>
+          <button class="remove-btn" onclick="removeImage(${index})">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+        
+        preview.appendChild(previewItem);
+      }
     });
   }
 
-  // ========== UPDATED: Remove Image ==========
+  // ========== REMOVE IMAGE ==========
   function removeImage(index) {
-    // Clean up object URL to prevent memory leaks
+    // Clean up object URL
     if (selectedImages[index] && selectedImages[index].dataUrl) {
       URL.revokeObjectURL(selectedImages[index].dataUrl);
     }
@@ -1096,44 +1231,7 @@
     updateImagePreview();
   }
 
-  // ========== NEW: Show Success Message ==========
-  function showSuccess(message) {
-    const successEl = document.createElement('div');
-    successEl.className = 'success-notification';
-    successEl.style.cssText = `
-      position: fixed;
-      top: 70px;
-      right: 20px;
-      left: 20px;
-      background: var(--success);
-      color: white;
-      padding: 12px 16px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      z-index: 3000;
-      animation: slideIn 0.3s ease;
-      text-align: center;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    `;
-    
-    successEl.innerHTML = `<i class="fas fa-check-circle"></i>${message}`;
-    document.body.appendChild(successEl);
-    
-    setTimeout(() => {
-      successEl.style.animation = 'slideOut 0.3s ease';
-      setTimeout(() => {
-        if (successEl.parentNode) {
-          document.body.removeChild(successEl);
-        }
-      }, 300);
-    }, 3000);
-  }
-
-  // ========== UPDATED: Initialize page with compression-ready setup ==========
+  // ========== INITIALIZATION ==========
   document.addEventListener('DOMContentLoaded', async function() {
     // Check authentication
     const { data: { user } } = await sb.auth.getUser();
@@ -1144,34 +1242,30 @@
 
     userData = user;
     
-    // Check if profile exists, create if not
     await ensureProfileExists(user);
-    
     await loadCategories();
     setupEventListeners();
     updateStepDisplay();
   });
 
-  // Ensure user has a profile
+  // ========== PROFILE SETUP ==========
   async function ensureProfileExists(authUser) {
     try {
-      // Check if profile already exists
       const { data: existingProfile, error: fetchError } = await sb
         .from('profiles')
         .select('id')
         .eq('id', authUser.id)
         .single();
       
-      if (fetchError && fetchError.code === 'PGRST116') { // Profile not found
+      if (fetchError && fetchError.code === 'PGRST116') {
         console.log('Creating new profile for user:', authUser.id);
         
-        // Create profile according to your schema
         const { error: createError } = await sb
           .from('profiles')
           .insert({
             id: authUser.id,
             email: authUser.email || '',
-            phone: '', // Default empty
+            phone: '',
             full_name: authUser.user_metadata?.full_name || '',
             avatar_url: authUser.user_metadata?.avatar_url || '',
             location: '',
@@ -1185,24 +1279,14 @@
         
         if (createError) {
           console.error('Error creating profile:', createError);
-          // Don't throw - user might still be able to post
-          return;
         }
-        
-        console.log('Profile created successfully');
-      } else if (fetchError) {
-        console.error('Error checking profile:', fetchError);
-        throw fetchError;
       }
-      
     } catch (error) {
       console.error('Error in ensureProfileExists:', error);
-      // Don't block the user - show warning but allow them to continue
-      showError('Note: Profile setup issue. You can still post ads.');
     }
   }
 
-  // Load categories
+  // ========== LOAD CATEGORIES ==========
   async function loadCategories() {
     try {
       const { data, error } = await sb
@@ -1225,11 +1309,11 @@
       
     } catch (error) {
       console.error('Error loading categories:', error);
-      showError('Failed to load categories. Please refresh the page.');
+      showError('Failed to load categories');
     }
   }
 
-  // Setup event listeners
+  // ========== EVENT LISTENERS ==========
   function setupEventListeners() {
     // Title character count
     document.getElementById('title').addEventListener('input', function() {
@@ -1266,7 +1350,7 @@
       }
     });
     
-    // Image upload - now using our enhanced compression function
+    // Image upload
     document.getElementById('imageUpload').addEventListener('click', () => {
       document.getElementById('imageInput').click();
     });
@@ -1274,7 +1358,7 @@
     document.getElementById('imageInput').addEventListener('change', handleImageUpload);
   }
 
-  // Navigate to next step
+  // ========== STEP NAVIGATION ==========
   function nextStep() {
     if (!validateCurrentStep()) return;
     
@@ -1290,7 +1374,6 @@
     }
   }
 
-  // Navigate to previous step
   function prevStep() {
     if (currentStep > 1) {
       currentStep--;
@@ -1298,9 +1381,7 @@
     }
   }
 
-  // Update step display
   function updateStepDisplay() {
-    // Update step indicators
     stepElements.forEach((step, index) => {
       if (step) {
         if (index === currentStep) {
@@ -1311,7 +1392,6 @@
       }
     });
     
-    // Update sections
     sectionElements.forEach((section, index) => {
       if (section) {
         if (index === currentStep) {
@@ -1322,7 +1402,6 @@
       }
     });
     
-    // Update buttons
     prevBtn.style.display = currentStep > 1 ? 'flex' : 'none';
     
     if (currentStep === 4) {
@@ -1334,11 +1413,10 @@
     }
   }
 
-  // Validate current step
+  // ========== VALIDATION ==========
   function validateCurrentStep() {
     let isValid = true;
     
-    // Clear previous errors
     document.querySelectorAll('.error-message').forEach(el => {
       el.style.display = 'none';
     });
@@ -1346,7 +1424,6 @@
       el.classList.remove('error');
     });
     
-    // Step 1 validation
     if (currentStep === 1) {
       const title = document.getElementById('title').value.trim();
       const description = document.getElementById('description').value.trim();
@@ -1378,7 +1455,6 @@
       }
     }
     
-    // Step 2 validation
     else if (currentStep === 2) {
       const region = document.getElementById('region').value;
       const district = document.getElementById('district').value.trim();
@@ -1396,7 +1472,6 @@
       }
     }
     
-    // Step 4 validation
     else if (currentStep === 4) {
       const terms = document.getElementById('terms').checked;
       
@@ -1409,19 +1484,16 @@
     return isValid;
   }
 
-  // Update review section
+  // ========== REVIEW ==========
   function updateReview() {
-    // Title and price
     document.getElementById('reviewTitle').textContent = document.getElementById('title').value;
     const price = parseFloat(document.getElementById('price').value);
     document.getElementById('reviewPrice').textContent = price ? `UGX ${price.toLocaleString()}` : 'Price on request';
     
-    // Description (truncated)
     const description = document.getElementById('description').value;
     document.getElementById('reviewDescription').textContent = 
       description.length > 200 ? description.substring(0, 200) + '...' : description;
     
-    // Details grid
     const details = document.getElementById('reviewDetails');
     details.innerHTML = '';
     
@@ -1447,20 +1519,18 @@
     });
   }
 
-  // Get selected text from select element
   function getSelectedText(elementId) {
     const select = document.getElementById(elementId);
     return select.options[select.selectedIndex]?.text || '';
   }
 
-  // Submit ad
+  // ========== SUBMIT AD ==========
   async function submitAd() {
     if (!validateCurrentStep()) return;
     
     try {
       loadingOverlay.classList.add('active');
       
-      // Get form values
       const adData = {
         title: document.getElementById('title').value.trim(),
         description: document.getElementById('description').value.trim(),
@@ -1478,86 +1548,36 @@
         seller_id: userData.id
       };
       
-      // Upload images to Supabase Storage (now using compressed files)
+      // Upload compressed images
       const imageUrls = await uploadImages();
       
-      // Try stored procedure first, but use the original version without whatsapp parameter
-      // since that's what exists in your database
-      const { data: newAdId, error } = await sb.rpc('create_new_ad', {
-        p_title: adData.title,
-        p_description: adData.description,
-        p_price: adData.price,
-        p_category_id: adData.category_id,
-        p_seller_id: adData.seller_id,
-        p_region: adData.region,
-        p_district: adData.district,
-        p_specific_location: adData.specific_location,
-        p_condition: adData.condition,
-        p_is_negotiable: adData.is_negotiable,
-        p_contact_phone: adData.contact_phone,
-        p_image_urls: imageUrls
-        // Note: p_contact_whatsapp is removed because the stored procedure doesn't have it
-      });
+      // Create ad
+      const { data: newAd, error } = await sb
+        .from('ads')
+        .insert({
+          title: adData.title,
+          description: adData.description,
+          price: adData.price,
+          currency: 'UGX',
+          is_negotiable: adData.is_negotiable,
+          condition: adData.condition,
+          image_urls: imageUrls,
+          category_id: adData.category_id,
+          seller_id: adData.seller_id,
+          region: adData.region,
+          district: adData.district,
+          specific_location: adData.specific_location,
+          contact_phone: adData.contact_phone,
+          contact_whatsapp: adData.contact_whatsapp,
+          show_profile_phone: adData.show_profile_phone,
+          status: 'active'
+        })
+        .select('id')
+        .single();
       
-      if (error) {
-        console.error('Error creating ad with stored procedure:', error);
-        
-        // Fallback: Direct insert (always use this since stored procedure doesn't have whatsapp)
-        console.log('Using direct insert...');
-        const { data: fallbackAd, error: fallbackError } = await sb
-          .from('ads')
-          .insert({
-            title: adData.title,
-            description: adData.description,
-            price: adData.price,
-            currency: 'UGX',
-            is_negotiable: adData.is_negotiable,
-            condition: adData.condition,
-            image_urls: imageUrls,
-            category_id: adData.category_id,
-            seller_id: adData.seller_id,
-            region: adData.region,
-            district: adData.district,
-            specific_location: adData.specific_location,
-            contact_phone: adData.contact_phone,
-            contact_whatsapp: adData.contact_whatsapp, // This is where whatsapp is saved
-            show_profile_phone: adData.show_profile_phone,
-            status: 'active'
-          })
-          .select('id')
-          .single();
-        
-        if (fallbackError) throw fallbackError;
-        
-        // Send notification to user
-        await sb
-          .from('notifications')
-          .insert({
-            user_id: userData.id,
-            type: 'ad_approved',
-            title: 'Ad Posted Successfully',
-            message: `Your ad "${adData.title.substring(0, 30)}..." is now live!`,
-            link: `ad-detail.html?id=${fallbackAd.id}`
-          });
-        
-        loadingOverlay.classList.remove('active');
-        document.getElementById('successModal').classList.add('active');
-        return;
-      }
+      if (error) throw error;
       
-      // If stored procedure succeeded, we need to update the ad to add whatsapp
-      // since the stored procedure doesn't include it
-      if (adData.contact_whatsapp) {
-        await sb
-          .from('ads')
-          .update({ 
-            contact_whatsapp: adData.contact_whatsapp,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', newAdId);
-      }
-      
-      // Send notification to user
+      // Send notification
       await sb
         .from('notifications')
         .insert({
@@ -1565,7 +1585,7 @@
           type: 'ad_approved',
           title: 'Ad Posted Successfully',
           message: `Your ad "${adData.title.substring(0, 30)}..." is now live!`,
-          link: `ad-detail.html?id=${newAdId}`
+          link: `ad-detail.html?id=${newAd.id}`
         });
       
       loadingOverlay.classList.remove('active');
@@ -1574,26 +1594,17 @@
     } catch (error) {
       loadingOverlay.classList.remove('active');
       console.error('Error posting ad:', error);
-      
-      // More specific error messages
-      if (error.code === '23503') {
-        showError('User profile issue. Please complete your profile first.');
-      } else if (error.code === '23502') {
-        showError('Missing required information. Please fill all required fields.');
-      } else {
-        showError('Failed to post ad. Please try again.');
-      }
+      showError('Failed to post ad. Please try again.');
     }
   }
 
-  // Upload images to Supabase Storage (now using compressed files)
+  // ========== UPLOAD IMAGES ==========
   async function uploadImages() {
     const imageUrls = [];
     
     for (let i = 0; i < selectedImages.length; i++) {
       const image = selectedImages[i];
-      // Generate unique filename with .jpg extension
-      const fileName = `ad-${Date.now()}-${i}-${Date.now()}.jpg`;
+      const fileName = `ad-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 9)}.jpg`;
       
       try {
         const { error: uploadError } = await sb.storage
@@ -1602,12 +1613,10 @@
         
         if (uploadError) {
           console.error('Upload error:', uploadError);
-          // Use data URL as fallback
-          imageUrls.push(image.dataUrl);
+          imageUrls.push(image.dataUrl); // Fallback
           continue;
         }
         
-        // Get public URL
         const { data: { publicUrl } } = sb.storage
           .from('ad-images')
           .getPublicUrl(fileName);
@@ -1616,73 +1625,45 @@
         
       } catch (error) {
         console.error('Error uploading image:', error);
-        // Use data URL as fallback
-        imageUrls.push(image.dataUrl);
+        imageUrls.push(image.dataUrl); // Fallback
       }
     }
     
     return imageUrls;
   }
 
-  // Show error message
+  // ========== NOTIFICATIONS ==========
   function showError(message) {
-    // Remove any existing error notifications
-    const existingErrors = document.querySelectorAll('.error-notification');
-    existingErrors.forEach(el => el.remove());
+    const existing = document.querySelectorAll('.error-notification');
+    existing.forEach(el => el.remove());
     
     const errorEl = document.createElement('div');
     errorEl.className = 'error-notification';
-    errorEl.style.cssText = `
-      position: fixed;
-      top: 70px;
-      right: 20px;
-      left: 20px;
-      background: var(--danger);
-      color: white;
-      padding: 12px 16px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      z-index: 3000;
-      animation: slideIn 0.3s ease;
-      text-align: center;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    `;
-    
     errorEl.innerHTML = `<i class="fas fa-exclamation-circle"></i>${message}`;
     document.body.appendChild(errorEl);
     
     setTimeout(() => {
       errorEl.style.animation = 'slideOut 0.3s ease';
-      setTimeout(() => {
-        if (errorEl.parentNode) {
-          document.body.removeChild(errorEl);
-        }
-      }, 300);
+      setTimeout(() => errorEl.remove(), 300);
     }, 5000);
-    
-    // Add CSS for animations if not already present
-    if (!document.querySelector('#notification-styles')) {
-      const style = document.createElement('style');
-      style.id = 'notification-styles';
-      style.textContent = `
-        @keyframes slideIn {
-          from { transform: translateY(-20px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes slideOut {
-          from { transform: translateY(0); opacity: 1; }
-          to { transform: translateY(-20px); opacity: 0; }
-        }
-      `;
-      document.head.appendChild(style);
-    }
   }
 
-  // Go back
+  function showSuccess(message) {
+    const existing = document.querySelectorAll('.success-notification');
+    existing.forEach(el => el.remove());
+    
+    const successEl = document.createElement('div');
+    successEl.className = 'success-notification';
+    successEl.innerHTML = `<i class="fas fa-check-circle"></i>${message}`;
+    document.body.appendChild(successEl);
+    
+    setTimeout(() => {
+      successEl.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => successEl.remove(), 300);
+    }, 3000);
+  }
+
+  // ========== UTILITIES ==========
   function goBack() {
     if (currentStep > 1) {
       prevStep();
@@ -1691,19 +1672,16 @@
     }
   }
 
-  // Close modal
   function closeModal() {
     document.getElementById('successModal').classList.remove('active');
-    // Redirect to the new ad or dashboard
     window.location.href = 'my-ads.html';
   }
 
-  // Go to dashboard
   function goToDashboard() {
     window.location.href = 'my-ads.html';
   }
 
-  // Clean up object URLs when page unloads
+  // Clean up object URLs
   window.addEventListener('beforeunload', function() {
     selectedImages.forEach(image => {
       if (image.dataUrl && image.dataUrl.startsWith('blob:')) {
