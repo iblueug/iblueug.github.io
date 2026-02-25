@@ -174,6 +174,11 @@
             text-align: center;
             text-decoration: none;
             color: var(--dark);
+            transition: transform 0.2s;
+        }
+
+        .category-item:hover {
+            transform: translateY(-4px);
         }
 
         .category-icon {
@@ -198,12 +203,15 @@
         .category-name {
             font-size: 12px;
             font-weight: 500;
+            line-height: 1.3;
+            word-break: break-word;
         }
 
         .loading-spinner {
             text-align: center;
             padding: 20px;
             color: var(--gray);
+            grid-column: 1 / -1;
         }
 
         .loading-spinner i {
@@ -220,12 +228,36 @@
             text-align: center;
             padding: 20px;
             color: #dc2626;
+            grid-column: 1 / -1;
         }
 
         .view-all-link {
             color: var(--primary);
             font-size: 14px;
             text-decoration: none;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 16px;
+            transition: background 0.2s;
+        }
+
+        .view-all-link:hover {
+            background: var(--light-gray);
+        }
+
+        .retry-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .retry-btn:hover {
+            background: var(--primary-dark);
         }
     </style>
 </head>
@@ -265,7 +297,9 @@
     <div class="categories-section">
         <div class="section-title">
             Browse Categories
-            <a href="all-categories.html" class="view-all-link">View All</a>
+            <a href="categories.html" class="view-all-link">
+                View All <i class="fas fa-arrow-right" style="font-size: 12px; margin-left: 4px;"></i>
+            </a>
         </div>
         <div class="category-grid" id="categoryGrid">
             <div class="loading-spinner">
@@ -340,6 +374,7 @@
             const trimmed = filtered.slice(0, 10);
             
             localStorage.setItem('recentSearches', JSON.stringify(trimmed));
+            loadRecentSearches(); // Refresh the list
         }
 
         async function saveSearchHistory(query) {
@@ -363,18 +398,22 @@
         }
 
         function clearRecentSearches() {
-            localStorage.removeItem('recentSearches');
-            loadRecentSearches();
+            if (confirm('Clear all recent searches?')) {
+                localStorage.removeItem('recentSearches');
+                loadRecentSearches();
+            }
         }
 
         async function loadCategories() {
+            const grid = document.getElementById('categoryGrid');
+            
             try {
                 const { data, error } = await sb
                     .from('categories')
                     .select('id, name, slug, icon, conducive_icon, color_hex')
                     .eq('is_active', true)
                     .is('parent_id', null) // Get only parent categories
-                    .order('display_order', { ascending: true })
+                    .order('display_order', { ascending: true, nullsFirst: false })
                     .order('name', { ascending: true })
                     .limit(8);
 
@@ -384,7 +423,15 @@
                 renderCategories(categories);
             } catch (error) {
                 console.error('Error loading categories:', error);
-                renderCategories([]);
+                grid.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle" style="font-size: 32px; margin-bottom: 8px;"></i>
+                        <p>Failed to load categories</p>
+                        <button class="retry-btn" onclick="loadCategories()">
+                            <i class="fas fa-redo"></i> Retry
+                        </button>
+                    </div>
+                `;
             }
         }
 
@@ -394,7 +441,7 @@
 
             if (categories.length === 0) {
                 grid.innerHTML = `
-                    <div style="grid-column: span 4; text-align: center; padding: 20px; color: var(--gray);">
+                    <div class="error-message" style="color: var(--gray);">
                         <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 8px;"></i>
                         <p>No categories available</p>
                     </div>
@@ -422,18 +469,42 @@
                     'beauty': 'fa-spa',
                     'baby': 'fa-baby',
                     'books': 'fa-book',
-                    'music': 'fa-music'
+                    'music': 'fa-music',
+                    'phone': 'fa-phone',
+                    'tablet': 'fa-tablet',
+                    'laptop': 'fa-laptop',
+                    'camera': 'fa-camera',
+                    'game': 'fa-gamepad',
+                    'tool': 'fa-tools',
+                    'furniture': 'fa-couch',
+                    'appliance': 'fa-blender',
+                    'jewelry': 'fa-gem',
+                    'watch': 'fa-clock',
+                    'shoe': 'fa-shoe-prints',
+                    'bag': 'fa-bag-shopping',
+                    'toy': 'fa-puzzle-piece',
+                    'grocery': 'fa-apple-alt',
+                    'drink': 'fa-mug-hot',
+                    'pet': 'fa-paw',
+                    'plant': 'fa-seedling',
+                    'ticket': 'fa-ticket-alt',
+                    'gift': 'fa-gift'
                 };
 
                 // Use conducive_icon if available, otherwise fallback to icon, or default
-                const iconName = cat.conducive_icon || cat.icon || 'fa-tag';
-                // If it's already a full Font Awesome class, use it, otherwise map it
-                const iconClass = iconName.startsWith('fa-') ? iconName : (iconMap[iconName] || 'fa-tag');
+                const iconName = cat.conducive_icon || cat.icon || 'tag';
+                // Clean the icon name - remove any existing 'fa-' prefix
+                const cleanIconName = iconName.replace(/^fa-/, '');
+                // Get mapped icon or use the cleaned name
+                const iconClass = iconMap[cleanIconName] || `fa-${cleanIconName}`;
+                
+                // Ensure the icon class starts with 'fa-'
+                const finalIconClass = iconClass.startsWith('fa-') ? iconClass : `fa-${iconClass}`;
 
                 return `
-                    <a href="search-results.html?category=${cat.id}" class="category-item">
+                    <a href="category.html?id=${cat.id}" class="category-item">
                         <div class="category-icon" ${cat.color_hex ? `style="color: ${cat.color_hex};"` : ''}>
-                            <i class="fas ${iconClass}"></i>
+                            <i class="fas ${finalIconClass}"></i>
                         </div>
                         <div class="category-name">${escapeHtml(cat.name)}</div>
                     </a>
@@ -477,6 +548,15 @@
                 }
             } catch (error) {
                 console.error('Error loading trending searches:', error);
+                // Fallback trending tags
+                document.getElementById('trendingTags').innerHTML = `
+                    <a href="search-results.html?query=electronics" class="trending-tag">📱 Electronics</a>
+                    <a href="search-results.html?query=fashion" class="trending-tag">👕 Fashion</a>
+                    <a href="search-results.html?query=furniture" class="trending-tag">🪑 Furniture</a>
+                    <a href="search-results.html?query=phones" class="trending-tag">📞 Phones</a>
+                    <a href="search-results.html?query=cars" class="trending-tag">🚗 Cars</a>
+                    <a href="search-results.html?query=land" class="trending-tag">🏠 Land</a>
+                `;
             }
         }
 
@@ -486,6 +566,29 @@
             div.textContent = text;
             return div.innerHTML;
         }
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .category-item {
+                animation: fadeIn 0.3s ease forwards;
+            }
+            
+            .category-item:nth-child(1) { animation-delay: 0.05s; }
+            .category-item:nth-child(2) { animation-delay: 0.1s; }
+            .category-item:nth-child(3) { animation-delay: 0.15s; }
+            .category-item:nth-child(4) { animation-delay: 0.2s; }
+            .category-item:nth-child(5) { animation-delay: 0.25s; }
+            .category-item:nth-child(6) { animation-delay: 0.3s; }
+            .category-item:nth-child(7) { animation-delay: 0.35s; }
+            .category-item:nth-child(8) { animation-delay: 0.4s; }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
