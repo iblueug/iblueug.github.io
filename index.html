@@ -801,21 +801,33 @@
                 margin: 0 auto;
             }
         }
+
+        /* Prevent content flash */
+        .content-hidden {
+            visibility: hidden;
+        }
+        
+        .content-visible {
+            visibility: visible;
+        }
     </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header" id="mainHeader">
         <div class="header-top">
+            <!-- Logo with italic i in circle -->
             <a href="index.html" class="logo">
                 <div class="logo-circle">i</div>
                 <span class="logo-text">iBlue<span>UG</span></span>
             </a>
+            <!-- Search icon at the right of iBlueUG -->
             <div class="search-icon-header" id="headerSearchIcon">
                 <i class="fas fa-search"></i>
             </div>
         </div>
 
+        <!-- Location Bar -->
         <div class="location-bar" id="locationBar">
             <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
             <button class="location-btn" id="locationBtn">
@@ -839,7 +851,9 @@
             </div>
             
             <h4 style="margin: 10px 0; color: var(--gray-600);">Popular Regions</h4>
-            <ul class="region-list" id="regionList"></ul>
+            <ul class="region-list" id="regionList">
+                <!-- Populated dynamically -->
+            </ul>
         </div>
     </div>
 
@@ -856,9 +870,11 @@
         </div>
 
         <!-- Meta Categories Menu -->
-        <div class="meta-categories" id="metaCategories"></div>
+        <div class="meta-categories" id="metaCategories">
+            <!-- Will be populated from homepage_spotlights with updated links -->
+        </div>
 
-        <!-- Recommended Wholesalers Section -->
+        <!-- Recommended Wholesalers Section (KEPT) -->
         <section class="section">
             <div class="section-header">
                 <h2 class="section-title">
@@ -868,11 +884,13 @@
                 <a href="wholesalers.html" class="section-link">See All <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="horizontal-scroll" id="wholesalersScroll">
-                <div class="scroll-wrapper" id="wholesalersWrapper"></div>
+                <div class="scroll-wrapper" id="wholesalersWrapper">
+                    <!-- Populated by JavaScript -->
+                </div>
             </div>
         </section>
 
-        <!-- Conducive Category Sections -->
+        <!-- Conducive Category Sections (directly after wholesalers, Featured Deals removed) -->
         <div id="conduciveSections"></div>
 
         <!-- Deals Banner -->
@@ -924,16 +942,24 @@
         const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
-        // STATE MANAGEMENT
+        // STATE MANAGEMENT WITH LOCALSTORAGE & SESSIONSTORAGE
         // ============================================
         let currentUser = null;
         let lastScrollTop = 0;
         const scrollThreshold = 100;
         
-        // Load location from localStorage
+        // Cache for products data to prevent disappearance on back navigation
+        let productsCache = {
+            wholesalers: null,
+            categories: {},
+            lastUpdated: null
+        };
+        
+        // Load location from localStorage with proper defaults
         let selectedRegion = localStorage.getItem('selectedRegion');
         let selectedDistrict = localStorage.getItem('selectedDistrict');
         
+        // If no location in localStorage, set defaults and save them
         if (!selectedRegion || !selectedDistrict) {
             selectedRegion = 'Central';
             selectedDistrict = 'Kampala';
@@ -941,8 +967,36 @@
             localStorage.setItem('selectedDistrict', selectedDistrict);
         }
 
+        // Try to load cached products from sessionStorage
+        function loadCachedProducts() {
+            try {
+                const cached = sessionStorage.getItem('homepageCache');
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    // Check if cache is less than 5 minutes old
+                    if (parsed.lastUpdated && (Date.now() - parsed.lastUpdated < 300000)) {
+                        productsCache = parsed;
+                        return true;
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading cache:', e);
+            }
+            return false;
+        }
+
+        // Save products to sessionStorage
+        function saveProductsToCache() {
+            try {
+                productsCache.lastUpdated = Date.now();
+                sessionStorage.setItem('homepageCache', JSON.stringify(productsCache));
+            } catch (e) {
+                console.error('Error saving cache:', e);
+            }
+        }
+
         // ============================================
-        // FIX 1: LOAD ALL DATA IN PARALLEL
+        // LOCATION MANAGEMENT FUNCTIONS
         // ============================================
         function updateLocationDisplay() {
             const locationSpan = document.getElementById('currentLocation');
@@ -958,12 +1012,29 @@
             localStorage.setItem('selectedDistrict', district);
             updateLocationDisplay();
             
-            // Reload all data when location changes
-            loadAllData();
+            // Clear cache when location changes
+            productsCache = {
+                wholesalers: null,
+                categories: {},
+                lastUpdated: null
+            };
+            sessionStorage.removeItem('homepageCache');
         }
 
         // ============================================
-        // LOCATION SELECTOR
+        // SEARCH - Header icon opens search.html
+        // ============================================
+        function setupSearch() {
+            const searchIcon = document.getElementById('headerSearchIcon');
+            if (searchIcon) {
+                searchIcon.addEventListener('click', () => {
+                    window.location.href = 'search.html?region=' + encodeURIComponent(selectedRegion) + '&district=' + encodeURIComponent(selectedDistrict);
+                });
+            }
+        }
+
+        // ============================================
+        // LOCATION SELECTION
         // ============================================
         const ugandaRegions = [
             { region: 'Central', districts: ['Kampala', 'Wakiso', 'Mukono', 'Masaka', 'Entebbe'] },
@@ -980,8 +1051,10 @@
             const currentLocationBtn = document.getElementById('useCurrentLocation');
             const regionList = document.getElementById('regionList');
             
+            // Update display with saved location
             updateLocationDisplay();
 
+            // Populate regions
             regionList.innerHTML = '';
             ugandaRegions.forEach(region => {
                 const li = document.createElement('li');
@@ -995,6 +1068,7 @@
                 regionList.appendChild(li);
             });
 
+            // Open modal
             const openModal = () => modal.classList.add('show');
             if (locationBar) locationBar.addEventListener('click', openModal);
             if (locationBtn) {
@@ -1004,6 +1078,7 @@
                 });
             }
 
+            // Close modal
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => modal.classList.remove('show'));
             }
@@ -1012,6 +1087,7 @@
                 if (e.target === modal) modal.classList.remove('show');
             });
 
+            // Use current location (simulated)
             if (currentLocationBtn) {
                 currentLocationBtn.addEventListener('click', () => {
                     showToast('Getting your location...');
@@ -1019,6 +1095,9 @@
                         saveLocation('Central', 'Kampala');
                         modal.classList.remove('show');
                         showToast('Location updated to Kampala');
+                        
+                        // Force reload all data
+                        forceReloadAllData();
                     }, 1500);
                 });
             }
@@ -1045,28 +1124,35 @@
 
             document.getElementById('backBtn').addEventListener('click', () => {
                 modalContent.innerHTML = originalContent;
-                initLocationSelector();
+                initLocationSelector(); // Reinitialize
             });
 
             document.querySelectorAll('#districtList .region-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const district = item.dataset.district;
                     const region = item.dataset.region;
+                    
+                    // Save to localStorage
                     saveLocation(region, district);
+                    
                     document.getElementById('locationModal').classList.remove('show');
                     showToast(`Location set to ${district}, ${region}`);
+                    
+                    // Force reload all data
+                    forceReloadAllData();
                 });
             });
         }
 
         // ============================================
-        // FIX 2: META CATEGORIES (unchanged but optimized)
+        // LOAD META CATEGORIES FROM SPOTLIGHT
         // ============================================
-        async function loadMetaCategories() {
+        async function loadMetaCategories(useCache = true) {
             const container = document.getElementById('metaCategories');
             if (!container) return;
             
             try {
+                // Get active spotlight types from homepage_spotlights
                 const { data: spotlights, error } = await sb
                     .from('homepage_spotlights')
                     .select('spotlight_type')
@@ -1076,6 +1162,7 @@
                 
                 if (error) throw error;
                 
+                // Define meta category details with correct page links
                 const metaCategoryMap = {
                     'featured_deals': { icon: 'fa-star', name: 'Featured Deals', page: 'featured-deals.html' },
                     'trending_now': { icon: 'fa-fire', name: 'Trending Now', page: 'trending-now.html' },
@@ -1102,6 +1189,7 @@
                     });
                 }
                 
+                // Add default meta categories if none in spotlight
                 if (metaButtons === '') {
                     metaButtons = `
                         <a href="featured-deals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
@@ -1123,6 +1211,7 @@
                 
             } catch (error) {
                 console.error('Error loading meta categories:', error);
+                // Fallback to default with location params
                 container.innerHTML = `
                     <a href="featured-deals.html?region=${encodeURIComponent(selectedRegion)}&district=${encodeURIComponent(selectedDistrict)}" class="meta-category-btn">
                         <i class="fas fa-star"></i> Featured Deals
@@ -1141,16 +1230,22 @@
         }
 
         // ============================================
-        // FIX 3: WHOLESALERS - SHOW SKELETON FIRST
+        // LOAD RECOMMENDED WHOLESALERS (KEPT)
         // ============================================
-        async function loadRecommendedWholesalers() {
+        async function loadRecommendedWholesalers(useCache = true) {
             const wrapper = document.getElementById('wholesalersWrapper');
             if (!wrapper) return;
             
-            // Show skeleton immediately
+            // Check cache first
+            if (useCache && productsCache.wholesalers) {
+                wrapper.innerHTML = productsCache.wholesalers;
+                return;
+            }
+            
             wrapper.innerHTML = getPlaceholderWholesalers();
             
             try {
+                // Get sellers with most active ads
                 const { data: adsData, error: adsError } = await sb
                     .from('ads')
                     .select('seller_id')
@@ -1162,11 +1257,13 @@
                     return;
                 }
 
+                // Count ads per seller
                 const sellerCounts = {};
                 adsData.forEach(ad => {
                     sellerCounts[ad.seller_id] = (sellerCounts[ad.seller_id] || 0) + 1;
                 });
 
+                // Get top 8 sellers with most ads
                 const topSellerIds = Object.keys(sellerCounts)
                     .sort((a, b) => sellerCounts[b] - sellerCounts[a])
                     .slice(0, 8);
@@ -1176,6 +1273,7 @@
                     return;
                 }
 
+                // Get seller profiles
                 const { data: sellers, error: sellersError } = await sb
                     .from('profiles')
                     .select('id, full_name, avatar_url, location, district, is_verified')
@@ -1187,6 +1285,7 @@
                     return;
                 }
 
+                // Render wholesalers with location params
                 const wholesalersHtml = sellers.map(seller => {
                     const initials = seller.full_name
                         ?.split(' ')
@@ -1200,7 +1299,7 @@
                             <div class="wholesaler-avatar-container">
                                 <div class="wholesaler-avatar">
                                     ${seller.avatar_url ? 
-                                        `<img src="${seller.avatar_url}" alt="${escapeHtml(seller.full_name)}" loading="lazy">` : 
+                                        `<img src="${seller.avatar_url}" alt="${seller.full_name}">` : 
                                         `<span>${initials}</span>`
                                     }
                                 </div>
@@ -1218,6 +1317,10 @@
                 }).join('');
                 
                 wrapper.innerHTML = wholesalersHtml;
+                
+                // Save to cache
+                productsCache.wholesalers = wholesalersHtml;
+                saveProductsToCache();
 
             } catch (error) {
                 console.error('Error loading wholesalers:', error);
@@ -1243,20 +1346,33 @@
         }
 
         // ============================================
-        // FIX 4: CONDUCIVE SECTIONS - LOAD IN PARALLEL WITH PROMISE.ALL
+        // LOAD CONDUCIVE SECTIONS
         // ============================================
-        async function loadConduciveSections() {
+        async function loadConduciveSections(useCache = true) {
             const container = document.getElementById('conduciveSections');
             if (!container) return;
             
-            container.innerHTML = getSkeletonConduciveSections(3);
+            // Check if we have all categories in cache
+            if (useCache && productsCache.categories && Object.keys(productsCache.categories).length > 0) {
+                // Check if we have HTML for all categories
+                const cachedHtml = Object.values(productsCache.categories).join('');
+                if (cachedHtml) {
+                    container.innerHTML = cachedHtml;
+                    setupFadeInObserver();
+                    return;
+                }
+            }
+            
+            container.innerHTML = getSkeletonConduciveSections(5);
             
             try {
+                // First get all active categories
                 const { data: categories, error: catError } = await sb
                     .from('categories')
                     .select('id, name, display_name, conducive_tagline, conducive_icon, color_hex')
                     .eq('is_active', true)
-                    .order('display_order', { ascending: true });
+                    .order('display_order', { ascending: true })
+                    .order('name', { ascending: true });
                 
                 if (catError) throw catError;
                 
@@ -1265,9 +1381,13 @@
                     return;
                 }
                 
-                // FIX: Load all category ads in parallel
-                const adsPromises = categories.map(cat => 
-                    sb
+                // For each category, get its ads
+                let html = '';
+                let categoriesHtml = {};
+                
+                for (const cat of categories) {
+                    // Filter by location if needed
+                    let query = sb
                         .from('ads')
                         .select(`
                             id,
@@ -1279,24 +1399,19 @@
                             view_count,
                             region,
                             district,
+                            created_at,
                             profiles!ads_seller_id_fkey (is_verified)
                         `)
                         .eq('status', 'active')
                         .eq('category_id', cat.id)
                         .order('created_at', { ascending: false })
-                        .limit(4)
-                );
-                
-                const adsResults = await Promise.all(adsPromises);
-                
-                let html = '';
-                
-                categories.forEach((cat, index) => {
-                    const { data: ads, error: adsError } = adsResults[index];
+                        .limit(4);
+                    
+                    const { data: ads, error: adsError } = await query;
                     
                     if (adsError) {
                         console.error(`Error loading ads for category ${cat.name}:`, adsError);
-                        return;
+                        continue;
                     }
                     
                     if (ads && ads.length > 0) {
@@ -1305,7 +1420,7 @@
                         const icon = cat.conducive_icon || 'fa-tag';
                         const color = cat.color_hex || '#2563EB';
                         
-                        html += `
+                        const categoryHtml = `
                             <section class="conducive-section fade-in">
                                 <div class="conducive-header">
                                     <div class="conducive-title">
@@ -1324,13 +1439,21 @@
                                 </div>
                             </section>
                         `;
+                        
+                        html += categoryHtml;
+                        categoriesHtml[cat.id] = categoryHtml;
                     }
-                });
+                }
                 
                 if (html === '') {
                     container.innerHTML = getEmptyConduciveSections();
                 } else {
                     container.innerHTML = html;
+                    
+                    // Save to cache
+                    productsCache.categories = categoriesHtml;
+                    saveProductsToCache();
+                    
                     setupFadeInObserver();
                 }
                 
@@ -1340,6 +1463,25 @@
             }
         }
 
+        function setupFadeInObserver() {
+            // Setup intersection observer for fade-in sections
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '50px' });
+            
+            document.querySelectorAll('.conducive-section').forEach(section => {
+                observer.observe(section);
+            });
+        }
+
+        // ============================================
+        // CARD CREATORS
+        // ============================================
         function createConduciveCard(product) {
             const imageUrl = product.image_urls?.[0] || 'https://via.placeholder.com/200?text=No+Image';
             const price = product.price ? `UGX ${parseInt(product.price).toLocaleString()}` : 'Call for price';
@@ -1367,7 +1509,10 @@
             `;
         }
 
-        function getSkeletonConduciveSections(count) {
+        // ============================================
+        // PLACEHOLDERS & EMPTY STATES
+        // ============================================
+        function getSkeletonConduciveSections(count = 3) {
             let html = '';
             for (let s = 0; s < count; s++) {
                 html += `
@@ -1383,7 +1528,7 @@
                             <div class="skeleton-text" style="width: 60px;"></div>
                         </div>
                         <div class="conducive-grid">
-                            ${getSkeletonCards()}
+                            ${getSkeletonConducive()}
                         </div>
                     </section>
                 `;
@@ -1391,7 +1536,7 @@
             return html;
         }
 
-        function getSkeletonCards() {
+        function getSkeletonConducive() {
             let html = '';
             for (let i = 0; i < 4; i++) {
                 html += `
@@ -1427,52 +1572,27 @@
             `;
         }
 
-        function setupFadeInObserver() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1, rootMargin: '50px' });
+        // ============================================
+        // FORCE RELOAD ALL DATA
+        // ============================================
+        async function forceReloadAllData() {
+            // Clear cache
+            productsCache = {
+                wholesalers: null,
+                categories: {},
+                lastUpdated: null
+            };
+            sessionStorage.removeItem('homepageCache');
             
-            document.querySelectorAll('.conducive-section').forEach(section => {
-                observer.observe(section);
-            });
+            // Reload all data without cache
+            await loadMetaCategories(false);
+            await loadRecommendedWholesalers(false);
+            await loadConduciveSections(false);
         }
 
         // ============================================
-        // FIX 5: LOAD ALL DATA IN PARALLEL
+        // HEADER SCROLL BEHAVIOR
         // ============================================
-        async function loadAllData() {
-            // Start all loads simultaneously
-            await Promise.all([
-                loadMetaCategories(),
-                loadRecommendedWholesalers(),
-                loadConduciveSections()
-            ]);
-        }
-
-        // ============================================
-        // UTILITIES
-        // ============================================
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            if (!toast) return;
-            
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-
         function setupScrollBehavior() {
             const header = document.getElementById('mainHeader');
             
@@ -1496,7 +1616,18 @@
         }
 
         // ============================================
-        // TRACKING
+        // HOME NAVIGATION
+        // ============================================
+        const homeNav = document.getElementById('homeNav');
+        if (homeNav) {
+            homeNav.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // ============================================
+        // TRACK CLICK
         // ============================================
         window.trackClick = async function(adId) {
             try {
@@ -1519,9 +1650,101 @@
         };
 
         // ============================================
+        // UTILITIES
+        // ============================================
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // ============================================
+        // CHECK FOR RETURNING FROM OTHER PAGES
+        // ============================================
+        function checkForLocationFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const regionFromUrl = urlParams.get('region');
+            const districtFromUrl = urlParams.get('district');
+            
+            if (regionFromUrl && districtFromUrl) {
+                // Update from URL params
+                saveLocation(regionFromUrl, districtFromUrl);
+                return true;
+            }
+            return false;
+        }
+
+        // ============================================
+        // HANDLE PAGE VISIBILITY
+        // ============================================
+        function setupPageVisibilityHandling() {
+            // Handle page show event (when coming back via history)
+            window.addEventListener('pageshow', function(event) {
+                // Check if page was loaded from cache (like when using back button)
+                if (event.persisted) {
+                    console.log('Page loaded from cache, checking data...');
+                    
+                    // Check if we have cached data
+                    const hasCache = loadCachedProducts();
+                    
+                    if (hasCache && productsCache.categories && Object.keys(productsCache.categories).length > 0) {
+                        // Restore from cache
+                        const container = document.getElementById('conduciveSections');
+                        if (container) {
+                            const cachedHtml = Object.values(productsCache.categories).join('');
+                            if (cachedHtml) {
+                                container.innerHTML = cachedHtml;
+                                setupFadeInObserver();
+                            }
+                        }
+                        
+                        const wholesalersWrapper = document.getElementById('wholesalersWrapper');
+                        if (wholesalersWrapper && productsCache.wholesalers) {
+                            wholesalersWrapper.innerHTML = productsCache.wholesalers;
+                        }
+                    } else {
+                        // No cache, reload data
+                        forceReloadAllData();
+                    }
+                    
+                    // Always reload meta categories (they're light)
+                    loadMetaCategories();
+                }
+            });
+
+            // Handle visibility change (when switching tabs and coming back)
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    console.log('Tab became visible again');
+                    // Optionally refresh data if it's been a while
+                    if (productsCache.lastUpdated && (Date.now() - productsCache.lastUpdated > 300000)) {
+                        // Cache is older than 5 minutes, refresh
+                        forceReloadAllData();
+                    }
+                }
+            });
+        }
+
+        // ============================================
         // INITIALIZATION
         // ============================================
         document.addEventListener('DOMContentLoaded', async () => {
+            // Check for location in URL first (when returning from other pages)
+            const locationChanged = checkForLocationFromURL();
+            
+            // Try to load cached products
+            const hasCache = loadCachedProducts();
+            
             // Initialize Swiper
             if (document.getElementById('bannerSwiper')) {
                 new Swiper('#bannerSwiper', {
@@ -1535,25 +1758,14 @@
             // Setup scroll behavior
             setupScrollBehavior();
 
-            // Setup search
-            const searchIcon = document.getElementById('headerSearchIcon');
-            if (searchIcon) {
-                searchIcon.addEventListener('click', () => {
-                    window.location.href = 'search.html?region=' + encodeURIComponent(selectedRegion) + '&district=' + encodeURIComponent(selectedDistrict);
-                });
-            }
+            // Setup search (header icon opens search.html)
+            setupSearch();
 
             // Initialize location selector
             initLocationSelector();
 
-            // Home navigation
-            const homeNav = document.getElementById('homeNav');
-            if (homeNav) {
-                homeNav.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-            }
+            // Setup page visibility handling
+            setupPageVisibilityHandling();
 
             // Check authentication
             try {
@@ -1565,8 +1777,14 @@
                 console.error('Error checking auth:', error);
             }
 
-            // FIX: Load all data in parallel
-            await loadAllData();
+            // Load meta categories from spotlight
+            await loadMetaCategories();
+
+            // Load recommended wholesalers (use cache if available and location didn't change)
+            await loadRecommendedWholesalers(!locationChanged && hasCache);
+
+            // Load conducive sections (use cache if available and location didn't change)
+            await loadConduciveSections(!locationChanged && hasCache);
         });
     </script>
 </body>
