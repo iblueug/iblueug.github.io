@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Search - iBlue Uganda</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --white: #ffffff;
+            --radius: 8px;
+        }
+
+        body {
+            background: var(--white);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--light-gray);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--light-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .search-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: var(--light-gray);
+            border-radius: 30px;
+            padding: 4px 4px 4px 16px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .recent-searches {
+            padding: 20px 16px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .clear-all {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .recent-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--light-gray);
+            color: var(--dark);
+            text-decoration: none;
+        }
+
+        .recent-item i {
+            color: var(--gray);
+            width: 20px;
+        }
+
+        .recent-item span {
+            flex: 1;
+        }
+
+        .recent-item .time {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        .trending-section {
+            padding: 20px 16px;
+            background: #f8fafc;
+        }
+
+        .trending-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .trending-tag {
+            padding: 8px 16px;
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: 30px;
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .trending-tag:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .categories-section {
+            padding: 20px 16px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .category-item {
+            text-align: center;
+            text-decoration: none;
+            color: var(--dark);
+        }
+
+        .category-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--light-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .category-name {
+            font-size: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search products..." autofocus>
+            <button class="search-btn" id="searchBtn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Recent Searches -->
+    <div class="recent-searches" id="recentSearches">
+        <div class="section-title">
+            Recent Searches
+            <a href="#" class="clear-all" onclick="clearRecentSearches()">Clear All</a>
+        </div>
+        <div id="recentList">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <!-- Trending Searches -->
+    <div class="trending-section">
+        <div class="section-title">Trending Now</div>
+        <div class="trending-tags">
+            <a href="search-results.html?query=electronics" class="trending-tag">📱 Electronics</a>
+            <a href="search-results.html?query=fashion" class="trending-tag">👕 Fashion</a>
+            <a href="search-results.html?query=furniture" class="trending-tag">🪑 Furniture</a>
+            <a href="search-results.html?query=phones" class="trending-tag">📞 Phones</a>
+            <a href="search-results.html?query=cars" class="trending-tag">🚗 Cars</a>
+            <a href="search-results.html?query=land" class="trending-tag">🏠 Land</a>
+        </div>
+    </div>
+
+    <!-- Browse Categories -->
+    <div class="categories-section">
+        <div class="section-title">Browse Categories</div>
+        <div class="category-grid" id="categoryGrid">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = "https://uufhvmmgwzkxvvdbqemz.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1Zmh2bW1nd3preHZ2ZGJxZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMDIzNTYsImV4cCI6MjA4NTg3ODM1Nn0.WABHx4ilFRkhPHP-y4ZC4E8Kb7PRqY-cyxI8cVS8Tyc";
+        const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRecentSearches();
+            loadCategories();
+            setupSearch();
+        });
+
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+
+            function performSearch() {
+                const query = searchInput.value.trim();
+                if (query) {
+                    saveRecentSearch(query);
+                    window.location.href = `search-results.html?query=${encodeURIComponent(query)}`;
+                }
+            }
+
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') performSearch();
+            });
+        }
+
+        function loadRecentSearches() {
+            const recent = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+            const recentList = document.getElementById('recentList');
+
+            if (recent.length === 0) {
+                recentList.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 20px;">No recent searches</p>';
+                return;
+            }
+
+            recentList.innerHTML = recent.slice(0, 5).map(item => `
+                <a href="search-results.html?query=${encodeURIComponent(item.query)}" class="recent-item">
+                    <i class="fas fa-history"></i>
+                    <span>${escapeHtml(item.query)}</span>
+                    <span class="time">${item.time}</span>
+                </a>
+            `).join('');
+        }
+
+        function saveRecentSearch(query) {
+            const recent = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            // Remove if already exists
+            const filtered = recent.filter(item => item.query !== query);
+            
+            // Add to front
+            filtered.unshift({ query, time: timeStr });
+            
+            // Keep only last 10
+            const trimmed = filtered.slice(0, 10);
+            
+            localStorage.setItem('recentSearches', JSON.stringify(trimmed));
+        }
+
+        function clearRecentSearches() {
+            localStorage.removeItem('recentSearches');
+            loadRecentSearches();
+        }
+
+        async function loadCategories() {
+            try {
+                const { data, error } = await sb
+                    .from('categories')
+                    .select('id, name, icon, conducive_icon')
+                    .eq('is_active', true)
+                    .order('display_order')
+                    .limit(8);
+
+                if (error) throw error;
+
+                const categories = data || [];
+                renderCategories(categories);
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                // Fallback categories
+                renderCategories([
+                    { id: 1, name: 'Electronics', conducive_icon: 'fa-mobile-alt' },
+                    { id: 2, name: 'Fashion', conducive_icon: 'fa-tshirt' },
+                    { id: 3, name: 'Home', conducive_icon: 'fa-home' },
+                    { id: 4, name: 'Vehicles', conducive_icon: 'fa-car' },
+                    { id: 5, name: 'Health', conducive_icon: 'fa-heartbeat' },
+                    { id: 6, name: 'Agriculture', conducive_icon: 'fa-seedling' },
+                    { id: 7, name: 'Services', conducive_icon: 'fa-tools' },
+                    { id: 8, name: 'Pets', conducive_icon: 'fa-dog' }
+                ]);
+            }
+        }
+
+        function renderCategories(categories) {
+            const grid = document.getElementById('categoryGrid');
+            if (!grid) return;
+
+            grid.innerHTML = categories.map(cat => `
+                <a href="search-results.html?category=${cat.id}" class="category-item">
+                    <div class="category-icon">
+                        <i class="fas ${cat.conducive_icon || cat.icon || 'fa-tag'}"></i>
+                    </div>
+                    <div class="category-name">${escapeHtml(cat.name)}</div>
+                </a>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
